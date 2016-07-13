@@ -8,7 +8,6 @@ src/splGenerator/generatedModels/*.*
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 
