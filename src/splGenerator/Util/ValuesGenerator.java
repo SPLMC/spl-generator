@@ -35,6 +35,8 @@ public class ValuesGenerator {
 		while (idxValues < numberOfValues) {
 			double value = minReliabibilityValue + (maxReliabilityValue - minReliabibilityValue)
 					* r.nextDouble();
+			BigDecimal decimal = new BigDecimal(value); 
+			value = decimal.setScale(9, BigDecimal.ROUND_HALF_UP).doubleValue();
 			boolean answer = reliabilityValues.add(value);
 			if (answer == true)
 				idxValues++;
