@@ -3,6 +3,7 @@ package splGenerator.transformation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import com.sun.corba.se.spi.orbutil.fsm.State;
@@ -21,6 +22,13 @@ public class Transformer {
 
 	private HashMap<String, fdtmc.State> fdtmcStateById = new HashMap<String, fdtmc.State>();
 	private RDGNode root;
+
+	private int idxActivity = 0;
+	private int idxTrans = 0;
+	private int idxDecision = 0;
+	private int idxActivityDiagram = 0;
+
+	private HashMap<ActivityDiagramElement, Integer> incomingEdgesByState = new HashMap<ActivityDiagramElement, Integer>();
 
 	/**
 	 * This method is responsible for creating an RDG structure for a whole SPL
@@ -107,19 +115,7 @@ public class Transformer {
 							a.getElementName(), "1-"
 									+ a.getSequenceDiagrams().getFirst()
 											.getName());
-					// f.createTransition(source, target, a.getElementName(),
-					// "r" + a.getElementName());
-					// f.createTransition(source, f.getErrorState(),
-					// a.getElementName(), "1-r" + a.getElementName());
 				}
-				// for (Transition t : adElem.getTransitions()) {
-				// fdtmc.State target = transformAdElement(t.getTarget(), f);
-				// f.createTransition(source, target, t.getElementName(),
-				// Double.toString(t.getProbability()));
-				// f.createTransition(source, f.getErrorState(),
-				// t.getElementName(),
-				// Double.toString(1 - t.getProbability()));
-				// }
 				fdtmcStateById.put(adElem.getElementName(), source);
 				answer = source;
 			} else
@@ -180,5 +176,113 @@ public class Transformer {
 		}
 
 		return answer;
+	}
+
+	public ActivityDiagram getActivityDiagramFromFDTMC(RDGNode root) {
+		ActivityDiagram answer = new ActivityDiagram();
+		answer.setName("AD_SPL_" + idxActivityDiagram++);
+		FDTMC fdtmc = root.getFDTMC();
+
+		extractADElementFromFDTMC(fdtmc.getInitialState(), fdtmc, answer);
+
+		return answer;
+	}
+
+	private ActivityDiagramElement extractADElementFromFDTMC(
+			fdtmc.State currentState, FDTMC fdtmc, ActivityDiagram ad) {
+		ActivityDiagramElement answer = null;
+
+		// remove error transitions leaving from the current state
+		List<fdtmc.Transition> transitions = fdtmc
+				.getTransitionsBySource(currentState);
+		for (fdtmc.Transition t : transitions) {
+			if (t.getTarget() == fdtmc.getErrorState()) {
+				transitions.remove(t);
+				System.out
+						.println("$$$$ A transition to error state was found and removed.");
+			}
+		}
+
+		// 1st Step.: identify the activity diagram element based on the fdtmc
+		// structure. Such identification must ensure the number and type of
+		// elements are correct.
+		if (currentState.getLabel() == null) {
+			ActivityDiagramElement adSource;
+			if (transitions.size() > 1) {
+				System.out.println("---> Decision node found.");
+				adSource = ActivityDiagramElement.createElement(
+						ActivityDiagramElement.DECISION_NODE, "DecisionNode_"
+								+ idxDecision++);
+				incomingEdgesByState.put(adSource, 0);
+				for (fdtmc.Transition t : transitions) {
+					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
+							t.getTarget(), fdtmc, ad);
+					Transition trans = adSource.createTransition(adTarget,
+							t.getActionName(),
+							Double.parseDouble(t.getProbability()));
+					ad.addElement(trans);
+					updateIncomingEdges(adTarget);
+				}
+				ad.addElement(adSource);
+				answer = adSource;
+			} else if (transitions.size() == 1) {
+				System.out.println("---> Activity node found.");
+				adSource = ActivityDiagramElement.createElement(
+						ActivityDiagramElement.ACTIVITY, "Activity_"
+								+ idxActivity++);
+				incomingEdgesByState.put(adSource, 0);
+				for (fdtmc.Transition t : transitions) {
+					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
+							t.getTarget(), fdtmc, ad);
+					Transition trans = adSource.createTransition(adTarget,
+							t.getActionName(), 1.0);
+					ad.addElement(trans);
+					updateIncomingEdges(adTarget);
+				}
+				ad.addElement(adSource);
+				answer = adSource;
+			}
+		} else if (currentState.getLabel().equalsIgnoreCase("initial")) {
+			System.out.println("---> Initial Found");
+			ActivityDiagramElement adStartNode = ad.getStartNode();
+			incomingEdgesByState.put(adStartNode, 0);
+			System.out.println(adStartNode);
+			System.out.println(transitions.size());
+			for (fdtmc.Transition t : transitions) {
+				fdtmc.State target = t.getTarget();
+				System.out.println(target);
+				ActivityDiagramElement el = extractADElementFromFDTMC(target,
+						fdtmc, ad);
+				System.out.println(el);
+				Transition trans = adStartNode.createTransition(el,
+						t.getActionName(), 1.0);
+				ad.addElement(trans);
+				updateIncomingEdges(el);
+			}
+//			ad.addElement(adStartNode);
+			answer = adStartNode;
+		} else if (currentState.getLabel().equalsIgnoreCase("success")) {
+			System.out.println("---> Success Found");
+			ActivityDiagramElement adEndNode = ActivityDiagramElement
+					.createElement(ActivityDiagramElement.END_NODE, "End node");
+			incomingEdgesByState.put(adEndNode, 0);
+			ad.addElement(adEndNode);
+			answer = adEndNode;
+		} else if (currentState.getLabel().equalsIgnoreCase("error")) {
+			System.out.println("---> Error Found");
+			System.out.println("   |--> nothing to do, I will return null");
+			answer = null;
+		}
+
+		return answer;
+	}
+
+	private void updateIncomingEdges(ActivityDiagramElement adTarget) {
+		int oldValue = incomingEdgesByState.get(adTarget);
+		int newValue = oldValue + 1;
+		incomingEdgesByState.put(adTarget, newValue);
+		System.out.println("Incoming edges for the activity diagram element \""
+				+ adTarget.getElementName() + "\" was updated from " + oldValue
+				+ " to " + newValue + ".");
 	}
 }

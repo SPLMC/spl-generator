@@ -30,7 +30,7 @@ import tool.RDGNode;
 
 public class SPLFilePersistence {
 
-	private static String modelsPath = "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/";
+	private static String modelsPath = "/home/andlanna/workspace/spl-generator/src/generatedModels/";
 	private static String cnfFilePrefix = "cnf_";
 	private static String rdgFilePrefix = "rdg_";
 	private static String fdtmcFilePrefix = "fdtmc_";
@@ -277,7 +277,5 @@ public class SPLFilePersistence {
 			java.lang.System.setOut(oldOut);
 			modelsPath = ancientModelsPath;
 		}
-		
 	}
-
 }

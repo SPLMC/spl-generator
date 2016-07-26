@@ -26,14 +26,17 @@ import org.w3c.dom.NodeList;
 import splGenerator.parsing.ActivityDiagramParser;
 import splGenerator.parsing.SequenceDiagramParser;
 import splar.core.fm.FeatureModel;
+import tool.RDGNode;
 
-public class SPL implements Cloneable{
+public class SPL implements Cloneable {
 
 	/**
 	 * This attribute is redundant with SPLGenerator.modelsPath attribute. We
 	 * should prune it soon.
 	 */
-	private String modelsPath = "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/";
+	// private String modelsPath =
+	// "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/";
+	private String modelsPath = "/home/andlanna/workspace/spl-generator/src/generatedModels/";
 
 	String name;
 	FeatureModel fm;
@@ -104,9 +107,9 @@ public class SPL implements Cloneable{
 				Activity a = ita.next();
 				// get all the sequence diagrams associated to the activity and
 				// add them to the set of sequence diagrams.
-//				System.out.println("----->");
+				// System.out.println("----->");
 				setOfSequenceDiagrams.addAll(a.getTransitiveSequenceDiagram());
-//				System.out.println("=====>");
+				// System.out.println("=====>");
 				setOfLifelines.addAll(a.getTransitiveLifelines());
 				setOfFragments.addAll(a.getTransitiveFragments());
 			}
@@ -247,7 +250,7 @@ public class SPL implements Cloneable{
 	public void setFeatureModel(FeatureModel fm) {
 		this.fm = fm;
 	}
-	
+
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
@@ -261,12 +264,27 @@ public class SPL implements Cloneable{
 	}
 
 	public void setSplGenerator(SplGenerator splGenerator) {
-		this.splGenerator = splGenerator; 
+		this.splGenerator = splGenerator;
 	}
-	
-	public SplGenerator getSplGenerator() { 
+
+	public SplGenerator getSplGenerator() {
 		return splGenerator;
 	}
 
+	public static SPL createSplFromRDG(RDGNode root) {
+		SPL answer = new SPL();
+		answer.setName("New SPL created from an RDG");
+
+		// 1st node represents the interactions between SPL's activities
+		// described at the activity diagram, so we must rebuild such relations
+		// from its FDTMC
+		ActivityDiagram ad = null;
+
+		splGenerator.transformation.Transformer transAD = new splGenerator.transformation.Transformer();
+		ad = transAD.getActivityDiagramFromFDTMC(root);
+		answer.setActivityDiagram(ad);
+
+		return answer;
+	}
 
 }

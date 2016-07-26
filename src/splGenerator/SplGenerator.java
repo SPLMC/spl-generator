@@ -39,7 +39,7 @@ public class SplGenerator {
 	 * general attributes of the SPL generator. Here we set the folders and
 	 * files names used by the generator.
 	 */
-	private String modelsPath = "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/";
+	private String modelsPath = "/home/andlanna/workspace/spl-generator/src/generatedModels";
 	private String fmFilePrefix = "fm_";
 	private String umlFilePrefix = "uml_";
 
@@ -165,7 +165,6 @@ public class SplGenerator {
 			f.setType(Fragment.OPTIONAL);
 			listOfPendingFragments.add(f);
 		}
-//		System.out.println("|listOfPendingFragments| = " + listOfPendingFragments.size());
 
 		// 3rd step: create the activity diagram describing the coarse-grained
 		// behavior of the software product line.

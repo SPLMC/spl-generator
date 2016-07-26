@@ -431,4 +431,8 @@ public class FDTMC {
         return transitions;
     }
 
+	public List<Transition> getTransitionsBySource(State source) {
+		return transitionSystem.get(source);
+	}
+
 }
