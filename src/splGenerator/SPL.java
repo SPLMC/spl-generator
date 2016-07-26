@@ -271,6 +271,17 @@ public class SPL implements Cloneable {
 		return splGenerator;
 	}
 
+	/**
+	 * This method's role is to build an entire SPL from a given RDG structure.
+	 * In other words, it is responsible for applying the transformation
+	 * templates in the reverse order such that the behavioral models of the
+	 * software product line are re-created from their FDTMC representation.
+	 * 
+	 * @param root
+	 *            the starting node of the software product line
+	 * @return a SPL object containing the feature and all behavioral models of
+	 *         the software product line
+	 */
 	public static SPL createSplFromRDG(RDGNode root) {
 		SPL answer = new SPL();
 		answer.setName("New SPL created from an RDG");

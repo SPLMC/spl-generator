@@ -178,6 +178,17 @@ public class Transformer {
 		return answer;
 	}
 
+	/**
+	 * This method is responsible for creating the Activity Diagram of a given
+	 * software product line. The FDTMC of the root node represent how the
+	 * activities (describing the coarse-grained behavior of the software
+	 * product line) interact among them.
+	 * 
+	 * @param root
+	 *            the root node of the RDG structure
+	 * @return an ActivityDiagram object representing the coarse-grained
+	 *         behavior of the software product line.
+	 */
 	public ActivityDiagram getActivityDiagramFromFDTMC(RDGNode root) {
 		ActivityDiagram answer = new ActivityDiagram();
 		answer.setName("AD_SPL_" + idxActivityDiagram++);
@@ -188,6 +199,21 @@ public class Transformer {
 		return answer;
 	}
 
+	/**
+	 * This method's role is to infer an activity diagram structure from a given
+	 * FDTMC state and its relation with other FDTMC states. Such method
+	 * implements the transformation templates in its reverse order.
+	 * 
+	 * @param currentState
+	 *            the FDTMC state from which the activity diagram structure will
+	 *            be extracted
+	 * @param fdtmc
+	 *            the FDTMC under analysis.
+	 * @param ad
+	 *            the resulting activity diagram. Its construction will occur
+	 *            step-by-step, as iterations go on.
+	 * @return
+	 */
 	private ActivityDiagramElement extractADElementFromFDTMC(
 			fdtmc.State currentState, FDTMC fdtmc, ActivityDiagram ad) {
 		ActivityDiagramElement answer = null;
@@ -250,7 +276,7 @@ public class Transformer {
 				ad.addElement(trans);
 				updateIncomingEdges(el);
 			}
-//			ad.addElement(adStartNode);
+			// ad.addElement(adStartNode);
 			answer = adStartNode;
 		} else if (currentState.getLabel().equalsIgnoreCase("success")) {
 			ActivityDiagramElement adEndNode = ActivityDiagramElement
@@ -271,8 +297,8 @@ public class Transformer {
 		int oldValue = incomingEdgesByState.get(adTarget);
 		int newValue = oldValue + 1;
 		incomingEdgesByState.put(adTarget, newValue);
-//		System.out.println("Incoming edges for the activity diagram element \""
-//				+ adTarget.getElementName() + "\" was updated from " + oldValue
-//				+ " to " + newValue + ".");
+		// System.out.println("Incoming edges for the activity diagram element \""
+		// + adTarget.getElementName() + "\" was updated from " + oldValue
+		// + " to " + newValue + ".");
 	}
 }
