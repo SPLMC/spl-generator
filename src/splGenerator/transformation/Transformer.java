@@ -198,8 +198,6 @@ public class Transformer {
 		for (fdtmc.Transition t : transitions) {
 			if (t.getTarget() == fdtmc.getErrorState()) {
 				transitions.remove(t);
-				System.out
-						.println("$$$$ A transition to error state was found and removed.");
 			}
 		}
 
@@ -209,7 +207,6 @@ public class Transformer {
 		if (currentState.getLabel() == null) {
 			ActivityDiagramElement adSource;
 			if (transitions.size() > 1) {
-				System.out.println("---> Decision node found.");
 				adSource = ActivityDiagramElement.createElement(
 						ActivityDiagramElement.DECISION_NODE, "DecisionNode_"
 								+ idxDecision++);
@@ -226,7 +223,6 @@ public class Transformer {
 				ad.addElement(adSource);
 				answer = adSource;
 			} else if (transitions.size() == 1) {
-				System.out.println("---> Activity node found.");
 				adSource = ActivityDiagramElement.createElement(
 						ActivityDiagramElement.ACTIVITY, "Activity_"
 								+ idxActivity++);
@@ -243,17 +239,12 @@ public class Transformer {
 				answer = adSource;
 			}
 		} else if (currentState.getLabel().equalsIgnoreCase("initial")) {
-			System.out.println("---> Initial Found");
 			ActivityDiagramElement adStartNode = ad.getStartNode();
 			incomingEdgesByState.put(adStartNode, 0);
-			System.out.println(adStartNode);
-			System.out.println(transitions.size());
 			for (fdtmc.Transition t : transitions) {
 				fdtmc.State target = t.getTarget();
-				System.out.println(target);
 				ActivityDiagramElement el = extractADElementFromFDTMC(target,
 						fdtmc, ad);
-				System.out.println(el);
 				Transition trans = adStartNode.createTransition(el,
 						t.getActionName(), 1.0);
 				ad.addElement(trans);
@@ -262,7 +253,6 @@ public class Transformer {
 //			ad.addElement(adStartNode);
 			answer = adStartNode;
 		} else if (currentState.getLabel().equalsIgnoreCase("success")) {
-			System.out.println("---> Success Found");
 			ActivityDiagramElement adEndNode = ActivityDiagramElement
 					.createElement(ActivityDiagramElement.END_NODE, "End node");
 			incomingEdgesByState.put(adEndNode, 0);
@@ -281,8 +271,8 @@ public class Transformer {
 		int oldValue = incomingEdgesByState.get(adTarget);
 		int newValue = oldValue + 1;
 		incomingEdgesByState.put(adTarget, newValue);
-		System.out.println("Incoming edges for the activity diagram element \""
-				+ adTarget.getElementName() + "\" was updated from " + oldValue
-				+ " to " + newValue + ".");
+//		System.out.println("Incoming edges for the activity diagram element \""
+//				+ adTarget.getElementName() + "\" was updated from " + oldValue
+//				+ " to " + newValue + ".");
 	}
 }
