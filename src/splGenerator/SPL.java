@@ -294,7 +294,14 @@ public class SPL implements Cloneable {
 		splGenerator.transformation.Transformer transAD = new splGenerator.transformation.Transformer();
 		ad = transAD.getActivityDiagramFromFDTMC(root);
 		answer.setActivityDiagram(ad);
-
+		
+		List<SequenceDiagram> sds;
+		for (RDGNode n : root.getDependencies()) {
+			splGenerator.transformation.Transformer transSD = new splGenerator.transformation.Transformer(); 
+			sds = transSD.getSequenceDiagramFromFDTMC(n); 
+			ad.getSetOfActivities().get(0).addSequenceDiagram(sds.get(0));
+		}
+		
 		return answer;
 	}
 

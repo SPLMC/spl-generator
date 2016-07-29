@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
+
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import com.sun.corba.se.spi.orbutil.fsm.State;
 
@@ -12,7 +15,10 @@ import fdtmc.FDTMC;
 import splGenerator.Activity;
 import splGenerator.ActivityDiagram;
 import splGenerator.ActivityDiagramElement;
+import splGenerator.Lifeline;
+import splGenerator.Message;
 import splGenerator.SequenceDiagram;
+import splGenerator.SequenceDiagramElement;
 import splGenerator.SplGenerator;
 import splGenerator.Transition;
 import splGenerator.Util.SPLFilePersistence;
@@ -29,6 +35,11 @@ public class Transformer {
 	private int idxActivityDiagram = 0;
 
 	private HashMap<ActivityDiagramElement, Integer> incomingEdgesByState = new HashMap<ActivityDiagramElement, Integer>();
+	private int idxLifeline = 0;
+	private int idxMessage = 0;
+	private Lifeline mockLifeline = new Lifeline("Mock lifeline");
+	private static HashMap<Double, Lifeline> lifelineByReliability = new HashMap<Double, Lifeline>();
+	private static Stack<fdtmc.Transition> transitionStack = new Stack<fdtmc.Transition>();
 
 	/**
 	 * This method is responsible for creating an RDG structure for a whole SPL
@@ -300,5 +311,102 @@ public class Transformer {
 		// System.out.println("Incoming edges for the activity diagram element \""
 		// + adTarget.getElementName() + "\" was updated from " + oldValue
 		// + " to " + newValue + ".");
+	}
+
+	public List<SequenceDiagram> getSequenceDiagramFromFDTMC(RDGNode n) {
+		LinkedList<SequenceDiagram> answer = new LinkedList<SequenceDiagram>();
+
+		// defining the name of the sequence diagram, based on its variable name
+		String sdName = n.getFDTMC().getVariableName();
+		if (sdName.endsWith("_s")) {
+			sdName = sdName.replace("_s", "");
+		}
+
+		System.out.println("---> I will create a Sequence diagram right now:\n"
+				+ "     Name: " + sdName + '\n' + "     Guard: "
+				+ n.getPresenceCondition());
+		SequenceDiagram sd = SequenceDiagram.createSequenceDiagram(sdName,
+				n.getPresenceCondition());
+
+		FDTMC fdtmc = n.getFDTMC();
+		fdtmc.State initialState = fdtmc.getInitialState();
+
+		extractSDElementFromFDTMC(initialState, fdtmc, sd);
+
+		System.out.println(sd);
+		
+		answer.add(sd);
+
+		return answer;
+	}
+
+	private SequenceDiagramElement extractSDElementFromFDTMC(
+			fdtmc.State currentState, FDTMC fdtmc, SequenceDiagram sd) {
+		SequenceDiagramElement answer = null;
+
+		List<fdtmc.Transition> transitions = fdtmc
+				.getTransitionsBySource(currentState);
+
+		for (fdtmc.Transition t : transitions) {
+			if (t.getTarget() == fdtmc.getErrorState()) {
+				transitions.remove(t); // Pruning transitions to error state
+			} else if (t.getSource() == fdtmc.getSuccessState()
+					&& t.getTarget() == fdtmc.getSuccessState()) {
+				System.out
+						.println("---> Success state reached, return the element.");
+			}
+		}
+
+		if (transitions.size() == 1) { // the SD element is a message of any
+										// type (synchronous, asynchronous or
+										// reply)
+			fdtmc.Transition t = transitions.remove(0);
+//			Lifeline target = identifyLifelines(t);
+//			int messageType = identifyMessageType(t);
+//			Lifeline source = mockLifeline;
+//			System.out.println("source" + source);
+//			System.out.println("target" + target);
+//			sd.createMessage(source, target, messageType, "m_" + idxMessage,
+//					target.getReliability());
+			extractSDElementFromFDTMC(t.getTarget(), fdtmc, sd);
+		} else if (transitions.size() >= 2) { // The SD element must be a
+												// fragment, but its type (loop,
+												// optional, alternative) needs
+												// to be investigated.
+
+		}
+
+		return answer;
+	}
+
+	private Lifeline identifyLifelines(fdtmc.Transition t) {
+		Lifeline answer = null;
+		String toConfirm = t.getProbability();
+		if (toConfirm.matches("[0-9.]+")) {
+			double probability = Double.parseDouble(t.getProbability());
+			if (!lifelineByReliability.containsKey(probability)) {
+				answer = new Lifeline("Lifeline_" + idxLifeline++);
+				answer.setReliability(probability);
+				lifelineByReliability.put(probability, answer);
+			} else {
+				answer = lifelineByReliability.get(probability);
+			}
+		} 
+		System.out.println(answer + ": " );
+		return answer;
+	}
+
+	private int identifyMessageType(fdtmc.Transition t) {
+		int answer = -1;
+		if (t.getActionName() == null || t.getActionName().equals("")) { // asynchronous
+			// message do not have an
+			// associated action name
+			answer = Message.ASYNCHRONOUS;
+		} else { // otherwise it can be a synchronous or reply message
+			// get the first transition from the stack
+			answer = Message.SYNCHRONOUS;
+		}
+
+		return answer;
 	}
 }
