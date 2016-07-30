@@ -1,5 +1,6 @@
 package splGenerator;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.File;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import splGenerator.parsing.ActivityDiagramParser;
 import splGenerator.parsing.SequenceDiagramParser;
@@ -293,15 +295,16 @@ public class SPL implements Cloneable {
 
 		splGenerator.transformation.Transformer transAD = new splGenerator.transformation.Transformer();
 		ad = transAD.getActivityDiagramFromFDTMC(root);
+		System.out.println("---> |activity diagram| = " + ad.getSetOfActivities().size());
 		answer.setActivityDiagram(ad);
-		
+
 		List<SequenceDiagram> sds;
 		for (RDGNode n : root.getDependencies()) {
-			splGenerator.transformation.Transformer transSD = new splGenerator.transformation.Transformer(); 
-			sds = transSD.getSequenceDiagramFromFDTMC(n); 
+			splGenerator.transformation.Transformer transSD = new splGenerator.transformation.Transformer();
+			sds = transSD.getSequenceDiagramFromFDTMC(n);
 			ad.getSetOfActivities().get(0).addSequenceDiagram(sds.get(0));
 		}
-		
+
 		return answer;
 	}
 
