@@ -15,6 +15,7 @@ import fdtmc.FDTMC;
 import splGenerator.Activity;
 import splGenerator.ActivityDiagram;
 import splGenerator.ActivityDiagramElement;
+import splGenerator.Fragment;
 import splGenerator.Lifeline;
 import splGenerator.Message;
 import splGenerator.SequenceDiagram;
@@ -206,13 +207,6 @@ public class Transformer {
 		FDTMC fdtmc = root.getFDTMC();
 
 		extractADElementFromFDTMC(fdtmc.getInitialState(), fdtmc, answer);
-		
-//		List<SequenceDiagram> sds;
-//		for (RDGNode n : root.getDependencies()) {
-//			splGenerator.transformation.Transformer transSD = new splGenerator.transformation.Transformer();
-//			sds = transSD.getSequenceDiagramFromFDTMC(n);
-//			ad.getSetOfActivities().get(0).addSequenceDiagram(sds.get(0));
-//		}
 
 		return answer;
 	}
@@ -274,14 +268,15 @@ public class Transformer {
 				for (fdtmc.Transition t : transitions) {
 					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
 							t.getTarget(), fdtmc, ad);
-					String adProbability; 
+					String adProbability;
 					if (t.getProbability().matches("[0-9]*")) {
 						adProbability = "1.0";
 					} else {
-						adProbability = t.getProbability(); 
+						adProbability = t.getProbability();
 						adSource.setElementName(adProbability);
 					}
-					
+
+					System.out.println("Probability:" + t.getProbability());
 					Transition trans = adSource.createTransition(adTarget,
 							t.getActionName(), 1.0);
 					ad.addElement(trans);
@@ -295,25 +290,35 @@ public class Transformer {
 			incomingEdgesByState.put(adStartNode, 0);
 			for (fdtmc.Transition t : transitions) {
 				fdtmc.State target = t.getTarget();
-				ActivityDiagramElement el = extractADElementFromFDTMC(target,
-						fdtmc, ad);
+				System.out.println(t.getSource().getIndex() + " --- "
+						+ t.getProbability() + " ---> "
+						+ t.getTarget().getIndex());
 
-				String adProbability; 
+				ActivityDiagramElement adTarget = extractADElementFromFDTMC(
+						target, fdtmc, ad);
+				// ActivityDiagramElement adTarget =
+				// extractADElementFromFDTMC(target,
+				// fdtmc, ad);
+
+				String adProbability;
 				if (t.getProbability().matches("[0-9]*")) {
 					adProbability = "1.0";
 				} else {
 					adProbability = t.getProbability();
-					el.setElementName(adProbability);
+					adTarget.setElementName(adProbability);
 				}
-				
-				Transition trans = adStartNode.createTransition(el,
+
+				System.out.println("t.getActionName() = " + t.getActionName());
+				System.out.println("adTarget.name= "
+						+ adTarget.getElementName());
+				Transition trans = adStartNode.createTransition(adTarget,
 						t.getActionName(), 1.0);
+				System.out.println("*** Probability:" + t.getProbability());
 				ad.addElement(trans);
-				ad.addElement(el);
-				updateIncomingEdges(el);
+				updateIncomingEdges(adTarget);
 			}
 			answer = adStartNode;
-			
+
 		} else if (currentState.getLabel().equalsIgnoreCase("success")) {
 			ActivityDiagramElement adEndNode = ActivityDiagramElement
 					.createElement(ActivityDiagramElement.END_NODE, "End node");
@@ -328,94 +333,11 @@ public class Transformer {
 
 		return answer;
 	}
-	
-//	private ActivityDiagramElement extractADElementFromFDTMC(
-//			fdtmc.State currentState, FDTMC fdtmc, ActivityDiagram ad) {
-//		ActivityDiagramElement answer = null;
-//
-//		// remove error transitions leaving from the current state
-//		List<fdtmc.Transition> transitions = fdtmc
-//				.getTransitionsBySource(currentState);
-//		for (fdtmc.Transition t : transitions) {
-//			if (t.getTarget() == fdtmc.getErrorState()) {
-//				transitions.remove(t);
-//			}
-//		}
-//
-//		// 1st Step.: identify the activity diagram element based on the fdtmc
-//		// structure. Such identification must ensure the number and type of
-//		// elements are correct.
-//		if (currentState.getLabel() == null) {
-//			ActivityDiagramElement adSource;
-//			if (transitions.size() > 1) {
-//				adSource = ActivityDiagramElement.createElement(
-//						ActivityDiagramElement.DECISION_NODE, "DecisionNode_"
-//								+ idxDecision++);
-//				incomingEdgesByState.put(adSource, 0);
-//				for (fdtmc.Transition t : transitions) {
-//					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
-//							t.getTarget(), fdtmc, ad);
-//					Transition trans = adSource.createTransition(adTarget,
-//							t.getActionName(),
-//							Double.parseDouble(t.getProbability()));
-//					ad.addElement(trans);
-//					updateIncomingEdges(adTarget);
-//				}
-//				ad.addElement(adSource);
-//				answer = adSource;
-//			} else if (transitions.size() == 1) {
-//				adSource = ActivityDiagramElement.createElement(
-//						ActivityDiagramElement.ACTIVITY, "Activity_"
-//								+ idxActivity++);
-//				incomingEdgesByState.put(adSource, 0);
-//				for (fdtmc.Transition t : transitions) {
-//					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
-//							t.getTarget(), fdtmc, ad);
-//					System.out.println("Probability:" + t.getProbability());
-//					Transition trans = adSource.createTransition(adTarget,
-//							t.getActionName(), 1.0);
-//					ad.addElement(trans);
-//					updateIncomingEdges(adTarget);
-//				}
-//				ad.addElement(adSource);
-//				answer = adSource;
-//			}
-//		} else if (currentState.getLabel().equalsIgnoreCase("initial")) {
-//			ActivityDiagramElement adStartNode = ad.getStartNode();
-//			incomingEdgesByState.put(adStartNode, 0);
-//			for (fdtmc.Transition t : transitions) {
-//				fdtmc.State target = t.getTarget();
-//				ActivityDiagramElement el = extractADElementFromFDTMC(target,
-//						fdtmc, ad);
-//				Transition trans = adStartNode.createTransition(el,
-//						t.getActionName(), 1.0);
-//				System.out.println("Probability:" + t.getProbability());
-//				ad.addElement(trans);
-//				updateIncomingEdges(el);
-//			}
-//			answer = adStartNode;
-//		} else if (currentState.getLabel().equalsIgnoreCase("success")) {
-//			ActivityDiagramElement adEndNode = ActivityDiagramElement
-//					.createElement(ActivityDiagramElement.END_NODE, "End node");
-//			incomingEdgesByState.put(adEndNode, 0);
-//			ad.addElement(adEndNode);
-//			answer = adEndNode;
-//		} else if (currentState.getLabel().equalsIgnoreCase("error")) {
-//			System.out.println("---> Error Found");
-//			System.out.println("   |--> nothing to do, I will return null");
-//			answer = null;
-//		}
-//
-//		return answer;
-//	}
 
 	private void updateIncomingEdges(ActivityDiagramElement adTarget) {
 		int oldValue = incomingEdgesByState.get(adTarget);
 		int newValue = oldValue + 1;
 		incomingEdgesByState.put(adTarget, newValue);
-		// System.out.println("Incoming edges for the activity diagram element \""
-		// + adTarget.getElementName() + "\" was updated from " + oldValue
-		// + " to " + newValue + ".");
 	}
 
 	public List<SequenceDiagram> getSequenceDiagramFromFDTMC(RDGNode n) {
@@ -439,7 +361,7 @@ public class Transformer {
 		extractSDElementFromFDTMC(initialState, fdtmc, sd);
 
 		System.out.println(sd);
-		
+
 		answer.add(sd);
 
 		return answer;
@@ -449,46 +371,120 @@ public class Transformer {
 			fdtmc.State currentState, FDTMC fdtmc, SequenceDiagram sd) {
 		SequenceDiagramElement answer = null;
 
-		List<fdtmc.Transition> transitions = fdtmc
+		// get all transitions leaving the current fdtmc state
+		List<fdtmc.Transition> outgoingTransitions = fdtmc
 				.getTransitionsBySource(currentState);
 
-		for (fdtmc.Transition t : transitions) {
-			if (t.getTarget() == fdtmc.getErrorState()) {
-				transitions.remove(t); // Pruning transitions to error state
-			} else if (t.getSource() == fdtmc.getSuccessState()
-					&& t.getTarget() == fdtmc.getSuccessState()) {
-				System.out
-						.println("---> Success state reached, return the element.");
+		// "cleaning" all the irrelevant transitions (to error state or
+		// absorbing transition)
+		for (fdtmc.Transition t : outgoingTransitions) {
+			if (t.getTarget() == fdtmc.getErrorState()
+					|| (t.getSource() == fdtmc.getSuccessState() && t
+							.getTarget() == fdtmc.getSuccessState())) {
+				outgoingTransitions.remove(t);
 			}
 		}
 
-		if (transitions.size() == 1) { // the SD element is a message of any
-										// type (synchronous, asynchronous or
-										// reply)
-			fdtmc.Transition t = transitions.remove(0);
-//			Lifeline target = identifyLifelines(t);
-//			int messageType = identifyMessageType(t);
-//			Lifeline source = mockLifeline;
-//			System.out.println("source" + source);
-//			System.out.println("target" + target);
-//			sd.createMessage(source, target, messageType, "m_" + idxMessage,
-//					target.getReliability());
-			extractSDElementFromFDTMC(t.getTarget(), fdtmc, sd);
-		} else if (transitions.size() >= 2) { // The SD element must be a
-												// fragment, but its type (loop,
-												// optional, alternative) needs
-												// to be investigated.
-
+		// for the remaining transitions we must identify which kind of SD
+		// structure they represent and build it again.
+		for (fdtmc.Transition t : outgoingTransitions) {
+//			System.out.println("|outgoing|= " + outgoingTransitions.size());
+//			System.out.println("--- " + t.getActionName() + " / "  + t.getProbability() + " --->");
+			if (t.getActionName().matches("[n][a-zA-Z0-9]+") && 
+			    t.getProbability().equals("1.0")) {
+				System.out.println("A fragment was found!");
+				fdtmc.State initialFragment = t.getTarget(),
+							endFragment, 
+							errorFragment;
+				List<fdtmc.Transition> outTransInitFrag = fdtmc.getTransitionsBySource(initialFragment); 
+				for (fdtmc.Transition tr : outTransInitFrag) {
+					if (tr.getProbability().matches("[n][0-9]+")) {
+						System.out.println("END frag found");
+						endFragment = tr.getTarget();
+						System.out.println("Create fragment here");
+						
+						Fragment fr = new Fragment(tr.getProbability());
+						sd.addFragment(fr);
+						
+						System.out.println("Proceed to next state from here!");
+						System.out.println(fdtmc.getTransitionsBySource(tr.getTarget()).size());
+						System.out.println(fdtmc.getTransitionsBySource(tr.getTarget()).get(0).getActionName());
+						System.out.println(fdtmc.getTransitionsBySource(tr.getTarget()).get(0).getProbability());
+						fdtmc.State next = fdtmc.getTransitionsBySource(tr.getTarget()).get(0).getTarget();
+						
+						extractSDElementFromFDTMC(next, fdtmc, sd);
+						
+						
+					} else if (tr.getProbability().matches("[1][\\s]*[-][\\s]*[a-zA-Z0-9]+")) {
+						System.out.println("ERROR frag found");
+						errorFragment = tr.getTarget();
+					}
+				}
+				
+				
+			} else if (t.getProbability().matches("^[0-1]\\.[0-9]+"))/* &&
+				!nextTransitionProbability(t, fdtmc).matches("[a-z]+[a-zA-Z0-9]*") ) */{
+				System.out.println("A transition with probability equals to a real number was found");
+//				System.out.println("Value: " + t.getProbability() + "\n");
+				Lifeline target = identifyLifelines(t);
+				Lifeline source = mockLifeline;
+				int mType = identifyMessageType(t);
+				sd.createMessage(source, target, mType, t.getActionName(), target.getReliability());
+				extractSDElementFromFDTMC(t.getTarget(), fdtmc, sd);
+			} 
 		}
-
+		
+		
 		return answer;
 	}
+
+	
+
+
+	private fdtmc.State nextState(fdtmc.State st, FDTMC fdtmc) {
+		fdtmc.State answer = null;
+		List<fdtmc.Transition> transitions = fdtmc.getTransitionsBySource(st);
+		for ( fdtmc.Transition t : transitions) {
+			if (t.getTarget() == fdtmc.getErrorState()) {
+				transitions.remove(t);
+			}
+		}
+		
+		if (transitions.size() == 1) {
+			answer = transitions.get(0).getTarget();
+			System.out.println(answer.getIndex());
+		}
+		return answer;
+	}
+
+	private String nextTransitionProbability(fdtmc.Transition t, FDTMC fdtmc) {
+		String answer = null;
+		
+		List<fdtmc.Transition> transitions = fdtmc.getTransitionsBySource(t.getTarget()); 
+		for (fdtmc.Transition tr : transitions) {
+			if (tr.getTarget() == fdtmc.getErrorState()) {
+				transitions.remove(tr);
+			} 
+			if (tr.getProbability().matches("[a-z]+[a-zA-Z0-9]*")) {
+				answer = tr.getProbability(); 
+			}
+		}
+		
+		if (transitions.size() == 1) {
+			String probability = transitions.get(0).getProbability();
+			answer = probability;
+		}
+		
+		return answer;
+	}
+
 
 	private Lifeline identifyLifelines(fdtmc.Transition t) {
 		Lifeline answer = null;
 		String toConfirm = t.getProbability();
 		if (toConfirm.matches("[0-9.]+")) {
 			double probability = Double.parseDouble(t.getProbability());
+
 			if (!lifelineByReliability.containsKey(probability)) {
 				answer = new Lifeline("Lifeline_" + idxLifeline++);
 				answer.setReliability(probability);
@@ -496,8 +492,7 @@ public class Transformer {
 			} else {
 				answer = lifelineByReliability.get(probability);
 			}
-		} 
-		System.out.println(answer + ": " );
+		}
 		return answer;
 	}
 

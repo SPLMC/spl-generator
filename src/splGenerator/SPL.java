@@ -296,6 +296,9 @@ public class SPL implements Cloneable {
 		splGenerator.transformation.Transformer transAD = new splGenerator.transformation.Transformer();
 		ad = transAD.getActivityDiagramFromFDTMC(root);
 		System.out.println("---> |activity diagram| = " + ad.getSetOfActivities().size());
+		for (Activity a : ad.getSetOfActivities()) {
+			System.out.println(a.getElementName());
+		}
 		answer.setActivityDiagram(ad);
 
 		List<SequenceDiagram> sds;
