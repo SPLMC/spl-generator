@@ -292,45 +292,27 @@ public class SPL implements Cloneable {
 		// 1st node represents the interactions between SPL's activities
 		// described at the activity diagram, so we must rebuild such relations
 		// from its FDTMC
-//		ActivityDiagram ad = null;
-//
-//		splGenerator.transformation.Transformer transAD = new splGenerator.transformation.Transformer();
-//		ad = transAD.getActivityDiagramFromFDTMC(root);
-		
-//		System.out.println("---> |activity diagram| = " + ad.getSetOfActivities().size());
-//		for (Activity a : ad.getSetOfActivities()) {
-//			System.out.println(a.getElementName());
-//		}
-//		answer.setActivityDiagram(ad);
 
-		
-		
-		HashSet<SequenceDiagram> sds;
 		try {
 			for (RDGNode n : root.getDependenciesTransitiveClosure()) {
 				splGenerator.transformation.Transformer transSD = new splGenerator.transformation.Transformer();
-				sds = transSD.getSequenceDiagramFromFDTMC(n);
-//				ad.getSetOfActivities().get(0).addSequenceDiagram(sds.get(0));
+				transSD.getSequenceDiagramFromFDTMC(n);
 			}
 		} catch (CyclicRdgException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		ActivityDiagram ad = null;
 
 		splGenerator.transformation.Transformer transAD = new splGenerator.transformation.Transformer();
 		ad = transAD.getActivityDiagramFromFDTMC(root);
 		answer.setActivityDiagram(ad);
-		
+
 		splGenerator.transformation.Transformer t = new splGenerator.transformation.Transformer();
 		t.linkBehavioralElements(answer);
 
-
 		return answer;
 	}
-
-	
 
 }

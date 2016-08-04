@@ -46,8 +46,22 @@ public class Transformer {
 	private static HashMap<Double, Lifeline> lifelineByReliability = new HashMap<Double, Lifeline>();
 	private static Stack<fdtmc.Transition> transitionStack = new Stack<fdtmc.Transition>();
 
+	/**
+	 * This method's role is to link behavioral elements at behavioral models
+	 * generated from the RDG nodes and their respective FDTMCs. As each
+	 * activity in activity diagram is associated with a sequence diagram and
+	 * each fragment in sequence diagram contains, at least, one sequence
+	 * diagram this method is responsible for identifying such dependencies
+	 * between distinct RDG nodes (i.e. between their FDTMCs) and create such
+	 * links at the behavioral models level. It must be called after all
+	 * activity and sequence diagrams are created from the FDTMCs.
+	 * 
+	 * @param spl
+	 *            the software product line object containing all the behavioral
+	 *            models
+	 * @return the SPL object with all behavioral models linked.
+	 */
 	public SPL linkBehavioralElements(SPL spl) {
-		// SPL answer = spl;
 		// 1st step: link fragments to their respective sequence diagrams
 		for (String fragName : fragmentByName.keySet()) {
 			Fragment fr = fragmentByName.get(fragName);
@@ -337,7 +351,6 @@ public class Transformer {
 					ad.addElement(trans);
 					answer = adTarget;
 				} else {
-					System.out.println("$$$$$ " + t.getProbability());
 					adProbability = t.getProbability();
 					adTarget = ActivityDiagramElement.createElement(
 							ActivityDiagramElement.ACTIVITY, adProbability);
@@ -345,7 +358,10 @@ public class Transformer {
 					Transition trans = adStartNode.createTransition(adTarget,
 							t.getProbability(), 1.0);
 					ad.addElement(trans);
-					System.out.println("----- " + trans.getSource().getElementName() + " -- " + trans.getElementName() + " -->> " + trans.getTarget().getElementName());
+					System.out.println("----- "
+							+ trans.getSource().getElementName() + " -- "
+							+ trans.getElementName() + " -->> "
+							+ trans.getTarget().getElementName());
 					incomingEdgesByState.put(adTarget, 0);
 
 					ActivityDiagramElement adSource = adTarget;
@@ -358,55 +374,21 @@ public class Transformer {
 					}
 
 					for (fdtmc.Transition tr : transitions) {
-						System.out.println("tr: " + tr.getSource().getIndex() +  
-					tr.getProbability());
 						adTarget = extractADElementFromFDTMC(source, fdtmc, ad);
-						System.out.println("adTarget: " + adTarget.getElementName() );
 						if (tr.getProbability().matches("[0-9]*")) {
 							adProbability = "1.0";
 						} else {
-							System.out.println(" adsource: " + adSource.getElementName());
-							System.out.println(" adtarget: " + adTarget.getElementName());
 							adProbability = tr.getProbability();
-							System.out.println("adProbability: " + adProbability);
-//							adSource.setElementName(adProbability);
+							System.out.println("adProbability: "
+									+ adProbability);
 						}
-						trans = adSource.createTransition(adTarget, tr.getActionName(),
-								1.0);
+						trans = adSource.createTransition(adTarget,
+								tr.getActionName(), 1.0);
 						ad.addElement(trans);
 					}
 					answer = adStartNode;
-
 				}
-
-				System.out.println(t.getSource().getIndex() + " --- "
-						+ t.getProbability() + " ---> "
-						+ t.getTarget().getIndex());
-
-				// ActivityDiagramElement adTarget = extractADElementFromFDTMC(
-				// target, fdtmc, ad);
-				/**
-				 * STATE BEFORE CHANGES!!!
-				 */
-
-				// String adProbability;
-				// if (t.getProbability().matches("[0-9]*")) {
-				// adProbability = "1.0";
-				// } else {
-				// adProbability = t.getProbability();
-				// adTarget.setElementName(adProbability);
-				// }
-
-//				System.out.println("t.getActionName() = " + t.getActionName());
-//				System.out.println("adTarget.name= "
-//						+ adTarget.getElementName());
-//				Transition trans = adStartNode.createTransition(adTarget,
-//						t.getActionName(), 1.0);
-//				System.out.println("*** Probability:" + t.getProbability());
-//				ad.addElement(trans);
-//				updateIncomingEdges(adTarget);
 			}
-//			answer = adStartNode;
 
 		} else if (currentState.getLabel().equalsIgnoreCase("success")) {
 			ActivityDiagramElement adEndNode = ActivityDiagramElement
@@ -415,8 +397,6 @@ public class Transformer {
 			ad.addElement(adEndNode);
 			answer = adEndNode;
 		} else if (currentState.getLabel().equalsIgnoreCase("error")) {
-			System.out.println("---> Error Found");
-			System.out.println("   |--> nothing to do, I will return null");
 			answer = null;
 		}
 
@@ -482,9 +462,6 @@ public class Transformer {
 		// for the remaining transitions we must identify which kind of SD
 		// structure they represent and build it again.
 		for (fdtmc.Transition t : outgoingTransitions) {
-			// System.out.println("|outgoing|= " + outgoingTransitions.size());
-			// System.out.println("--- " + t.getActionName() + " / " +
-			// t.getProbability() + " --->");
 			if (t.getActionName().matches("[n][a-zA-Z0-9]+")
 					&& t.getProbability().equals("1.0")) {
 				System.out.println("A fragment was found!");
@@ -500,8 +477,12 @@ public class Transformer {
 						Fragment fr = new Fragment(tr.getProbability());
 						// REVIEW --> how to discover other kinds of fragments?
 						fr.setType(Fragment.OPTIONAL);
+						if (!fragmentByName.containsKey(tr.getProbability())) {
+							fragmentByName.put(fr.getName(), fr);
+						} else {
+							fr = fragmentByName.get(tr.getProbability());
+						}
 						sd.addFragment(fr);
-						fragmentByName.put(fr.getName(), fr);
 
 						fdtmc.State next = fdtmc
 								.getTransitionsBySource(tr.getTarget()).get(0)
