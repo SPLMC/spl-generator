@@ -66,10 +66,6 @@ public class Transformer {
 		for (String fragName : fragmentByName.keySet()) {
 			Fragment fr = fragmentByName.get(fragName);
 			SequenceDiagram sd = seqDiagByName.get(fragName);
-			System.out.println(sd.getName());
-			if (sd == null) {
-				System.out.println("WARNING!!! Sequence diagram not found!");
-			}
 			fr.addSequenceDiagram(sd);
 		}
 
@@ -254,7 +250,6 @@ public class Transformer {
 
 		for (Activity a : answer.getSetOfActivities()) {
 			actByName.put(a.getElementName(), a);
-			// seqDiagByName.put(a.getElementName(), null);
 		}
 
 		return answer;
@@ -279,26 +274,26 @@ public class Transformer {
 			fdtmc.State currentState, FDTMC fdtmc, ActivityDiagram ad) {
 		ActivityDiagramElement answer = null;
 
-		// remove error transitions leaving from the current state
-		List<fdtmc.Transition> transitions = fdtmc
+		// remove error transitions leaving the current state
+		List<fdtmc.Transition> outgoingTransitions = fdtmc
 				.getTransitionsBySource(currentState);
-		for (fdtmc.Transition t : transitions) {
-			if (t.getTarget() == fdtmc.getErrorState()) {
-				transitions.remove(t);
-			}
-		}
+		outgoingTransitions = pruneErrorTransitions(fdtmc, outgoingTransitions);
 
 		// 1st Step.: identify the activity diagram element based on the fdtmc
 		// structure. Such identification must ensure the number and type of
 		// elements are correct.
-		if (currentState.getLabel() == null) {
+		if (currentState.getLabel() == null) { 
+			//states that don't have labels are "internal" fdtmc states (ie. 
+			//they can't be part of the fdtmc's interface
 			ActivityDiagramElement adSource;
-			if (transitions.size() > 1) {
+			if (outgoingTransitions.size() > 1) {
+				//in case the number of "regular" transitions is bigger than 1,
+				//the element must be a decision node.
 				adSource = ActivityDiagramElement.createElement(
 						ActivityDiagramElement.DECISION_NODE, "DecisionNode_"
 								+ idxDecision++);
 				incomingEdgesByState.put(adSource, 0);
-				for (fdtmc.Transition t : transitions) {
+				for (fdtmc.Transition t : outgoingTransitions) {
 					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
 							t.getTarget(), fdtmc, ad);
 					Transition trans = adSource.createTransition(adTarget,
@@ -309,39 +304,53 @@ public class Transformer {
 				}
 				ad.addElement(adSource);
 				answer = adSource;
-			} else if (transitions.size() == 1) {
+			} else if (outgoingTransitions.size() == 1) {
+				/* In case the state does not have an associated label and it
+				 * has only one outgoing transition, it can only be an activity
+				 */
 				adSource = ActivityDiagramElement.createElement(
 						ActivityDiagramElement.ACTIVITY, "Activity_"
 								+ idxActivity++);
 				incomingEdgesByState.put(adSource, 0);
-				for (fdtmc.Transition t : transitions) {
-					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
-							t.getTarget(), fdtmc, ad);
-					String adProbability;
-					if (t.getProbability().matches("[0-9]*")) {
-						adProbability = "1.0";
-					} else {
-						adProbability = t.getProbability();
-						adSource.setElementName(adProbability);
-					}
 
-					System.out.println("Probability:" + t.getProbability());
-					Transition trans = adSource.createTransition(adTarget,
-							t.getActionName(), 1.0);
-					ad.addElement(trans);
-					updateIncomingEdges(adTarget);
+				//Identifying the transition's probability of the singleton 
+				//transition and creating the AD target element
+				fdtmc.Transition t = outgoingTransitions.get(0);
+				ActivityDiagramElement adTarget = extractADElementFromFDTMC(
+						t.getTarget(), fdtmc, ad);
+				String adProbability;
+				if (t.getProbability().matches("[0-9]*")) {
+					adProbability = "1.0";
+				} else {
+					adProbability = t.getProbability();
+					adSource.setElementName(adProbability);
 				}
+				
+				//Creating the singleton transition to the AD element
+				Transition trans = adSource.createTransition(adTarget,
+						t.getActionName(), 1.0);
+				ad.addElement(trans);
+				updateIncomingEdges(adTarget);
+				
 				ad.addElement(adSource);
 				answer = adSource;
 			}
+			/* In case the FDTMC label has an associated label, it will guide
+			 * which activity diagram is related with the fdtmc states and 
+			 * transitions under analysis.
+			 */
 		} else if (currentState.getLabel().equalsIgnoreCase("initial")) {
 			ActivityDiagramElement adStartNode = ad.getStartNode();
 			incomingEdgesByState.put(adStartNode, 0);
-			for (fdtmc.Transition t : transitions) {
+			for (fdtmc.Transition t : outgoingTransitions) {
 				fdtmc.State target = t.getTarget();
-
 				ActivityDiagramElement adTarget;
 				String adProbability;
+				
+				/* In case the first fdtmc transition does not represent the 
+				 * reliability of an activity (ie. its probability equals one)
+				 * the extraction of AD element begins from the next state.
+				 */
 				if (t.getProbability().matches("[0-1].[0-9]+")) {
 					adTarget = extractADElementFromFDTMC(target, fdtmc, ad);
 					adProbability = "1.0";
@@ -351,6 +360,9 @@ public class Transformer {
 					ad.addElement(trans);
 					answer = adTarget;
 				} else {
+					/* otherwise the first transition represents the reliability
+					 * of an Activity, that must be created immediately.  
+					 */
 					adProbability = t.getProbability();
 					adTarget = ActivityDiagramElement.createElement(
 							ActivityDiagramElement.ACTIVITY, adProbability);
@@ -358,89 +370,115 @@ public class Transformer {
 					Transition trans = adStartNode.createTransition(adTarget,
 							t.getProbability(), 1.0);
 					ad.addElement(trans);
-					System.out.println("----- "
-							+ trans.getSource().getElementName() + " -- "
-							+ trans.getElementName() + " -->> "
-							+ trans.getTarget().getElementName());
 					incomingEdgesByState.put(adTarget, 0);
 
 					ActivityDiagramElement adSource = adTarget;
 					fdtmc.State source = target;
-					transitions = fdtmc.getTransitionsBySource(source);
-					for (fdtmc.Transition tr : transitions) {
-						if (tr.getTarget() == fdtmc.getErrorState()) {
-							transitions.remove(tr);
-						}
-					}
+					outgoingTransitions = fdtmc.getTransitionsBySource(source);
+					outgoingTransitions = pruneErrorTransitions(fdtmc, outgoingTransitions);
 
-					for (fdtmc.Transition tr : transitions) {
-						adTarget = extractADElementFromFDTMC(source, fdtmc, ad);
-						if (tr.getProbability().matches("[0-9]*")) {
-							adProbability = "1.0";
-						} else {
-							adProbability = tr.getProbability();
-							System.out.println("adProbability: "
-									+ adProbability);
-						}
-						trans = adSource.createTransition(adTarget,
-								tr.getActionName(), 1.0);
-						ad.addElement(trans);
+					fdtmc.Transition tr = outgoingTransitions.get(0);
+					adTarget = extractADElementFromFDTMC(source, fdtmc, ad);
+					if (tr.getProbability().matches("[0-9]*")) {
+						adProbability = "1.0";
+					} else {
+						adProbability = tr.getProbability();
 					}
+					trans = adSource.createTransition(adTarget,
+							tr.getActionName(), 1.0);
+					ad.addElement(trans);
 					answer = adStartNode;
 				}
 			}
 
 		} else if (currentState.getLabel().equalsIgnoreCase("success")) {
+			/* In case the state's label is "success", the end node for the 
+			 * activity diagram will be created.
+			 */
 			ActivityDiagramElement adEndNode = ActivityDiagramElement
 					.createElement(ActivityDiagramElement.END_NODE, "End node");
 			incomingEdgesByState.put(adEndNode, 0);
 			ad.addElement(adEndNode);
 			answer = adEndNode;
 		} else if (currentState.getLabel().equalsIgnoreCase("error")) {
+			/*In case error state is found, do nothing.
+			 */
 			answer = null;
 		}
 
 		return answer;
 	}
 
+	/**
+	 * This method is useful for updating the counter for incoming edges for
+	 * every activity diagram element created. Such counter is useful when 
+	 * identifying whether an element is a merge node (in this case, the number
+	 * of incoming nodes, must be greater than 1).
+	 * @param adTarget 
+	 * 				The element whose incoming transitions counter will be 
+	 * increased
+	 */
 	private void updateIncomingEdges(ActivityDiagramElement adTarget) {
 		int oldValue = incomingEdgesByState.get(adTarget);
 		int newValue = oldValue + 1;
 		incomingEdgesByState.put(adTarget, newValue);
 	}
 
-	public HashSet<SequenceDiagram> getSequenceDiagramFromFDTMC(RDGNode n) {
+	/**
+	 * Given an RDG node as input, this method returns its Sequence Diagram, by
+	 * the analysis of its FDTMC. Based on this FDTMC it is able to identify all
+	 * the SD elements which were employed for its creation and the name of the
+	 * sequence diagram.
+	 * 
+	 * @param node
+	 *            the RDG node subject to analysis from which a sequence diagram
+	 *            will be extracted.
+	 * @return the sequence diagram object associated to the input node.
+	 */
+	public HashSet<SequenceDiagram> getSequenceDiagramFromFDTMC(RDGNode node) {
 		HashSet<SequenceDiagram> answer = new HashSet<SequenceDiagram>();
 
 		// defining the name of the sequence diagram, based on its variable name
-		String sdName = n.getFDTMC().getVariableName();
+		String sdName = node.getFDTMC().getVariableName();
 		if (sdName.endsWith("_s")) {
 			sdName = sdName.replace("_s", "");
 		}
-
 		if (sdName.matches("[s][a-zA-Z0-9]+")) {
 			sdName = sdName.substring(1, sdName.length());
 		}
 
-		System.out.println("---> I will create a Sequence diagram right now:\n"
-				+ "     Name: " + sdName + '\n' + "     Guard: "
-				+ n.getPresenceCondition() + '\n' + "     Variable name: ");
 		SequenceDiagram sd = SequenceDiagram.createSequenceDiagram(sdName,
-				n.getPresenceCondition());
+				node.getPresenceCondition());
 
-		FDTMC fdtmc = n.getFDTMC();
+		FDTMC fdtmc = node.getFDTMC();
 		fdtmc.State initialState = fdtmc.getInitialState();
 
+		// building the FDTMC recursively
 		extractSDElementFromFDTMC(initialState, fdtmc, sd);
 
-		System.out.println(sd);
-
 		answer.add(sd);
-		seqDiagByName.put(sdName, sd);
-
+		seqDiagByName.put(sdName, sd); // adding the sequence diagram in this
+										// mapping allows its recovery in the
+										// future by its name.
 		return answer;
 	}
 
+	/**
+	 * This method is responsible for building an entire sequence diagram by
+	 * employing a recursive analysis of an FDTMC (given as input). The sequence
+	 * diagram is also given as input, as each recursion step it is incremented
+	 * with the elements gathered from the FDTMC fragment under analysis
+	 * 
+	 * @param currentState
+	 *            the state from which the FDTMC analysis will start.
+	 * @param fdtmc
+	 *            the FDTMC subjected to the analysis for the creation of a
+	 *            sequence diagram.
+	 * @param sd
+	 *            the sequence diagram that will be build incrementally as the
+	 *            recursion steps are executed.
+	 * @return the Sequence Diagram object represented by the sd input parameter
+	 */
 	private SequenceDiagramElement extractSDElementFromFDTMC(
 			fdtmc.State currentState, FDTMC fdtmc, SequenceDiagram sd) {
 		SequenceDiagramElement answer = null;
@@ -451,28 +489,31 @@ public class Transformer {
 
 		// "cleaning" all the irrelevant transitions (to error state or
 		// absorbing transition)
-		for (fdtmc.Transition t : outgoingTransitions) {
-			if (t.getTarget() == fdtmc.getErrorState()
-					|| (t.getSource() == fdtmc.getSuccessState() && t
-							.getTarget() == fdtmc.getSuccessState())) {
-				outgoingTransitions.remove(t);
-			}
-		}
+		outgoingTransitions = pruneErrorTransitions(fdtmc, outgoingTransitions);
 
 		// for the remaining transitions we must identify which kind of SD
 		// structure they represent and build it again.
 		for (fdtmc.Transition t : outgoingTransitions) {
+			/*
+			 * FDTMC transitions abstracting sequence diagram fragments have the
+			 * nXX form, where X is a digit. The set of FDTMC states and
+			 * transitions generated by the parser for MagicDraw models has the 
+			 * form for each fragment:
+			 * 
+			 * 	   nXX/1.0            ""/nXX            ""/1.0
+			 * (s) -------> (  s  ) ---------> (  s  ) --------> (  s  )
+			 *              initFr  \           endFr
+			 *                       \-------> (  s  ) 
+			 *                        ""/1-nXX  errorFr
+			 */
 			if (t.getActionName().matches("[n][a-zA-Z0-9]+")
 					&& t.getProbability().equals("1.0")) {
-				System.out.println("A fragment was found!");
-				fdtmc.State initialFragment = t.getTarget(), endFragment, errorFragment;
+				fdtmc.State initFr = t.getTarget(), endFr, errorFr;
 				List<fdtmc.Transition> outTransInitFrag = fdtmc
-						.getTransitionsBySource(initialFragment);
+						.getTransitionsBySource(initFr);
 				for (fdtmc.Transition tr : outTransInitFrag) {
 					if (tr.getProbability().matches("[n][0-9]+")) {
-						System.out.println("END frag found");
-						endFragment = tr.getTarget();
-						System.out.println("Create fragment here");
+						endFr = tr.getTarget();
 
 						Fragment fr = new Fragment(tr.getProbability());
 						// REVIEW --> how to discover other kinds of fragments?
@@ -482,34 +523,31 @@ public class Transformer {
 						} else {
 							fr = fragmentByName.get(tr.getProbability());
 						}
+						
+						//add the fragment at the sequence diagram
 						sd.addFragment(fr);
 
+						//proceed building the sequence diagram from the next state
 						fdtmc.State next = fdtmc
 								.getTransitionsBySource(tr.getTarget()).get(0)
 								.getTarget();
-
 						extractSDElementFromFDTMC(next, fdtmc, sd);
 
 					} else if (tr.getProbability().matches(
 							"[1][\\s]*[-][\\s]*[a-zA-Z0-9]+")) {
-						System.out.println("ERROR frag found");
-						errorFragment = tr.getTarget();
+						errorFr = tr.getTarget();
 					}
 				}
-
-			} else if (t.getProbability().matches("^[0-1]\\.[0-9]+"))/*
-																	 * && !
-																	 * nextTransitionProbability
-																	 * (t,
-																	 * fdtmc)
-																	 * .matches(
-																	 * "[a-z]+[a-zA-Z0-9]*"
-																	 * ) )
-																	 */{
-				System.out
-						.println("A transition with probability equals to a real number was found");
-				// System.out.println("Value: " + t.getProbability() + "\n");
+				
+			/*
+			 * In case a transition has a real value associated with its
+			 * probability it represents a lifeline's reliability and thus
+			 * it must be considered as a message (synchronous, asynchronous
+			 * or reply) in the sequence diagram  
+			 */
+			} else if (t.getProbability().matches("^[0-1]\\.[0-9]+")) {
 				Lifeline target = identifyLifelines(t);
+				//REVIEW: how can we substitute the mocklifeline? 
 				Lifeline source = mockLifeline;
 				int mType = identifyMessageType(t);
 				sd.createMessage(source, target, mType, t.getActionName(),
@@ -519,6 +557,29 @@ public class Transformer {
 		}
 
 		return answer;
+	}
+
+	/**
+	 * Auxiliary method for pruning the transitions from a "regular" state to
+	 * the FDTMC's error state. Considering only the "regular" transitions
+	 * simplifies the analysis of the FDTMC.
+	 * 
+	 * @param fdtmc
+	 *            the FDTMC subject to the analysis
+	 * @param outgoingTransitions
+	 *            the set of outgoing transitions from a given state
+	 * @return the set of "regular" transitions leaving a given FDTMC state
+	 */
+	private List<fdtmc.Transition> pruneErrorTransitions(FDTMC fdtmc,
+			List<fdtmc.Transition> outgoingTransitions) {
+		for (fdtmc.Transition t : outgoingTransitions) {
+			if (t.getTarget() == fdtmc.getErrorState()
+					|| (t.getSource() == fdtmc.getSuccessState() && t
+							.getTarget() == fdtmc.getSuccessState())) {
+				outgoingTransitions.remove(t);
+			}
+		}
+		return outgoingTransitions;
 	}
 
 	private fdtmc.State nextState(fdtmc.State st, FDTMC fdtmc) {
@@ -559,11 +620,23 @@ public class Transformer {
 		return answer;
 	}
 
-	private Lifeline identifyLifelines(fdtmc.Transition t) {
+	/**
+	 * This auxiliary method has the role of identifying which 
+	 * lifeline is being used as target in a given transition. 
+	 * All lifelines are associated with a reliability value 
+	 * such that, for a given reliability value, its lifeline 
+	 * is returned.
+	 * @param trans 
+	 * 			the transition from where the target lifeline 
+	 * 			will be identified.
+	 * @return the lifeline associated with the transition's 
+	 * 			reliability value.
+	 */
+	private Lifeline identifyLifelines(fdtmc.Transition trans) {
 		Lifeline answer = null;
-		String toConfirm = t.getProbability();
+		String toConfirm = trans.getProbability();
 		if (toConfirm.matches("[0-9.]+")) {
-			double probability = Double.parseDouble(t.getProbability());
+			double probability = Double.parseDouble(trans.getProbability());
 
 			if (!lifelineByReliability.containsKey(probability)) {
 				answer = new Lifeline("Lifeline_" + idxLifeline++);
@@ -576,17 +649,22 @@ public class Transformer {
 		return answer;
 	}
 
-	private int identifyMessageType(fdtmc.Transition t) {
+	/**
+	 * Given an FDTMC transition, this auxiliary method returns 
+	 * the message type that produced the fdtmc transition.
+	 * @param trans 
+	 * 			the input FDTMC transition
+	 * @return the message type as defined at the Message class.
+	 */
+	private int identifyMessageType(fdtmc.Transition trans) {
 		int answer = -1;
-		if (t.getActionName() == null || t.getActionName().equals("")) { // asynchronous
-			// message do not have an
-			// associated action name
+		if (trans.getActionName() == null || trans.getActionName().equals("")) { 
+			// asynchronous messages do not have an associated action name
 			answer = Message.ASYNCHRONOUS;
-		} else { // otherwise it can be a synchronous or reply message
-			// get the first transition from the stack
+		} else { 
+			// otherwise it can be a synchronous or reply message
 			answer = Message.SYNCHRONOUS;
 		}
-
 		return answer;
 	}
 }

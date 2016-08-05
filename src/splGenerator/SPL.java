@@ -277,8 +277,8 @@ public class SPL implements Cloneable {
 	/**
 	 * This method's role is to build an entire SPL from a given RDG structure.
 	 * In other words, it is responsible for applying the transformation
-	 * templates in the reverse order such that the behavioral models of the
-	 * software product line are re-created from their FDTMC representation.
+	 * templates in the reverse order such the behavioral models of the software
+	 * product line are re-created from their FDTMC representation.
 	 * 
 	 * @param root
 	 *            the starting node of the software product line
@@ -289,10 +289,11 @@ public class SPL implements Cloneable {
 		SPL answer = new SPL();
 		answer.setName("New SPL created from an RDG");
 
-		// 1st node represents the interactions between SPL's activities
-		// described at the activity diagram, so we must rebuild such relations
-		// from its FDTMC
-
+		/*
+		 * 1st step: for all RDG nodes, we must extract its sequence diagram
+		 * from its fdtmc. The following loop has the role of re-build the
+		 * sequence diagram for each RDG node.
+		 */
 		try {
 			for (RDGNode n : root.getDependenciesTransitiveClosure()) {
 				splGenerator.transformation.Transformer transSD = new splGenerator.transformation.Transformer();
@@ -305,10 +306,19 @@ public class SPL implements Cloneable {
 
 		ActivityDiagram ad = null;
 
+		/*
+		 * 2nd step: similar to first step, this step's role is to re-build the
+		 * activity diagram from the FDTMC associated to the root node.
+		 */
 		splGenerator.transformation.Transformer transAD = new splGenerator.transformation.Transformer();
 		ad = transAD.getActivityDiagramFromFDTMC(root);
 		answer.setActivityDiagram(ad);
 
+		/*
+		 * 3rd step: after creating all the behavioral elements of activity and
+		 * sequence diagrams, it's time to link such elements according to the
+		 * RDG topology.
+		 */
 		splGenerator.transformation.Transformer t = new splGenerator.transformation.Transformer();
 		t.linkBehavioralElements(answer);
 
