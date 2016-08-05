@@ -2,16 +2,11 @@ package splGenerator.transformation;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
-import com.sun.corba.se.spi.orbutil.fsm.State;
-
 import fdtmc.FDTMC;
+import fdtmc.State;
 import splGenerator.Activity;
 import splGenerator.ActivityDiagram;
 import splGenerator.ActivityDiagramElement;
@@ -21,14 +16,13 @@ import splGenerator.Message;
 import splGenerator.SPL;
 import splGenerator.SequenceDiagram;
 import splGenerator.SequenceDiagramElement;
-import splGenerator.SplGenerator;
 import splGenerator.Transition;
 import splGenerator.Util.SPLFilePersistence;
 import tool.RDGNode;
 
 public class Transformer {
 
-	private HashMap<String, fdtmc.State> fdtmcStateById = new HashMap<String, fdtmc.State>();
+	private HashMap<String, State> fdtmcStateById = new HashMap<String, State>();
 	private RDGNode root;
 
 	private int idxActivity = 0;
@@ -107,17 +101,17 @@ public class Transformer {
 		return answer;
 	}
 
-	private fdtmc.State transformAdElement(ActivityDiagramElement adElem,
+	private State transformAdElement(ActivityDiagramElement adElem,
 			FDTMC f) {
-		fdtmc.State answer = null;
+		State answer = null;
 
-		fdtmc.State source = null;
-		fdtmc.State isModeled;
+		State source = null;
+		State isModeled;
 		String adClass = adElem.getClass().getSimpleName();
 		switch (adClass) {
 		case "StartNode":
 			source = f.createInitialState();
-			fdtmc.State error = f.createErrorState();
+			State error = f.createErrorState();
 
 			HashSet<Activity> nextActivities = new HashSet<Activity>();
 			for (Transition t : adElem.getTransitions()) {
@@ -130,7 +124,7 @@ public class Transformer {
 			}
 
 			for (Activity a : nextActivities) {
-				fdtmc.State target = transformAdElement(a, f);
+				State target = transformAdElement(a, f);
 				f.createTransition(source, target, "", Double.toString(1.0));
 				// source = transformAdElement(a, f);
 			}
@@ -160,7 +154,7 @@ public class Transformer {
 				}
 
 				for (ActivityDiagramElement e : nextElement) {
-					fdtmc.State target = transformAdElement(e, f);
+					State target = transformAdElement(e, f);
 					f.createTransition(source, target, a.getElementName(), a
 							.getSequenceDiagrams().getFirst().getName());
 					f.createTransition(source, f.getErrorState(),
@@ -194,7 +188,7 @@ public class Transformer {
 			if (isModeled == null) {
 				source = f.createState();
 				for (Transition t : adElem.getTransitions()) {
-					fdtmc.State target = transformAdElement(t.getTarget(), f);
+					State target = transformAdElement(t.getTarget(), f);
 					f.createTransition(source, target, t.getElementName(),
 							Double.toString(t.getProbability()));
 					f.createTransition(source, f.getErrorState(),
@@ -214,7 +208,7 @@ public class Transformer {
 			if (isModeled == null) {
 				source = f.createState();
 				for (Transition t : adElem.getTransitions()) {
-					fdtmc.State target = transformAdElement(t.getTarget(), f);
+					State target = transformAdElement(t.getTarget(), f);
 					f.createTransition(source, target, "", Double.toString(1.0));
 				}
 				fdtmcStateById.put(adElem.getElementName(), source);
@@ -271,7 +265,7 @@ public class Transformer {
 	 * @return
 	 */
 	private ActivityDiagramElement extractADElementFromFDTMC(
-			fdtmc.State currentState, FDTMC fdtmc, ActivityDiagram ad) {
+			State currentState, FDTMC fdtmc, ActivityDiagram ad) {
 		ActivityDiagramElement answer = null;
 
 		// remove error transitions leaving the current state
@@ -343,7 +337,7 @@ public class Transformer {
 			ActivityDiagramElement adStartNode = ad.getStartNode();
 			incomingEdgesByState.put(adStartNode, 0);
 			for (fdtmc.Transition t : outgoingTransitions) {
-				fdtmc.State target = t.getTarget();
+				State target = t.getTarget();
 				ActivityDiagramElement adTarget;
 				String adProbability;
 				
@@ -373,7 +367,7 @@ public class Transformer {
 					incomingEdgesByState.put(adTarget, 0);
 
 					ActivityDiagramElement adSource = adTarget;
-					fdtmc.State source = target;
+					State source = target;
 					outgoingTransitions = fdtmc.getTransitionsBySource(source);
 					outgoingTransitions = pruneErrorTransitions(fdtmc, outgoingTransitions);
 
@@ -451,7 +445,7 @@ public class Transformer {
 				node.getPresenceCondition());
 
 		FDTMC fdtmc = node.getFDTMC();
-		fdtmc.State initialState = fdtmc.getInitialState();
+		State initialState = fdtmc.getInitialState();
 
 		// building the FDTMC recursively
 		extractSDElementFromFDTMC(initialState, fdtmc, sd);
@@ -480,7 +474,7 @@ public class Transformer {
 	 * @return the Sequence Diagram object represented by the sd input parameter
 	 */
 	private SequenceDiagramElement extractSDElementFromFDTMC(
-			fdtmc.State currentState, FDTMC fdtmc, SequenceDiagram sd) {
+			State currentState, FDTMC fdtmc, SequenceDiagram sd) {
 		SequenceDiagramElement answer = null;
 
 		// get all transitions leaving the current fdtmc state
@@ -508,7 +502,7 @@ public class Transformer {
 			 */
 			if (t.getActionName().matches("[n][a-zA-Z0-9]+")
 					&& t.getProbability().equals("1.0")) {
-				fdtmc.State initFr = t.getTarget(), endFr, errorFr;
+				State initFr = t.getTarget(), endFr, errorFr;
 				List<fdtmc.Transition> outTransInitFrag = fdtmc
 						.getTransitionsBySource(initFr);
 				for (fdtmc.Transition tr : outTransInitFrag) {
@@ -528,7 +522,7 @@ public class Transformer {
 						sd.addFragment(fr);
 
 						//proceed building the sequence diagram from the next state
-						fdtmc.State next = fdtmc
+						State next = fdtmc
 								.getTransitionsBySource(tr.getTarget()).get(0)
 								.getTarget();
 						extractSDElementFromFDTMC(next, fdtmc, sd);
@@ -582,8 +576,8 @@ public class Transformer {
 		return outgoingTransitions;
 	}
 
-	private fdtmc.State nextState(fdtmc.State st, FDTMC fdtmc) {
-		fdtmc.State answer = null;
+	private State nextState(State st, FDTMC fdtmc) {
+		State answer = null;
 		List<fdtmc.Transition> transitions = fdtmc.getTransitionsBySource(st);
 		for (fdtmc.Transition t : transitions) {
 			if (t.getTarget() == fdtmc.getErrorState()) {
