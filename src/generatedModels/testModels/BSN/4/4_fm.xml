@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<featureModel>
+		<properties/>
+		<struct>
+			<and mandatory="true" name="Root">
+				<description>
+					
+				</description>
+				<and mandatory="true" name="Monitoring">
+					<description>
+						
+					</description>
+					<or mandatory="true" name="SensorInformation">
+						<description>
+							
+						</description>
+						<feature mandatory="true" name="Oxygenation">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="PulseRate">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="Temperature">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="Position">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="Fall">
+							<description>
+								
+							</description>
+						</feature>
+					</or>
+					<or mandatory="true" name="Sensor">
+						<description>
+							
+						</description>
+						<feature mandatory="true" name="SPO2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="ECG">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="TEMP">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="ACC">
+							<description>
+								
+							</description>
+						</feature>
+					</or>
+				</and>
+				<alt mandatory="true" name="Storage">
+					<description>
+						
+					</description>
+					<feature mandatory="true" name="Sqlite">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Memory">
+						<description>
+							
+						</description>
+					</feature>
+				</alt>
+				<feature name="o_1">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="o_2">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="o_3">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="o_4">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="o_5">
+					<description>
+						
+					</description>
+				</feature>
+			</and>
+		</struct>
+		<constraints>
+			<rule>
+				<imp>
+					<var>Oxygenation</var>
+					<var>SPO2</var>
+				</imp>
+			</rule>
+			<rule>
+				<imp>
+					<var>PulseRate</var>
+					<disj>
+						<var>SPO2</var>
+						<var>ECG</var>
+					</disj>
+				</imp>
+			</rule>
+			<rule>
+				<imp>
+					<var>Fall</var>
+					<var>ACC</var>
+				</imp>
+			</rule>
+			<rule>
+				<imp>
+					<var>Position</var>
+					<var>ACC</var>
+				</imp>
+			</rule>
+			<rule>
+				<imp>
+					<var>Temperature</var>
+					<var>TEMP</var>
+				</imp>
+			</rule>
+		</constraints>
+		<calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
+		<comments/>
+		<featureOrder userDefined="false"/>
+	</featureModel>
