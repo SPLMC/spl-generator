@@ -7327,7 +7327,6 @@
 											<usedObjects href='#_18_1_e280333_1432673810536_626590_4729'/>
 											<usedObjects href='#_18_1_e280333_1432673659707_289590_4545'/>
 											<usedObjects href='#_18_2beta_e91033e_1450287736529_726914_5175'/>
-											<usedObjects href='#_18_2beta_e91033e_1450283274002_619123_5161'/>
 											<usedElements>_18_2beta_e91033e_1448291793732_607425_5088</usedElements>
 											<usedElements>_18_2beta_e91033e_1450289645919_662481_5477</usedElements>
 											<usedElements>_18_2beta_e91033e_1450289649097_716036_5482</usedElements>
@@ -7338,7 +7337,6 @@
 											<usedElements>_18_2beta_e91033e_1450205409190_183454_4696</usedElements>
 											<usedElements>_18_1_e280333_1432673667636_648389_4553</usedElements>
 											<usedElements>_18_2beta_e91033e_1450287727559_494999_5172</usedElements>
-											<usedElements>_18_2beta_e91033e_1450283274002_619123_5161</usedElements>
 											<usedElements>_18_2beta_e91033e_1450205376762_477483_4680</usedElements>
 											<usedElements>_18_1_e280333_1432673652238_289893_4535</usedElements>
 											<usedElements>_18_2beta_e91033e_1450289514441_175605_5462</usedElements>
@@ -7382,9 +7380,6 @@
 				<edge xmi:type='uml:ControlFlow' xmi:id='_18_2beta_e91033e_1450208123221_828106_5219' visibility='public' source='_18_2beta_e91033e_1450208095201_180794_5204' target='_18_2beta_e91033e_1450287702049_867881_5164'>
 					<weight xmi:type='uml:LiteralUnlimitedNatural' xmi:id='_18_2beta_e91033e_1450208123222_281026_5220' value='1'/>
 				</edge>
-				<edge xmi:type='uml:ControlFlow' xmi:id='_18_2beta_e91033e_1450283274002_619123_5161' visibility='public' source='_18_2beta_e91033e_1450208095201_180794_5204' target='_18_2beta_e91033e_1450208095201_180794_5204'>
-					<weight xmi:type='uml:LiteralUnlimitedNatural' xmi:id='_18_2beta_e91033e_1450283274004_655220_5162' value='1'/>
-				</edge>
 				<edge xmi:type='uml:ControlFlow' xmi:id='_18_2beta_e91033e_1450287727559_494999_5172' visibility='public' source='_18_2beta_e91033e_1450287702049_867881_5164' target='_18_2beta_e91033e_1450288750160_317574_5333'>
 					<weight xmi:type='uml:LiteralUnlimitedNatural' xmi:id='_18_2beta_e91033e_1450287727560_785677_5173' value='1'/>
 				</edge>
@@ -7426,11 +7421,9 @@
 				</node>
 				<node xmi:type='uml:CallBehaviorAction' xmi:id='_18_2beta_e91033e_1450208095201_180794_5204' name='Inspect Environment' visibility='public' behavior='_18_2beta_e91033e_1450208131547_262911_5222'>
 					<incoming xmi:idref='_18_2beta_e91033e_1450207287340_266281_4852'/>
-					<incoming xmi:idref='_18_2beta_e91033e_1450283274002_619123_5161'/>
 					<incoming xmi:idref='_18_2beta_e91033e_1450287781792_740456_5195'/>
 					<incoming xmi:idref='_18_2beta_e91033e_1450289459343_562570_5441'/>
 					<outgoing xmi:idref='_18_2beta_e91033e_1450208123221_828106_5219'/>
-					<outgoing xmi:idref='_18_2beta_e91033e_1450283274002_619123_5161'/>
 				</node>
 				<node xmi:type='uml:DecisionNode' xmi:id='_18_2beta_e91033e_1450287702049_867881_5164' visibility='public'>
 					<incoming xmi:idref='_18_2beta_e91033e_1450208123221_828106_5219'/>
@@ -12037,7 +12030,7 @@
 	<xmi:Extension extender='MagicDraw UML 18.3 beta'>
 		<modelPart name='com.nomagic.magicdraw.uml_model.shared_model'/>
 	</xmi:Extension>
-	<GQAM:GaStep xmi:id='_18_3beta_e91033e_1456254517175_583155_4833' base_NamedElement='_18_2beta_e91033e_1450208123221_828106_5219' prob='0.5'/>
+	<GQAM:GaStep xmi:id='_18_3beta_e91033e_1456254517175_583155_4833' base_NamedElement='_18_2beta_e91033e_1450208123221_828106_5219' prob='1.0'/>
 	<xmi:Extension extender='MagicDraw UML 18.3 beta'>
 		<modelPart name='com.nomagic.magicdraw.uml_model.shared_model'/>
 	</xmi:Extension>
@@ -12060,7 +12053,6 @@
 	<xmi:Extension extender='MagicDraw UML 18.3 beta'>
 		<modelPart name='com.nomagic.magicdraw.uml_model.shared_model'/>
 	</xmi:Extension>
-	<GQAM:GaStep xmi:id='_18_3beta_e91033e_1456254505160_521720_4825' base_NamedElement='_18_2beta_e91033e_1450283274002_619123_5161' prob='0.5'/>
 	<xmi:Extension extender='MagicDraw UML 18.3 beta'>
 		<modelPart name='com.nomagic.magicdraw.uml_model.shared_model'/>
 	</xmi:Extension>
@@ -12989,7 +12981,6 @@
 		<linkTaggedValuesID xmi:idref='_18_3beta_e91033e_1456254517216_432735_4839'/>
 	</mdElement>
 	<mdElement elementClass='ControlFlow' xmi:id='_18_2beta_e91033e_1450283272590_376669_5160'>
-		<elementID xmi:idref='_18_2beta_e91033e_1450283274002_619123_5161'/>
 		<properties>
 			<mdElement elementClass='ChoiceProperty'>
 				<propertyID>STEREOTYPES_DISPLAY_MODE</propertyID>
