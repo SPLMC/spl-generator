@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<featureModel>
+		<properties/>
+		<struct>
+			<and abstract="true" mandatory="true" name="Email">
+				<description>
+					
+				</description>
+				<feature mandatory="true" name="Base">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Keys">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Encrypt">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="AutoResponder">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Addressbook">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Sign">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Forward">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Verify">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Decrypt">
+					<description>
+						
+					</description>
+				</feature>
+			</and>
+		</struct>
+		<constraints>
+			<rule>
+				<eq>
+					<var>Encrypt</var>
+					<var>Decrypt</var>
+				</eq>
+			</rule>
+			<rule>
+				<eq>
+					<var>Sign</var>
+					<var>Verify</var>
+				</eq>
+			</rule>
+			<rule>
+				<imp>
+					<disj>
+						<var>Encrypt</var>
+						<var>Sign</var>
+					</disj>
+					<var>Keys</var>
+				</imp>
+			</rule>
+		</constraints>
+		<calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
+		<comments/>
+		<featureOrder userDefined="false"/>
+	</featureModel>
