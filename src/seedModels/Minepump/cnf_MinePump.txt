@@ -1,0 +1,11 @@
+Logical Symbols:
+MinePump  ∧  (WaterSensor  ∨  ¬Low)  ∧  (WaterSensor  ∨  ¬Normal)  ∧  (WaterSensor  ∨  ¬High)  ∧  (Command  ∨  ¬Start)  ∧  (Command  ∨  ¬Stop)  ∧  (Start  ∨  Stop  ∨  ¬Command)  ∧  (MethaneSensor  ∨  ¬Alarm)  ∧  (MethaneSensor  ∨  ¬Query)  ∧  (Alarm  ∨  Query  ∨  ¬MethaneSensor)  ∧  (MinePump  ∨  ¬Command)  ∧  (MinePump  ∨  ¬MethaneSensor)  ∧  (MinePump  ∨  ¬WaterSensor)  ∧  (WaterSensor  ∨  ¬MinePump)  ∧  True  ∧  ¬False
+
+Textual Symbols:
+MinePump and (WaterSensor or not Low) and (WaterSensor or not Normal) and (WaterSensor or not High) and (Command or not Start) and (Command or not Stop) and (Start or Stop or not Command) and (MethaneSensor or not Alarm) and (MethaneSensor or not Query) and (Alarm or Query or not MethaneSensor) and (MinePump or not Command) and (MinePump or not MethaneSensor) and (MinePump or not WaterSensor) and (WaterSensor or not MinePump) and True and not False
+
+Java Symbols:
+MinePump  &&  (WaterSensor  ||  !Low)  &&  (WaterSensor  ||  !Normal)  &&  (WaterSensor  ||  !High)  &&  (Command  ||  !Start)  &&  (Command  ||  !Stop)  &&  (Start  ||  Stop  ||  !Command)  &&  (MethaneSensor  ||  !Alarm)  &&  (MethaneSensor  ||  !Query)  &&  (Alarm  ||  Query  ||  !MethaneSensor)  &&  (MinePump  ||  !Command)  &&  (MinePump  ||  !MethaneSensor)  &&  (MinePump  ||  !WaterSensor)  &&  (WaterSensor  ||  !MinePump)  &&  True  &&  !False
+
+Short Symbols:
+MinePump  &  (WaterSensor  |  -Low)  &  (WaterSensor  |  -Normal)  &  (WaterSensor  |  -High)  &  (Command  |  -Start)  &  (Command  |  -Stop)  &  (Start  |  Stop  |  -Command)  &  (MethaneSensor  |  -Alarm)  &  (MethaneSensor  |  -Query)  &  (Alarm  |  Query  |  -MethaneSensor)  &  (MinePump  |  -Command)  &  (MinePump  |  -MethaneSensor)  &  (MinePump  |  -WaterSensor)  &  (WaterSensor  |  -MinePump)  &  True  &  -False
