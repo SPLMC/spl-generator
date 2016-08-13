@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<featureModel>
+		<properties/>
+		<struct>
+			<and abstract="true" mandatory="true" name="TankWar">
+				<description>
+					
+				</description>
+				<alt abstract="true" mandatory="true" name="Tank_Player1">
+					<description>
+						
+					</description>
+					<feature mandatory="true" name="Black_P1">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Red_P1">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Red_Tier1_P1">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Yellow_Tier1_P1">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Blue_Tier2_P1">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Green_Tier2_P1">
+						<description>
+							
+						</description>
+					</feature>
+				</alt>
+				<alt abstract="true" mandatory="true" name="Tank_Player2">
+					<description>
+						
+					</description>
+					<feature mandatory="true" name="Black_P2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Red_P2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Red_Tier1_P2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Yellow_Tier1_P2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Blue_Tier2_P2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Green_Tier2_P2">
+						<description>
+							
+						</description>
+					</feature>
+				</alt>
+				<alt abstract="true" mandatory="true" name="mov">
+					<description>
+						
+					</description>
+					<feature mandatory="true" name="mov_0">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="mov_1">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="mov_2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="mov_3">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="mov_4">
+						<description>
+							
+						</description>
+					</feature>
+				</alt>
+				<feature name="tar">
+					<description>
+						
+					</description>
+				</feature>
+				<feature name="Hinderniss_Set">
+					<description>
+						
+					</description>
+				</feature>
+				<or abstract="true" mandatory="true" name="Power_Ups">
+					<description>
+						
+					</description>
+					<feature mandatory="true" name="Flower">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Blue_Flower">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Copy">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Fire">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Light_Bulb_Round">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Green">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Heart">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Circle">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Cow">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Light_Bulb">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Octagonal">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Mushroom">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Pumpkin_Pie">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Ring">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Ring_2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Ring_Oval">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Ring_Oval_Small">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Sponge">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Spiral">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Star_Oval">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Star_Oval_Small">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Star_Ring">
+						<description>
+							
+						</description>
+					</feature>
+				</or>
+				<and abstract="true" name="Activate_Power_Up">
+					<description>
+						
+					</description>
+					<feature name="Nr1">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Nr2">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Nr3">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Nr4">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Nr5">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Nr6">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Nr7">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Nr8">
+						<description>
+							
+						</description>
+					</feature>
+				</and>
+				<alt abstract="true" mandatory="true" name="Background">
+					<description>
+						
+					</description>
+					<feature mandatory="true" name="Default">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Blue_White">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Blue_White_Green">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Purple_White">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Glass">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Lava">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Limba">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Old">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Ov_Paper">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Paper">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Univ">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Water">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Water_2">
+						<description>
+							
+						</description>
+					</feature>
+				</alt>
+				<alt abstract="true" mandatory="true" name="rocketStyle">
+					<description>
+						
+					</description>
+					<feature mandatory="true" name="Rectangle">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Oval">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="aa31">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Portal">
+						<description>
+							
+						</description>
+					</feature>
+					<feature mandatory="true" name="Nino">
+						<description>
+							
+						</description>
+					</feature>
+				</alt>
+				<and mandatory="true" name="Sounds">
+					<description>
+						
+					</description>
+					<alt abstract="true" name="Player1_Sound_Rotation">
+						<description>
+							
+						</description>
+						<feature mandatory="true" name="P1_Rot_Beep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Beep2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Beep3">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Bleep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Buzzer">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Cash_register">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Cork">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Game_Win">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Drip">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Gorod">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Horn">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Laser_Trill">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Police_Siren">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Siren_1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_Siren_2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Rot_yes">
+							<description>
+								
+							</description>
+						</feature>
+					</alt>
+					<alt abstract="true" name="Player1_Sound_Movement">
+						<description>
+							
+						</description>
+						<feature mandatory="true" name="P1_Mov_Beep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Beep2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Beep3">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Bleep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Buzzer">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Cash_Register">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Cork">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Game_Win">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Drip">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Gorod">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Horn">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_LaserTrill">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Police_Siren">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Siren_1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_Siren2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P1_Mov_yes">
+							<description>
+								
+							</description>
+						</feature>
+					</alt>
+					<alt abstract="true" name="Player2_Sound_Rotation">
+						<description>
+							
+						</description>
+						<feature mandatory="true" name="P2_Rot_Beep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Beep2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Beep3">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Bleep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Buzzer">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Cash_Register">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Cork">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Game_Win">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Drip">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Gorod">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Horn">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Laser_Trill">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Police_Siren">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Siren_1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Siren_2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Rot_Yes">
+							<description>
+								
+							</description>
+						</feature>
+					</alt>
+					<alt abstract="true" name="Player2_Sound_Movement">
+						<description>
+							
+						</description>
+						<feature mandatory="true" name="P2_Mov_Beep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Beep2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Beep3">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Bleep1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Buzzer">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Cash_Register">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_cork">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Game_Win">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Drip">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Gorod">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Horn">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_LaserTrill">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Police_Siren">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Siren_1">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Siren_2">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="P2_Mov_Yes">
+							<description>
+								
+							</description>
+						</feature>
+					</alt>
+				</and>
+			</and>
+		</struct>
+		<constraints/>
+		<calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
+		<comments/>
+		<featureOrder userDefined="false"/>
+	</featureModel>
