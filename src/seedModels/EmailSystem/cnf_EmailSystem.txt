@@ -1,11 +1,1 @@
-Logical Symbols:
-Email  ∧  (Email  ∨  ¬Base)  ∧  (Email  ∨  ¬Keys)  ∧  (Email  ∨  ¬Encrypt)  ∧  (Email  ∨  ¬AutoResponder)  ∧  (Email  ∨  ¬Addressbook)  ∧  (Email  ∨  ¬Sign)  ∧  (Email  ∨  ¬Forward)  ∧  (Email  ∨  ¬Verify)  ∧  (Email  ∨  ¬Decrypt)  ∧  (Base  ∨  ¬Email)  ∧  (¬Encrypt  ∨  Decrypt)  ∧  (¬Decrypt  ∨  Encrypt)  ∧  (¬Sign  ∨  Verify)  ∧  (¬Verify  ∨  Sign)  ∧  (¬Sign  ∨  Keys)  ∧  (¬Encrypt  ∨  Keys)  ∧  True  ∧  ¬False
-
-Textual Symbols:
-Email and (Email or not Base) and (Email or not Keys) and (Email or not Encrypt) and (Email or not AutoResponder) and (Email or not Addressbook) and (Email or not Sign) and (Email or not Forward) and (Email or not Verify) and (Email or not Decrypt) and (Base or not Email) and (not Encrypt or Decrypt) and (not Decrypt or Encrypt) and (not Sign or Verify) and (not Verify or Sign) and (not Sign or Keys) and (not Encrypt or Keys) and True and not False
-
-Java Symbols:
 Email  &&  (Email  ||  !Base)  &&  (Email  ||  !Keys)  &&  (Email  ||  !Encrypt)  &&  (Email  ||  !AutoResponder)  &&  (Email  ||  !Addressbook)  &&  (Email  ||  !Sign)  &&  (Email  ||  !Forward)  &&  (Email  ||  !Verify)  &&  (Email  ||  !Decrypt)  &&  (Base  ||  !Email)  &&  (!Encrypt  ||  Decrypt)  &&  (!Decrypt  ||  Encrypt)  &&  (!Sign  ||  Verify)  &&  (!Verify  ||  Sign)  &&  (!Sign  ||  Keys)  &&  (!Encrypt  ||  Keys)  &&  True  &&  !False
-
-Short Symbols:
-Email  &  (Email  |  -Base)  &  (Email  |  -Keys)  &  (Email  |  -Encrypt)  &  (Email  |  -AutoResponder)  &  (Email  |  -Addressbook)  &  (Email  |  -Sign)  &  (Email  |  -Forward)  &  (Email  |  -Verify)  &  (Email  |  -Decrypt)  &  (Base  |  -Email)  &  (-Encrypt  |  Decrypt)  &  (-Decrypt  |  Encrypt)  &  (-Sign  |  Verify)  &  (-Verify  |  Sign)  &  (-Sign  |  Keys)  &  (-Encrypt  |  Keys)  &  True  &  -False
