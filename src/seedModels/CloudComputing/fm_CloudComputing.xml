@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+	<featureModel>
+		<properties/>
+		<struct>
+			<and abstract="true" mandatory="true" name="IaasCloud">
+				<description>
+					
+				</description>
+				<and mandatory="true" name="VirtualMachine">
+					<description>
+						
+					</description>
+					<alt mandatory="true" name="PriceModel">
+						<description>
+							
+						</description>
+						<feature mandatory="true" name="OnDemand">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="Reserved">
+							<description>
+								
+							</description>
+						</feature>
+						<feature mandatory="true" name="Spot">
+							<description>
+								
+							</description>
+						</feature>
+					</alt>
+					<and mandatory="true" name="InstanceType">
+						<description>
+							
+						</description>
+						<and mandatory="true" name="HardwareConfiguration">
+							<description>
+								
+							</description>
+							<and mandatory="true" name="ComputeUnit">
+								<description>
+									
+								</description>
+								<alt mandatory="true" name="BusSize">
+									<description>
+										
+									</description>
+									<feature mandatory="true" name="b32">
+										<description>
+											
+										</description>
+									</feature>
+									<feature mandatory="true" name="b64">
+										<description>
+											
+										</description>
+									</feature>
+								</alt>
+							</and>
+							<feature mandatory="true" name="RamMemory">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Network">
+								<description>
+									
+								</description>
+							</feature>
+						</and>
+						<alt mandatory="true" name="FamilyType">
+							<description>
+								
+							</description>
+							<feature mandatory="true" name="Compute">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="General">
+								<description>
+									
+								</description>
+							</feature>
+							<alt mandatory="true" name="Accelerator">
+								<description>
+									
+								</description>
+								<feature mandatory="true" name="GPU">
+									<description>
+										
+									</description>
+								</feature>
+								<feature mandatory="true" name="IntelPhi">
+									<description>
+										
+									</description>
+								</feature>
+								<feature mandatory="true" name="FPGA">
+									<description>
+										
+									</description>
+								</feature>
+							</alt>
+							<feature mandatory="true" name="Memory">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Storage">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Shared">
+								<description>
+									
+								</description>
+							</feature>
+						</alt>
+						<feature name="InstanceDisk">
+							<description>
+								
+							</description>
+						</feature>
+					</and>
+					<and mandatory="true" name="VMI">
+						<description>
+							
+						</description>
+						<alt mandatory="true" name="VirtualizationTechnique">
+							<description>
+								
+							</description>
+							<feature mandatory="true" name="HVM">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="PVM">
+								<description>
+									
+								</description>
+							</feature>
+						</alt>
+						<and mandatory="true" name="OperatingSystem">
+							<description>
+								
+							</description>
+							<alt mandatory="true" name="Platform">
+								<description>
+									
+								</description>
+								<feature mandatory="true" name="Linux">
+									<description>
+										
+									</description>
+								</feature>
+								<feature mandatory="true" name="Windows">
+									<description>
+										
+									</description>
+								</feature>
+							</alt>
+							<alt name="Architecture">
+								<description>
+									
+								</description>
+								<feature mandatory="true" name="x32">
+									<description>
+										
+									</description>
+								</feature>
+								<feature mandatory="true" name="x64">
+									<description>
+										
+									</description>
+								</feature>
+							</alt>
+						</and>
+						<feature name="SoftwarePackage">
+							<description>
+								
+							</description>
+						</feature>
+						<alt mandatory="true" name="Region">
+							<description>
+								
+							</description>
+							<feature mandatory="true" name="Africa">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Asia">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Australia">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="NorthAmerica">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Europe">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="SouthAmerica">
+								<description>
+									
+								</description>
+							</feature>
+						</alt>
+					</and>
+					<and mandatory="true" name="Disk">
+						<description>
+							
+						</description>
+						<alt mandatory="true" name="DiskType">
+							<description>
+								
+							</description>
+							<feature mandatory="true" name="Ephemeral">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Persistent">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="ObjectStore">
+								<description>
+									
+								</description>
+							</feature>
+						</alt>
+						<alt mandatory="true" name="DiskTechnology">
+							<description>
+								
+							</description>
+							<feature mandatory="true" name="SSD">
+								<description>
+									
+								</description>
+							</feature>
+							<feature mandatory="true" name="Standard">
+								<description>
+									
+								</description>
+							</feature>
+						</alt>
+					</and>
+					<feature mandatory="true" name="Zone">
+						<description>
+							
+						</description>
+					</feature>
+					<feature name="Group">
+						<description>
+							
+						</description>
+					</feature>
+				</and>
+			</and>
+		</struct>
+		<constraints>
+			<rule>
+				<imp>
+					<var>InstanceDisk</var>
+					<conj>
+						<var>DiskType</var>
+						<var>DiskTechnology</var>
+					</conj>
+				</imp>
+			</rule>
+			<rule>
+				<imp>
+					<var>SoftwarePackage</var>
+					<var>OperatingSystem</var>
+				</imp>
+			</rule>
+			<rule>
+				<imp>
+					<var>Disk</var>
+					<var>Zone</var>
+				</imp>
+			</rule>
+			<rule>
+				<imp>
+					<var>Group</var>
+					<var>Zone</var>
+				</imp>
+			</rule>
+		</constraints>
+		<calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
+		<comments/>
+		<featureOrder userDefined="false"/>
+	</featureModel>
