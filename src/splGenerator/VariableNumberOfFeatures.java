@@ -26,7 +26,7 @@ import splar.core.fm.FeatureTreeNode;
 public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 
 	FeatureModelParameters fmParameters = FeatureModelParameters
-			.getConfiguration(FeatureModelParameters.GHEZZI_FEATURE_MODEL);
+			.getConfiguration(FeatureModelParameters.EXPERIMENT_EVOLUTION);
 	private int fragmentSize;
 	private HashSet<Lifeline> lifelines;
 	private int numberOfAltFragments;
@@ -55,7 +55,7 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 					.getFeatureModel().getRoot());
 
 			// 3rd step: from each seed SPL, we will create a new SPL having the
-			// same feature and behavioral models' characteristics than its seed
+			// same feature and behavioral models' characteristics of its seed
 			SplGenerator generator = SplGenerator.newInstance();
 			generator.setFeatureModelParameters(fmParameters);
 			generator.setNumberOfFeatures(variationStep + 1);
@@ -63,15 +63,12 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 			generator.setNumberOfActivities(1);
 			generator.setNumberOfDecisionNodes(0);
 			generator.setNumberOfLifelines(6);
-			generator.setNumberOfReliabiliatiesValues(0.990, 0.9999, 3);
+			generator.setNumberOfReliabiliatiesValues(0.990, 0.9999, 4);
 			generator.setNumberOfAltFragments(this.numberOfAltFragments);
 			generator.setNumberOfLoopsFragments(this.numberOfLoopFragments);
 
 			SPL temp = generator.generateSPL(SplGenerator.SPLOT,
 					SplGenerator.SYMMETRIC);
-
-//			System.out.println(currentValue + ") \n"
-//					+ printFeatureModel(temp.getFeatureModel().getRoot()));
 
 			int nextIndex = lastFeatureIndex;
 
@@ -80,13 +77,9 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 
 			temp = appendSPL(temp, currentVersion);
 
-//			System.out.println(printFeatureModel(temp.getFeatureModel()
-//					.getRoot()));
-
 			answer.add(temp);
 
 			currentVersion = createSplDeepCopy(temp);
-			// System.out.println(currentVersion.getFeatureModel().FM2JavaCNF());
 			currentValue += variationStep;
 		}
 		return answer;
@@ -115,7 +108,8 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 		String x = temp.getFeatureModel().dumpFeatureIdeXML();
 		try {
 			File f = new File(
-					"/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/"
+					"/home/andlanna/workspace/spl-generator/src/generatedModels/"
+					// "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/"
 							+ currentValue + "_" + obs + ".xml");
 			PrintStream p = new PrintStream(f);
 			PrintStream oldOut = java.lang.System.out;
@@ -149,34 +143,46 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 		}
 
 		LinkedList<Fragment> fragmentsToAdd = new LinkedList<Fragment>();
-//		System.out.println("|childrenToAdd|= " + childrenToAdd.size());
 		int countChildrenToAdd = childrenToAdd.size();
+		System.out.println("#children to add --> " + countChildrenToAdd);
 
 		for (FeatureTreeNode node : childrenToAdd) {
 			fragmentsToAdd.addAll(getFragmentsByGuardCondition(node.getName(),
 					temp));
 			answer.getFeatureModel().getRoot().add(node);
-			answer.getFeatureModel().getRoot()
-					.attachData(new Integer(countChildrenToAdd - 1));
+			// answer.getFeatureModel().getRoot()
+			// .attachData(new Integer(countChildrenToAdd - 1));
 		}
 
-//		System.out.println("|R|= "
-//				+ answer.getFeatureModel().getRoot().getChildCount());
 		createFeatureIDEFile(answer, "afterAppend");
-
-//		System.out.println(answer.getFeatureModel().FM2CNF());
-//		System.out.println(answer.getFeatureModel().FM2JavaCNF());
 
 		// 3rd step: get the fragments associated to features which will be add
 		// at new feature model
-		SequenceDiagram sdRoot = getSequenceDiagramByGuardCondition("R", answer);
+		SequenceDiagram sdRoot = chooseRootSequenceDiagram(answer);
 
+		System.out.println(" SD Root that will receive the fragment: "
+				+ sdRoot.getName());
 		for (Fragment fr : fragmentsToAdd) {
+			System.out.println(" Fragment that will be added: " + fr.getName());
 			int pos = new Random().nextInt(sdRoot.getElements().size());
 			sdRoot.getElements().add(pos, fr);
 		}
 
 		return answer;
+	}
+
+	private SequenceDiagram chooseRootSequenceDiagram(SPL answer) {
+		SequenceDiagram sdRoot = getSequenceDiagramByGuardCondition("R", answer);
+		if (sdRoot == null) {
+			sdRoot = getSequenceDiagramByGuardCondition("Root", answer);
+		}
+		if (sdRoot == null) {
+			sdRoot = getSequenceDiagramByGuardCondition("root", answer);
+		}
+		if (sdRoot == null) {
+			sdRoot = getSequenceDiagramByGuardCondition("true", answer);
+		}
+		return sdRoot;
 	}
 
 	private SequenceDiagram getSequenceDiagramByGuardCondition(String string,
@@ -265,9 +271,9 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 					|| node.getName().startsWith("_Gi")) {
 				String[] strs = node.getName().split("_");
 
-//				for (int i = 0; i < strs.length; i++) {
-//					System.out.println("strs[" + i + "]: " + strs[i]);
-//				}
+				// for (int i = 0; i < strs.length; i++) {
+				// System.out.println("strs[" + i + "]: " + strs[i]);
+				// }
 				strNewName.append("_");
 				for (int i = 1; i < strs.length; i++) {
 					if (i == 3) {
@@ -280,8 +286,8 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 					}
 				}
 				strNewName.deleteCharAt(0);
-//				System.out.println("OLD: " + node.getName() + " ---> NEW: "
-//						+ strNewName.toString());
+				// System.out.println("OLD: " + node.getName() + " ---> NEW: "
+				// + strNewName.toString());
 				renameSequenceDiagram(node.getName(), strNewName.toString(),
 						spl);
 				node.setName(strNewName.toString());
@@ -311,12 +317,18 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 	}
 
 	private int lastFeatureIndex(FeatureTreeNode feature) {
-		int answer = parseIndex(feature.getName());
-		Enumeration<?> children = feature.children();
-		while (children.hasMoreElements()) {
-			Object obj = children.nextElement();
-			FeatureTreeNode c = (FeatureTreeNode) obj;
-			answer = Integer.max(answer, lastFeatureIndex(c));
+		String reliability = feature.getName();
+		int answer; 
+		if (reliability.matches("[0-1]\\.[0-9]*")) {
+			answer = parseIndex(feature.getName());
+			Enumeration<?> children = feature.children();
+			while (children.hasMoreElements()) {
+				Object obj = children.nextElement();
+				FeatureTreeNode c = (FeatureTreeNode) obj;
+				answer = Integer.max(answer, lastFeatureIndex(c));
+			}
+		} else {
+			answer = 0;
 		}
 		return answer;
 	}
@@ -363,6 +375,10 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 					.getConfiguration(FeatureModelParameters.GHEZZI_FEATURE_MODEL);
 			break;
 
+		case "ExperimentConfigurationSet":
+			System.out.println(" ---> EXPERIMENT!!!");
+			fmParameters = FeatureModelParameters
+					.getConfiguration(FeatureModelParameters.EXPERIMENT_EVOLUTION);
 		default:
 			fmParameters = null;
 			break;
