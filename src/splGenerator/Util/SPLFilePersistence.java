@@ -234,15 +234,17 @@ public class SPLFilePersistence {
 	}
 
 	public static void persistSPLs(LinkedList<SPL> spls) {
-		String ancientModelsPath = modelsPath; 
+		String ancientModelsPath = modelsPath;
+		System.out.println(modelsPath);
 		for (SPL spl : spls) {
 			int index = spls.indexOf(spl); 
 			String path = modelsPath + index + "/";
 			modelsPath = path;
+//			System.out.println(modelsPath);
 			File dir = new File(path); 
 			dir.mkdirs(); 
 			
-			FM2JavaCNF(spl.getFeatureModel());
+//			FM2JavaCNF(spl.getFeatureModel());
 			Transformer t = new Transformer(); 
 			RDGNode r = t.transformAD(spl.getActivityDiagram());
 			rdg2Dot(r, "rdg");
@@ -255,7 +257,8 @@ public class SPLFilePersistence {
 			
 			//print the featureIDE files
 			PrintStream oldOut = java.lang.System.out;
-			String filePath = dir.getAbsolutePath() + "_fmIDE_" + index + ".xml";
+			String filePath = dir.getAbsolutePath() + "/" + "fmIDE_" + index + ".xml";
+			System.out.println(filePath);
 			File fOut = new File(filePath);
 			
 			try {
@@ -277,5 +280,9 @@ public class SPLFilePersistence {
 			java.lang.System.setOut(oldOut);
 			modelsPath = ancientModelsPath;
 		}
+	}
+
+	public static void setModelsPath(String path) {
+		modelsPath = path;
 	}
 }
