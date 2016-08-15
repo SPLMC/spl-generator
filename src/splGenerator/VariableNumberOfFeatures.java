@@ -31,6 +31,7 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 	private HashSet<Lifeline> lifelines;
 	private int numberOfAltFragments;
 	private int numberOfLoopFragments;
+	private int lastFeatureIndex = 1; 
 
 	private HashMap<String, String> renamedFeatures;
 
@@ -239,8 +240,9 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 			Enumeration<?> children = node.children();
 			while (children.hasMoreElements()) {
 				FeatureTreeNode f = (FeatureTreeNode) children.nextElement();
-				nextIndex++;
-				renameFeatures(f, spl, nextIndex);
+				renameFeatures(f, spl, lastFeatureIndex);
+//				nextIndex++;
+//				lastFeatureIndex = nextIndex;
 			}
 		} else {
 			StringBuilder strNewName = new StringBuilder();
@@ -249,7 +251,8 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 					|| node.getName().startsWith("g_")) {
 
 				String[] strs = node.getName().split("_");
-				strs[1] = Integer.toString(nextIndex);
+				strs[1] = Integer.toString(lastFeatureIndex);
+				lastFeatureIndex++;
 
 				for (int i = 0; i < strs.length; i++) {
 					strNewName.append(strs[i]);
@@ -262,8 +265,8 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 				node.setName(strNewName.toString());
 				for (int i = 0; i < node.getChildCount(); i++) {
 					FeatureTreeNode f = (FeatureTreeNode) node.getChildAt(i);
-					nextIndex++;
 					renameFeatures(f, spl, nextIndex);
+//					nextIndex++;
 				}
 			}
 
@@ -271,13 +274,11 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 					|| node.getName().startsWith("_Gi")) {
 				String[] strs = node.getName().split("_");
 
-				// for (int i = 0; i < strs.length; i++) {
-				// System.out.println("strs[" + i + "]: " + strs[i]);
-				// }
 				strNewName.append("_");
 				for (int i = 1; i < strs.length; i++) {
 					if (i == 3) {
 						strNewName.append(nextIndex);
+						lastFeatureIndex++;
 					} else {
 						strNewName.append(strs[i]);
 					}
@@ -286,8 +287,6 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 					}
 				}
 				strNewName.deleteCharAt(0);
-				// System.out.println("OLD: " + node.getName() + " ---> NEW: "
-				// + strNewName.toString());
 				renameSequenceDiagram(node.getName(), strNewName.toString(),
 						spl);
 				node.setName(strNewName.toString());
@@ -316,21 +315,25 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 		}
 	}
 
+//	private int lastFeatureIndex(FeatureTreeNode feature) {
+//		String reliability = feature.getName();
+//		int answer; 
+//		if (reliability.matches("[0-1]\\.[0-9]*")) {
+//			answer = parseIndex(feature.getName());
+//			Enumeration<?> children = feature.children();
+//			while (children.hasMoreElements()) {
+//				Object obj = children.nextElement();
+//				FeatureTreeNode c = (FeatureTreeNode) obj;
+//				answer = Integer.max(answer, lastFeatureIndex(c));
+//			}
+//		} else {
+//			answer = 0;
+//		}
+//		return answer;
+//	}
+	
 	private int lastFeatureIndex(FeatureTreeNode feature) {
-		String reliability = feature.getName();
-		int answer; 
-		if (reliability.matches("[0-1]\\.[0-9]*")) {
-			answer = parseIndex(feature.getName());
-			Enumeration<?> children = feature.children();
-			while (children.hasMoreElements()) {
-				Object obj = children.nextElement();
-				FeatureTreeNode c = (FeatureTreeNode) obj;
-				answer = Integer.max(answer, lastFeatureIndex(c));
-			}
-		} else {
-			answer = 0;
-		}
-		return answer;
+		return lastFeatureIndex;
 	}
 
 	private int parseIndex(String name) {
