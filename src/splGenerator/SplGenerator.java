@@ -599,8 +599,10 @@ public class SplGenerator {
 
 		// setting SPLAR Feature Tree Information's parameters
 		if (fmParameters == null) {
+			System.out.println(" ENTREI!! ");
 			fmParameters = FeatureModelParameters
-					.getConfiguration(FeatureModelParameters.STANDARD_FEATURE_MODEL);
+//					.getConfiguration(FeatureModelParameters.STANDARD_FEATURE_MODEL);
+					.getConfiguration(FeatureModelParameters.EXPERIMENT_EVOLUTION);
 		}
 
 		engine.setFeatureModelSize(numberOfFeatures);

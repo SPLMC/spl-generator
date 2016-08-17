@@ -506,4 +506,8 @@ public class SPL implements Cloneable {
 		additionalCharacteristics .put(characteristic, value);
 	}
 
+	public HashMap<String, Integer> getAdditionalCharacteristics() {
+		return additionalCharacteristics;
+	}
+
 }

@@ -7,6 +7,7 @@ public abstract class FeatureModelParameters {
 	 */
 	public static final int STANDARD_FEATURE_MODEL = 0;
 	public static final int GHEZZI_FEATURE_MODEL = 1;
+	public static final int EXPERIMENT_EVOLUTION = 3;
 
 	/**
 	 * Variable Feature Model's parameters, according to SPLAR generator
@@ -42,6 +43,10 @@ public abstract class FeatureModelParameters {
 		case STANDARD_FEATURE_MODEL: 
 			answer = new StandardConfigurationSet(); 
 			break; 
+		
+		case EXPERIMENT_EVOLUTION:
+			answer = new ExperimentConfigurationSet();
+			break;
 			
 		default:
 			break;
