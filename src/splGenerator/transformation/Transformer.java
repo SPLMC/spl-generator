@@ -23,6 +23,8 @@ import tool.RDGNode;
 public class Transformer {
 
 	private HashMap<String, State> fdtmcStateById = new HashMap<String, State>();
+	private HashMap<State, ActivityDiagramElement> adElementByState = new HashMap<State, ActivityDiagramElement>();
+	private HashMap<ActivityDiagramElement, State> stateByAdElement = new HashMap<ActivityDiagramElement, State>();
 	private RDGNode root;
 
 	private int idxActivity = 0;
@@ -96,7 +98,7 @@ public class Transformer {
 		ActivityDiagramElement init = ad.getStartNode();
 		transformAdElement(init, f);
 
-		SPLFilePersistence.fdtmc2Dot(f, ad.getName());
+//		SPLFilePersistence.fdtmc2Dot(f, ad.getName());
 
 		return answer;
 	}
@@ -105,6 +107,12 @@ public class Transformer {
 			FDTMC f) {
 		State answer = null;
 
+		State isStateModeled = stateByAdElement.get(adElem); 
+		if (isStateModeled != null) {
+			answer = isStateModeled;
+			return answer;
+		}
+		
 		State source = null;
 		State isModeled;
 		String adClass = adElem.getClass().getSimpleName();
@@ -112,6 +120,7 @@ public class Transformer {
 		case "StartNode":
 			source = f.createInitialState();
 			State error = f.createErrorState();
+			stateByAdElement.put(adElem, source);
 
 			HashSet<Activity> nextActivities = new HashSet<Activity>();
 			for (Transition t : adElem.getTransitions()) {
@@ -124,9 +133,10 @@ public class Transformer {
 			}
 
 			for (Activity a : nextActivities) {
+				
 				State target = transformAdElement(a, f);
 				f.createTransition(source, target, "", Double.toString(1.0));
-				// source = transformAdElement(a, f);
+				stateByAdElement.put(a, target);
 			}
 			source.setLabel(FDTMC.INITIAL_LABEL);
 			answer = source;
@@ -136,17 +146,20 @@ public class Transformer {
 		case "Activity":
 			// 1st.: check if the activity is already modeled and its FDTMC is
 			// available
-			isModeled = fdtmcStateById.get(adElem.getElementName());
+			isModeled = stateByAdElement.get(adElem);
 			if (isModeled == null) {
 				// In case the activity was not modeled yet, we should model its
 				// associated sequence diagrams
 				Activity a = (Activity) adElem;
+				source = f.createState();
+				stateByAdElement.put(adElem, source);
+				fdtmcStateById.put(adElem.getElementName(), source);
+
 				for (SequenceDiagram s : a.getSequenceDiagrams()) {
 					SequenceDiagramTransformer sdt = new SequenceDiagramTransformer();
 					this.root.addDependency(sdt.transformSD(s));
 				}
-
-				source = f.createState();
+				
 				HashSet<ActivityDiagramElement> nextElement = new HashSet<ActivityDiagramElement>();
 				for (Transition t : adElem.getTransitions()) {
 					ActivityDiagramElement e = t.getTarget();
@@ -162,7 +175,6 @@ public class Transformer {
 									+ a.getSequenceDiagrams().getFirst()
 											.getName());
 				}
-				fdtmcStateById.put(adElem.getElementName(), source);
 				answer = source;
 			} else
 				answer = isModeled;
@@ -175,6 +187,7 @@ public class Transformer {
 			if (isModeled == null) {
 				source = f.createState();
 				source.setLabel("success");
+				stateByAdElement.put(adElem, source);
 				f.createTransition(source, source, "", Double.toString(1.0));
 				answer = source;
 			} else
@@ -187,6 +200,7 @@ public class Transformer {
 			isModeled = fdtmcStateById.get(adElem.getElementName());
 			if (isModeled == null) {
 				source = f.createState();
+				stateByAdElement.put(adElem, source);
 				for (Transition t : adElem.getTransitions()) {
 					State target = transformAdElement(t.getTarget(), f);
 					f.createTransition(source, target, t.getElementName(),
@@ -207,6 +221,7 @@ public class Transformer {
 			isModeled = fdtmcStateById.get(adElem.getElementName());
 			if (isModeled == null) {
 				source = f.createState();
+				stateByAdElement.put(adElem, source);
 				for (Transition t : adElem.getTransitions()) {
 					State target = transformAdElement(t.getTarget(), f);
 					f.createTransition(source, target, "", Double.toString(1.0));
@@ -268,6 +283,12 @@ public class Transformer {
 			State currentState, FDTMC fdtmc, ActivityDiagram ad) {
 		ActivityDiagramElement answer = null;
 
+		ActivityDiagramElement adElementIsModeled = adElementByState.get(currentState);
+		if (adElementIsModeled != null) {
+			answer = adElementIsModeled;
+			return answer;
+		}
+		
 		// remove error transitions leaving the current state
 		List<fdtmc.Transition> outgoingTransitions = fdtmc
 				.getTransitionsBySource(currentState);
@@ -287,6 +308,8 @@ public class Transformer {
 						ActivityDiagramElement.DECISION_NODE, "DecisionNode_"
 								+ idxDecision++);
 				incomingEdgesByState.put(adSource, 0);
+				adElementByState.put(currentState, adSource);
+				
 				for (fdtmc.Transition t : outgoingTransitions) {
 					ActivityDiagramElement adTarget = extractADElementFromFDTMC(
 							t.getTarget(), fdtmc, ad);
@@ -306,6 +329,7 @@ public class Transformer {
 						ActivityDiagramElement.ACTIVITY, "Activity_"
 								+ idxActivity++);
 				incomingEdgesByState.put(adSource, 0);
+				adElementByState.put(currentState, adSource);
 
 				//Identifying the transition's probability of the singleton 
 				//transition and creating the AD target element
@@ -336,6 +360,8 @@ public class Transformer {
 		} else if (currentState.getLabel().equalsIgnoreCase("initial")) {
 			ActivityDiagramElement adStartNode = ad.getStartNode();
 			incomingEdgesByState.put(adStartNode, 0);
+			adElementByState.put(currentState, adStartNode);
+			
 			for (fdtmc.Transition t : outgoingTransitions) {
 				State target = t.getTarget();
 				ActivityDiagramElement adTarget;
@@ -361,10 +387,12 @@ public class Transformer {
 					adTarget = ActivityDiagramElement.createElement(
 							ActivityDiagramElement.ACTIVITY, adProbability);
 					ad.addElement(adTarget);
+					incomingEdgesByState.put(adTarget, 0);
+					adElementByState.put(currentState, adTarget);
+					
 					Transition trans = adStartNode.createTransition(adTarget,
 							t.getProbability(), 1.0);
 					ad.addElement(trans);
-					incomingEdgesByState.put(adTarget, 0);
 
 					ActivityDiagramElement adSource = adTarget;
 					State source = target;
@@ -392,6 +420,7 @@ public class Transformer {
 			ActivityDiagramElement adEndNode = ActivityDiagramElement
 					.createElement(ActivityDiagramElement.END_NODE, "End node");
 			incomingEdgesByState.put(adEndNode, 0);
+			adElementByState.put(currentState, adEndNode);
 			ad.addElement(adEndNode);
 			answer = adEndNode;
 		} else if (currentState.getLabel().equalsIgnoreCase("error")) {
@@ -500,53 +529,70 @@ public class Transformer {
 			 *                       \-------> (  s  ) 
 			 *                        ""/1-nXX  errorFr
 			 */
-			if (t.getActionName().matches("[n][a-zA-Z0-9]+")
-					&& t.getProbability().equals("1.0")) {
-				State initFr = t.getTarget(), endFr, errorFr;
-				List<fdtmc.Transition> outTransInitFrag = fdtmc
-						.getTransitionsBySource(initFr);
-				for (fdtmc.Transition tr : outTransInitFrag) {
-					if (tr.getProbability().matches("[n][0-9]+")) {
-						endFr = tr.getTarget();
-
-						Fragment fr = new Fragment(tr.getProbability());
-						// REVIEW --> how to discover other kinds of fragments?
-						fr.setType(Fragment.OPTIONAL);
-						if (!fragmentByName.containsKey(tr.getProbability())) {
-							fragmentByName.put(fr.getName(), fr);
-						} else {
-							fr = fragmentByName.get(tr.getProbability());
+			if (t.getActionName() != null) {
+				if (t.getActionName().matches("[n][a-zA-Z0-9]+")
+						&& t.getProbability().equals("1.0")) {
+					State initFr = t.getTarget(), endFr, errorFr;
+					List<fdtmc.Transition> outTransInitFrag = fdtmc
+							.getTransitionsBySource(initFr);
+					for (fdtmc.Transition tr : outTransInitFrag) {
+						if (tr.getProbability().matches("[n][0-9]+")) {
+							endFr = tr.getTarget();
+							
+							Fragment fr = new Fragment(tr.getProbability());
+							// REVIEW --> how to discover other kinds of fragments?
+							fr.setType(Fragment.OPTIONAL);
+							if (!fragmentByName.containsKey(tr.getProbability())) {
+								fragmentByName.put(fr.getName(), fr);
+							} else {
+								fr = fragmentByName.get(tr.getProbability());
+							}
+							
+							//add the fragment at the sequence diagram
+							sd.addFragment(fr);
+							
+							//proceed building the sequence diagram from the next state
+							State next = fdtmc
+									.getTransitionsBySource(tr.getTarget()).get(0)
+									.getTarget();
+							extractSDElementFromFDTMC(next, fdtmc, sd);
+							
+						} else if (tr.getProbability().matches(
+								"[1][\\s]*[-][\\s]*[a-zA-Z0-9]+")) {
+							errorFr = tr.getTarget();
 						}
-						
-						//add the fragment at the sequence diagram
-						sd.addFragment(fr);
-
-						//proceed building the sequence diagram from the next state
-						State next = fdtmc
-								.getTransitionsBySource(tr.getTarget()).get(0)
-								.getTarget();
-						extractSDElementFromFDTMC(next, fdtmc, sd);
-
-					} else if (tr.getProbability().matches(
-							"[1][\\s]*[-][\\s]*[a-zA-Z0-9]+")) {
-						errorFr = tr.getTarget();
 					}
+					
+					/*
+					 * In case a transition has a real value associated with its
+					 * probability it represents a lifeline's reliability and thus
+					 * it must be considered as a message (synchronous, asynchronous
+					 * or reply) in the sequence diagram  
+					 */
+				} else if (t.getProbability().matches("[0-1]\\.[0-9]+")) {
+					Lifeline target = identifyLifelines(t);
+					//REVIEW: how can we substitute the mocklifeline? 
+					Lifeline source = mockLifeline;
+					int mType = identifyMessageType(t);
+					sd.createMessage(source, target, mType, t.getActionName(),
+							target.getReliability());
+					extractSDElementFromFDTMC(t.getTarget(), fdtmc, sd);
 				}
-				
-			/*
-			 * In case a transition has a real value associated with its
-			 * probability it represents a lifeline's reliability and thus
-			 * it must be considered as a message (synchronous, asynchronous
-			 * or reply) in the sequence diagram  
-			 */
-			} else if (t.getProbability().matches("^[0-1]\\.[0-9]+")) {
-				Lifeline target = identifyLifelines(t);
-				//REVIEW: how can we substitute the mocklifeline? 
-				Lifeline source = mockLifeline;
-				int mType = identifyMessageType(t);
-				sd.createMessage(source, target, mType, t.getActionName(),
-						target.getReliability());
-				extractSDElementFromFDTMC(t.getTarget(), fdtmc, sd);
+			} else { /* 
+					  * in the case transition's name is null, the FDTMC must not 
+					  * represent a fragment (so it will not have value equals to 1.0) 
+					  * and probably it represents a message whose name was not provided 
+					  * in the sequence diagram. 
+					  */
+				if (t.getProbability().matches("[0-1]\\.[0-9]+")) {
+					Lifeline target = identifyLifelines(t);
+					//REVIEW: how can we substitute the mocklifeline? 
+					Lifeline source = mockLifeline;
+					int mType = identifyMessageType(t);
+					sd.createMessage(source, target, mType, "",
+							target.getReliability());
+					extractSDElementFromFDTMC(t.getTarget(), fdtmc, sd);
+				}
 			}
 		}
 
@@ -576,43 +622,6 @@ public class Transformer {
 		return outgoingTransitions;
 	}
 
-	private State nextState(State st, FDTMC fdtmc) {
-		State answer = null;
-		List<fdtmc.Transition> transitions = fdtmc.getTransitionsBySource(st);
-		for (fdtmc.Transition t : transitions) {
-			if (t.getTarget() == fdtmc.getErrorState()) {
-				transitions.remove(t);
-			}
-		}
-
-		if (transitions.size() == 1) {
-			answer = transitions.get(0).getTarget();
-			System.out.println(answer.getIndex());
-		}
-		return answer;
-	}
-
-	private String nextTransitionProbability(fdtmc.Transition t, FDTMC fdtmc) {
-		String answer = null;
-
-		List<fdtmc.Transition> transitions = fdtmc.getTransitionsBySource(t
-				.getTarget());
-		for (fdtmc.Transition tr : transitions) {
-			if (tr.getTarget() == fdtmc.getErrorState()) {
-				transitions.remove(tr);
-			}
-			if (tr.getProbability().matches("[a-z]+[a-zA-Z0-9]*")) {
-				answer = tr.getProbability();
-			}
-		}
-
-		if (transitions.size() == 1) {
-			String probability = transitions.get(0).getProbability();
-			answer = probability;
-		}
-
-		return answer;
-	}
 
 	/**
 	 * This auxiliary method has the role of identifying which 
