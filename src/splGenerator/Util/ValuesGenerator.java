@@ -36,7 +36,7 @@ public class ValuesGenerator {
 			double value = minReliabibilityValue + (maxReliabilityValue - minReliabibilityValue)
 					* r.nextDouble();
 			BigDecimal decimal = new BigDecimal(value); 
-			value = decimal.setScale(9, BigDecimal.ROUND_HALF_UP).doubleValue();
+			value = decimal.setScale(reliabilityPrecision, BigDecimal.ROUND_HALF_UP).doubleValue();
 			boolean answer = reliabilityValues.add(value);
 			if (answer == true)
 				idxValues++;
