@@ -49,6 +49,7 @@ public class VariableFragmentSize extends VariableBehavioralParameters {
 			// 3rd step: for each transformation applied, we must create a SPL
 			// object, add it to the set of SPLs created (represented by a
 			// LinkedList) and then return the set of SPLs.
+			addCharacteristic(temp, currentValue);
 			answer.add(temp);
 			next = temp;
 			currentValue += variationStep; // increase the current value by the
@@ -56,6 +57,12 @@ public class VariableFragmentSize extends VariableBehavioralParameters {
 		}
 
 		return answer;
+	}
+	
+	
+	@Override
+	public void addCharacteristic(SPL temp, int value) {
+		temp.addCharacteristic("fragmentSize", value);
 	}
 
 	/**

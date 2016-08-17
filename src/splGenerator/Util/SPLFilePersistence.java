@@ -1,23 +1,17 @@
 package splGenerator.Util;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import com.sun.org.apache.xpath.internal.operations.And;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import fdtmc.FDTMC;
 import fdtmc.State;
@@ -25,7 +19,6 @@ import fdtmc.Transition;
 import splGenerator.SPL;
 import splGenerator.transformation.Transformer;
 import splar.core.fm.FeatureModel;
-import splar.core.fm.FeatureTreeNode;
 import tool.RDGNode;
 
 public class SPLFilePersistence {
@@ -34,7 +27,7 @@ public class SPLFilePersistence {
 	private static String cnfFilePrefix = "cnf_";
 	private static String rdgFilePrefix = "rdg_";
 	private static String fdtmcFilePrefix = "fdtmc_";
-	private static String dotFilePrefix = "dot_";
+//	private static String dotFilePrefix = "dot_";
 	private static String splName = "spl";
 
 	/**
@@ -139,13 +132,7 @@ public class SPLFilePersistence {
 		Path a = null;
 		// Persist the dot content into a file
 		try {
-			
 			a = Files.write(path, fileContent);
-//			FileWriter fl = new FileWriter(modelsPath + fdtmcFilePrefix + name
-//					+ ".dot");
-//			BufferedWriter buffer = new BufferedWriter(fl);
-//			buffer.write(builder.toString());
-//			buffer.close();
 		} catch (IOException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -235,12 +222,10 @@ public class SPLFilePersistence {
 
 	public static void persistSPLs(LinkedList<SPL> spls) {
 		String ancientModelsPath = modelsPath;
-		System.out.println(modelsPath);
 		for (SPL spl : spls) {
 			int index = spls.indexOf(spl); 
 			String path = modelsPath + index + "/";
 			modelsPath = path;
-//			System.out.println(modelsPath);
 			File dir = new File(path); 
 			dir.mkdirs(); 
 			
@@ -258,7 +243,6 @@ public class SPLFilePersistence {
 			//print the featureIDE files
 			PrintStream oldOut = java.lang.System.out;
 			String filePath = dir.getAbsolutePath() + "/" + "fmIDE_" + index + ".xml";
-			System.out.println(filePath);
 			File fOut = new File(filePath);
 			
 			try {
@@ -271,15 +255,46 @@ public class SPLFilePersistence {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-			
-			
-			
-//			System.out.println(spl.getFeatureModel().dumpFeatureIdeXML());
-			
-			
 			java.lang.System.setOut(oldOut);
 			modelsPath = ancientModelsPath;
 		}
+		
+		generateListOfSPLs(spls);
+	}
+
+	private static void generateListOfSPLs(LinkedList<SPL> spls) {
+		StringBuilder chars = new StringBuilder();
+		for (SPL spl : spls) {
+			HashMap<String, Integer> ch = spl.getAdditionalCharacteristics();
+			SortedSet<String> keys = new TreeSet<String>(ch.keySet());
+			chars.append(spl.getName() + ',');
+			chars.append("<<UML_Behavioral_Model_fileName>>,");
+			chars.append("<<CNF_FM_fileName>>,");
+			for (String key : keys) {
+				chars.append(key);
+				chars.append(',');
+				chars.append(ch.get(key));
+				chars.append(',');
+			}
+			chars.append('\n');
+		}
+		
+		PrintStream ancientStream = System.out;
+		File dir= new File(modelsPath);
+		String filePath = dir.getAbsolutePath() + "/available_spl" ;
+		File fOut = new File(filePath);
+		System.out.println(filePath);
+		try {
+			PrintStream p = new PrintStream(fOut);
+			java.lang.System.setOut(p);
+			System.out.print(chars);
+			p.flush();
+			p.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		java.lang.System.setOut(ancientStream);
+		
 	}
 
 	public static void setModelsPath(String path) {

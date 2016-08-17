@@ -64,6 +64,8 @@ public class VariableActivities extends VariableBehavioralParameters {
 			for (Activity act : createdActivities) {
 				allocateActivityRandomly2(act, activityDiagram);
 			}
+			
+			addCharacteristic(temp, currentValue);
 
 			// 4th step: add the variation to the set of generated SPLs.
 			answer.add(temp);
@@ -72,6 +74,12 @@ public class VariableActivities extends VariableBehavioralParameters {
 		}
 
 		return answer;
+	}
+	
+	
+	@Override
+	public void addCharacteristic(SPL temp, int value) {
+		temp.addCharacteristic("activities", value);
 	}
 
 	private void allocateActivityRandomly2(Activity act,
@@ -88,6 +96,7 @@ public class VariableActivities extends VariableBehavioralParameters {
 		// 3rd step: choose one transition of this activity to change in order
 		// to accommodate the new activity
 		Object[] setOfTransitions = source.getTransitions().toArray();
+		System.out.println("source.transitions=" +source.getTransitions().size());
 		int indexTransitions = new Random().nextInt(source.getTransitions()
 				.size());
 		Transition trans = (Transition) setOfTransitions[indexTransitions];
@@ -153,4 +162,5 @@ public class VariableActivities extends VariableBehavioralParameters {
 		Lifeline answer = (Lifeline) lifelines[position];
 		return answer;
 	}
+
 }

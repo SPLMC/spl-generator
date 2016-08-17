@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import splGenerator.Util.SPLFilePersistence;
@@ -61,9 +62,9 @@ public abstract class VariableBehavioralParameters {
 			break;
 
 		case NUMBEROFFEATURES:
-			answer = new VariableNumberOfFeatures(); 
-			break; 
-			
+			answer = new VariableNumberOfFeatures();
+			break;
+
 		default:
 			answer = null;
 			break;
@@ -78,6 +79,17 @@ public abstract class VariableBehavioralParameters {
 	protected int currentValue;
 	protected SPLGeneratorParameters generatorParameters;
 
+	/**
+	 * This method is responsible for adding in the evolved models, the
+	 * characteristics which were added in the new model.
+	 *
+	 * @param temp
+	 *            the software product line that will receive the evolution's
+	 *            characteristic
+	 * @param value
+	 *            the value which characterizes the model's evolution
+	 */
+	public abstract void addCharacteristic(SPL temp, int value);
 
 	public VariableBehavioralParameters() {
 		this.minValue = 0;
@@ -219,6 +231,5 @@ public abstract class VariableBehavioralParameters {
 		}
 		return answer;
 	}
-
 
 }

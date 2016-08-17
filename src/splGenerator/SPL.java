@@ -3,6 +3,7 @@ package splGenerator;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -25,9 +26,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import splGenerator.Util.SPLFilePersistence;
 import splGenerator.parsing.ActivityDiagramParser;
 import splGenerator.parsing.SequenceDiagramParser;
+import splar.core.fm.FeatureGroup;
 import splar.core.fm.FeatureModel;
+import splar.core.fm.FeatureModelException;
+import splar.core.fm.FeatureTreeNode;
+import splar.core.fm.GroupedFeature;
+import splar.core.fm.RootNode;
+import splar.core.fm.SolitaireFeature;
+import splar.core.fm.TreeNodeRendererFactory;
+import splar.core.fm.randomization.Random3CNFFeatureModel;
+import splar.core.fm.randomization.RandomFeatureModel2;
 import tool.CyclicRdgException;
 import tool.RDGNode;
 
@@ -49,6 +60,8 @@ public class SPL implements Cloneable {
 	private SplGenerator splGenerator;
 
 	private static SPL instance;
+
+	private HashMap<String, Integer> additionalCharacteristics = new HashMap<String, Integer>();
 
 	public SPL(String name) {
 		this();
@@ -323,6 +336,174 @@ public class SPL implements Cloneable {
 		t.linkBehavioralElements(answer);
 
 		return answer;
+	}
+
+	public static FeatureModel readFeatureIDEfile(String initialFeatureModelPath) {
+
+		FeatureModel answer = null;
+		try {
+			File xmlFeatureIDE = new File(initialFeatureModelPath);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(xmlFeatureIDE);
+			// doc.getDocumentElement().normalize();
+
+			// Document read, now let's parse it!
+			Node structuralTag = doc.getElementsByTagName("struct").item(0)
+					.getChildNodes().item(1);
+			answer = new PersonalFeatureModel(structuralTag);
+			
+			FeatureTreeNode root = ((PersonalFeatureModel)answer).buildFM();
+			
+			answer.dumpXML();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return answer;
+	}
+	
+//	public static FeatureModel readFeatureIDEfile(String initialFeatureModelPath) {
+//
+//		FeatureModel answer = null;
+//		try {
+//			File xmlFeatureIDE = new File(initialFeatureModelPath);
+//			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+//					.newInstance();
+//			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//			Document doc = dBuilder.parse(xmlFeatureIDE);
+//			// doc.getDocumentElement().normalize();
+//
+//			// Document read, now let's parse it!
+//			Node structuralTag = doc.getElementsByTagName("struct").item(0)
+//					.getChildNodes().item(1);
+//			FeatureTreeNode root = getFeatureModelStructure(structuralTag);
+//			answer = new RandomFeatureModel2("name", 2, 0, 100, 0, 0, 1, 2, 1, 1);
+//			answer.setRoot(root);
+//			answer.saveModel();
+//			answer.dumpXML();
+//			System.out.println(answer.dumpFeatureIdeXML());
+//		} catch (ParserConfigurationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SAXException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return answer;
+//	}
+
+	private static FeatureTreeNode getFeatureModelStructure(Node structuralTag) {
+		FeatureTreeNode answer = null;
+		String isAbstract = null;
+		String isMandatory = null;
+		String featureName = null;
+
+		// 1st step: discover the kind of node
+		if (structuralTag.getAttributes().getNamedItem("name").getNodeValue()
+				.equalsIgnoreCase("root")) { // ROOT
+			answer = new RootNode("root", "root",
+					TreeNodeRendererFactory.createRootRenderer());
+			featureName = structuralTag.getAttributes().getNamedItem("name")
+					.getNodeValue();
+			answer.setName(featureName);
+		}
+		if (structuralTag.getNodeName().equalsIgnoreCase("feature")) { // LEAF
+		// if (isMandatory.equalsIgnoreCase("true"))
+			featureName = structuralTag.getAttributes().getNamedItem("name")
+					.getNodeValue();
+			answer = new SolitaireFeature(false, featureName, featureName,
+					TreeNodeRendererFactory.createOptionalRenderer());
+		} else if (structuralTag.getNodeName().equalsIgnoreCase("and")
+				|| structuralTag.getNodeName().equalsIgnoreCase("or")) { // GROUPED
+																			// FEATURE
+																			// (AND
+																			// /
+																			// OR)
+			FeatureTreeNode node;
+			featureName = structuralTag.getAttributes().getNamedItem("name")
+					.getNodeValue();
+			List<Node> children = pruneNonElementNodes(structuralTag
+					.getChildNodes());
+			int numChildren = children.size();
+
+			int lower = 1;
+			int upper = -1;
+
+			node = new FeatureGroup(featureName, featureName, lower, upper,
+					TreeNodeRendererFactory.createFeatureGroupRenderer());
+			for (int i = 0; i < numChildren; i++) {
+				FeatureTreeNode child = getFeatureModelStructure(children
+						.get(i));
+				node.add(child);
+			}
+			answer = node;
+		} else if (structuralTag.getNodeName().equalsIgnoreCase("alt")) { // ALTERNATIVE
+																			// FEATURE
+			FeatureTreeNode node;
+			featureName = structuralTag.getAttributes().getNamedItem("name")
+					.getNodeValue();
+//			NodeList children = structuralTag.getChildNodes();
+			List<Node> children = pruneNonElementNodes(structuralTag.getChildNodes());
+			
+			int numChildren = children.size();
+
+			int lower = 1;
+			int upper = 1;
+
+			node = new FeatureGroup(featureName, featureName, lower, upper,
+					TreeNodeRendererFactory.createGroupedRenderer());
+			for (int i = 0; i < children.size(); i++) {
+				FeatureTreeNode child = getFeatureModelStructure(children.get(i));
+				node.add(child);
+			}
+			answer = node;
+		}
+
+		if (structuralTag.getAttributes().getNamedItem("abstract") != null) {
+			isAbstract = structuralTag.getAttributes().getNamedItem("abstract")
+					.getNodeValue();
+			answer.setProperty("abstract", isAbstract);
+		}
+		if (structuralTag.getAttributes().getNamedItem("mandatory") != null) {
+			System.out.println("Is mandatory" + featureName); // <<-----
+			isMandatory = structuralTag.getAttributes()
+					.getNamedItem("mandatory").getNodeValue();
+			System.out.println(isMandatory);
+			answer.setProperty("mandatory", isMandatory);
+		}
+
+		return answer;
+	}
+
+	private static List<Node> pruneNonElementNodes(NodeList children) {
+		List<Node> answer = new LinkedList<Node>();
+		for (int i = 0; i < children.getLength(); i++) {
+			Node n = children.item(i);
+			if (n.getNodeType() == Node.ELEMENT_NODE
+					&& !n.getNodeName().equalsIgnoreCase("description")) {
+				answer.add(n);
+			}
+		}
+		return answer;
+	}
+
+	public void setModelsPath(String modelsPath) {
+		this.modelsPath = modelsPath;
+	}
+
+	public void addCharacteristic(String characteristic, int value) {
+		additionalCharacteristics .put(characteristic, value);
 	}
 
 }

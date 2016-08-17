@@ -74,9 +74,11 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 			int nextIndex = lastFeatureIndex;
 
 			renameFeatures(temp.getFeatureModel().getRoot(), temp, nextIndex);
-			createFeatureIDEFile(temp, "");
+//			createFeatureIDEFile(temp, "");
 
 			temp = appendSPL(temp, currentVersion);
+			addCharacteristic(temp, currentValue);
+			
 
 			answer.add(temp);
 
@@ -85,6 +87,12 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 		}
 		return answer;
 	}
+	
+	@Override
+	public void addCharacteristic(SPL temp, int value) {
+		temp.addCharacteristic("feature", value);
+	}
+
 
 	private String printFeatureModel(FeatureTreeNode feature) {
 		StringBuilder answer = new StringBuilder();
@@ -131,7 +139,7 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 		// changed.
 		answer = createSplDeepCopy(currentVersion);
 
-		createFeatureIDEFile(answer, "beforeAppend");
+//		createFeatureIDEFile(answer, "beforeAppend");
 
 		// 2nd step: obtain all features to be added in the current version of
 		// the spl.
@@ -433,5 +441,6 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 		String answer = str.toString();
 		System.out.println(answer);
 	}
+
 
 }

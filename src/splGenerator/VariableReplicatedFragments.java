@@ -77,12 +77,18 @@ public class VariableReplicatedFragments extends VariableBehavioralParameters {
 				position = new Random().nextInt(s.getElements().size());
 				s.getElements().add(position, replicated);
 			}
+			addCharacteristic(temp, currentValue);
 			answer.add(temp);
 			seed = createSplDeepCopy(temp);
 			currentValue += variationStep;
 		} while (currentValue <= maxValue);
 
 		return answer;
+	}
+	
+	@Override
+	public void addCharacteristic(SPL temp, int value) {
+		temp.addCharacteristic("replicatedFragments", value);
 	}
 
 	private HashSet<Fragment> getAllSplFragments(SPL spl) {

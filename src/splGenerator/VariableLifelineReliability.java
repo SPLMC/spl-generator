@@ -54,11 +54,18 @@ public class VariableLifelineReliability extends VariableBehavioralParameters {
 					transformMessageReliability(s);
 				}
 			}
+			addCharacteristic(temp, currentValue);
 			answer.add(temp);
 			seed = temp;
 			currentValue += variationStep;
 		}
 		return answer;
+	}
+	
+	
+	@Override
+	public void addCharacteristic(SPL temp, int value) {
+		temp.addCharacteristic("lifelineReliability", value);
 	}
 
 	/**
