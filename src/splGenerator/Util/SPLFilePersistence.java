@@ -223,7 +223,8 @@ public class SPLFilePersistence {
 	public static void persistSPLs(LinkedList<SPL> spls) {
 		String ancientModelsPath = modelsPath;
 		for (SPL spl : spls) {
-			int index = spls.indexOf(spl); 
+			int index = spls.indexOf(spl);
+			index++; //Number of model starts from 1.
 			String path = modelsPath + index + "/";
 			modelsPath = path;
 			File dir = new File(path); 
@@ -234,7 +235,7 @@ public class SPLFilePersistence {
 			RDGNode r = t.transformAD(spl.getActivityDiagram());
 			rdg2Dot(r, "rdg");
 			
-			spl.setName(Integer.toString(spls.indexOf(spl)));
+			spl.setName(Integer.toString(spls.indexOf(spl) + 1));
 			
 			spl.getXmlRepresentation();
 			
@@ -268,8 +269,8 @@ public class SPLFilePersistence {
 			HashMap<String, Integer> ch = spl.getAdditionalCharacteristics();
 			SortedSet<String> keys = new TreeSet<String>(ch.keySet());
 			chars.append(spl.getName() + ',');
-			chars.append("<<UML_Behavioral_Model_fileName>>,");
-			chars.append("<<CNF_FM_fileName>>,");
+			chars.append(spls.indexOf(spl) + 1 + "_behavioral_model.xml,");
+			chars.append(spls.indexOf(spl) + 1 + ".txt,");
 			for (String key : keys) {
 				chars.append(key);
 				chars.append(',');
