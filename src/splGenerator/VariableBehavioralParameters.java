@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import splGenerator.Util.SPLFilePersistence;
-import jdk.nashorn.internal.ir.WhileNode;
 
 /**
  * This class is responsible for generating models considering the variation of

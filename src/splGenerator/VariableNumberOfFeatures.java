@@ -19,6 +19,8 @@ import java.util.Random;
 import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
+import javax.swing.tree.TreeNode;
+
 import splGenerator.Util.SPLFilePersistence;
 import splar.core.fm.FeatureModel;
 import splar.core.fm.FeatureTreeNode;
@@ -103,7 +105,7 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 				+ '\n');
 
 		int childrenCount = feature.getChildCount();
-		Enumeration<FeatureTreeNode> children = feature.children();
+		Enumeration<TreeNode> children = feature.children();
 		while (childrenCount > 0) {
 			FeatureTreeNode f = (FeatureTreeNode) children.nextElement();
 			answer.append(printFeatureModel(f));

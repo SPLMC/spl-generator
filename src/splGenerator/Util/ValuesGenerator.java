@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Random;
 
-import com.sun.org.apache.xpath.internal.operations.And;
-import com.sun.xml.internal.ws.api.pipe.NextAction;
-
 public class ValuesGenerator {
 
 	private static HashSet<Double> reliabilityValues;

@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.XPath.Step;
-
 public class VariableReplicatedFragments extends VariableBehavioralParameters {
 
 	HashMap<Integer, LinkedList<Fragment>> fragmentsBySize;
