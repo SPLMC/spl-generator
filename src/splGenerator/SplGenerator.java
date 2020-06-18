@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import splGenerator.Util.SPLFilePersistence;
 import splGenerator.Util.ValuesGenerator;
@@ -33,13 +34,14 @@ public class SplGenerator {
 	private ReanaFeatureModel reanaFm;
 	private splar.core.fm.FeatureModel splarFm;
 	private ConfigurationKnowledge ck;
+	private int flag = 0;
 
 	/**
 	 * GENERATORS GENERAL PARAMETERS The following attributes represent the
 	 * general attributes of the SPL generator. Here we set the folders and
 	 * files names used by the generator.
 	 */
-	private String modelsPath = "/home/andlanna/workspace/spl-generator/src/generatedModels";
+	private String modelsPath = "/home/joao/Documentos/spl-generator/src/splGenerator/";
 	private String fmFilePrefix = "fm_";
 	private String umlFilePrefix = "uml_";
 
@@ -144,6 +146,7 @@ public class SplGenerator {
 		// parameters defined by the user.
 		// creating the sequence diagrams elements before creating the sequence
 		// diagrams
+		System.out.println("Teste");
 		ValuesGenerator.generateRandomReliabilityValues(numberOfLifelines);
 		for (int i = 0; i < numberOfLifelines; i++) {
 			SequenceDiagramElement e;
@@ -153,7 +156,6 @@ public class SplGenerator {
 			((Lifeline) e)
 					.setReliability(ValuesGenerator.getReliabilityValue());
 		}
-
 		// creating the fragments of the sequence diagram, one fragment by
 		// feature
 //		System.out.println("|listOfPendingFragments| = " + listOfPendingFragments.size());
@@ -169,7 +171,6 @@ public class SplGenerator {
 		// 3rd step: create the activity diagram describing the coarse-grained
 		// behavior of the software product line.
 		ActivityDiagram ad = generateActivityDiagramStructure();
-
 		// 4th step: assign the initial elements to the SPL object
 		SPL spl = SPL.createSPL("SPL_model_" + idxModel++);
 		spl.setFeatureModel(fm);
@@ -231,6 +232,7 @@ public class SplGenerator {
 	 */
 	private Fragment symmetricModelsCreation(FeatureTreeNode feature) {
 		Fragment fr = randomFragment();
+		System.out.println("heyhou");
 		SequenceDiagram sd = randomSequenceDiagram(
 				"SD_" + idxSequenceDiagram++, feature.getName());
 		fr.addSequenceDiagram(sd);
@@ -332,6 +334,7 @@ public class SplGenerator {
 
 		// generate the Sequence Diagram related to the Root feature
 		Feature root = fm.getRoot();
+		System.out.println("heyhou22");
 		SequenceDiagram sdRoot = randomSequenceDiagram("root", "true");
 		System.out.println(sdRoot.toString());
 		ck.associateArtifact(root, sdRoot);
@@ -408,14 +411,41 @@ public class SplGenerator {
 	private SequenceDiagram randomSequenceDiagram(String name, String guard) {
 		int idxAltFragments = 0;
 		int idxLoopFragments = 0;
+		Scanner scan = new Scanner(System.in);
 
 		SequenceDiagram sd = SequenceDiagram.createSequenceDiagram(name, guard);
 		Lifeline source = randomLifeline();
 		// System.out.println("Fragment size = " + fragmentSize);
+		
 		for (int i = 0; i < fragmentSize; i++) {
 			Lifeline target = randomLifeline();
-			sd.createMessage(source, target, Message.SYNCHRONOUS, "T"
+			Message mensagemteste = sd.createMessage(source, target, Message.SYNCHRONOUS, "T"
 					+ idxActTransition++, target.getReliability());
+			if(flag == 0) {
+				String testandomensagem = mensagemteste.getName();
+				double probmensagem = mensagemteste.getProbability();
+				String nomeorigem = source.getName();
+				String nomealvo = target.getName();
+				System.out.println(testandomensagem);
+				System.out.println(probmensagem);
+				System.out.println(nomeorigem);
+				System.out.println(nomealvo);
+				System.out.println("\n");
+				source = target;
+			}
+		}
+		
+		if(flag==0) {
+			String ss = scan.next();
+			source = (Lifeline) Lifeline.getElementByName(ss);
+			//source = randomLifeline();
+			
+			String st = scan.next();
+			Lifeline target = (Lifeline) Lifeline.getElementByName(st);
+			
+			createTestMessage(sd, source, target);
+			
+			
 			source = target;
 		}
 
@@ -437,10 +467,34 @@ public class SplGenerator {
 			sd.getElements().add(position, f);
 			idxLoopFragments++;
 		}
-
+		
+		flag = 1;
 		return sd;
 	}
 
+	
+	private void createTestMessage(SequenceDiagram sd, Lifeline source, Lifeline target) {
+		
+		//Lifeline target = randomLifeline();
+		Message mensagemteste = sd.createMessage(source, target, Message.SYNCHRONOUS, "T"
+				+ idxActTransition++, target.getReliability());
+		
+		System.out.println("MENSAGEM_CRIADA");
+		String testandomensagem = mensagemteste.getName();
+		double probmensagem = mensagemteste.getProbability();
+		String nomeorigem = source.getName();
+		String nomealvo = target.getName();
+		System.out.println(testandomensagem);
+		System.out.println(probmensagem);
+		System.out.println(nomeorigem);
+		System.out.println(nomealvo);
+		System.out.println("FIM DA MSG CRIADA");
+		System.out.println("\n");
+		
+		source = target;
+	}
+	
+	
 	private Fragment createLoopFragment(String name) {
 		Fragment f = (Fragment) SequenceDiagramElement.createElement(
 				SequenceDiagramElement.FRAGMENT, "");
@@ -541,6 +595,7 @@ public class SplGenerator {
 		// 3rd step: ensure each activity has an empty sequence diagram
 		// associated with it
 		for (Activity a : ad.getSetOfActivities()) {
+			System.out.println(a.getElementName());
 			// SequenceDiagram s = SequenceDiagram.createSequenceDiagram(
 			// "SD_" + idxSequenceDiagram++,
 			// "true");

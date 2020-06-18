@@ -313,7 +313,7 @@ public class GhezzisWorkSimulationTest {
 
 	@Test
 	public void testFMVariation() {
-		String filePath = "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/";
+		String filePath = "/home/joao/Documentos/spl-generator/src/splGenerator/";
 		String fileSufix = ".xml";
 
 		SplGenerator generator = SplGenerator.newInstance();

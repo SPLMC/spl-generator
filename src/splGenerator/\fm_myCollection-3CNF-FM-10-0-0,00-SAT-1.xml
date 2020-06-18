@@ -1,0 +1,53 @@
+<feature_model name="fm_myCollection-3CNF-FM-10-0-0,00-SAT-1">
+<meta>
+<data name="description">This is a 3-CNF Feature Model generated automatically</data>
+<data name="creator">SPLOT Feature Model Generator</data>
+<data name="email"></data>
+<data name="date">Wed Jun 17 20:50:32 BRT 2020</data>
+<data name="department">SPLOT Project</data>
+<data name="organization">University of Waterloo</data>
+<data name="address"></data>
+<data name="phone"></data>
+<data name="website">http://www.splot-research.org/</data>
+<data name="reference">http://www.splot-research.org/</data>
+</meta>
+<feature_tree>
+:r R(R)
+	:g _Gi__1(_Gi__1) [1,*] 
+		: g_1_1(g_1_1)
+		: g_1_2(g_1_2)
+	:o o_2(o_2)
+	:g _Gi__3(_Gi__3) [1,*] 
+		: g_3_1(g_3_1)
+		: g_3_2(g_3_2)
+	:g _Gi__4(_Gi__4) [1,*] 
+		: g_4_1(g_4_1)
+		: g_4_2(g_4_2)
+	:o o_5(o_5)
+	:o o_6(o_6)
+</feature_tree>
+<constraints>
+</constraints>
+</feature_model>
+<!--
+*************************************************************
+FEATURE TREE STATISTICS
+  Model name.: fm_myCollection-3CNF-FM-10-0-0,00-SAT-1
+  tree depth.: 2
+  #root......: 1
+  #opt.......: 3
+  #man.......: 0
+  #grouped...: 6
+  #grouped [1,1]: 0
+  #grouped [1,n]: 6
+  #fgrp [1,1]: 0 (exclusive-OR)
+  #fgrp [1,N]: 3 (inclusive-OR)
+  #total features: 10
+  #total nodes: 13
+*************************************************************
+CROSS-TREE CONSTRAINTS (Random 3-CNF Formula)
+  CTC Representativeness (CTCR): 0,0%
+  Number of 3-CNF clauses......: 0
+  CTC clause density specified.: 0,00
+*************************************************************
+-->

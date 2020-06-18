@@ -119,7 +119,7 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 		String x = temp.getFeatureModel().dumpFeatureIdeXML();
 		try {
 			File f = new File(
-					"/home/andlanna/workspace/spl-generator/src/generatedModels/"
+					"/home/joao/Documentos/spl-generator/src/splGenerator/"
 					// "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/"
 							+ currentValue + "_" + obs + ".xml");
 			PrintStream p = new PrintStream(f);
