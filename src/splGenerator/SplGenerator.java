@@ -156,6 +156,7 @@ public class SplGenerator {
 			((Lifeline) e)
 					.setReliability(ValuesGenerator.getReliabilityValue());
 		}
+		
 		// creating the fragments of the sequence diagram, one fragment by
 		// feature
 //		System.out.println("|listOfPendingFragments| = " + listOfPendingFragments.size());
@@ -167,6 +168,14 @@ public class SplGenerator {
 			f.setType(Fragment.OPTIONAL);
 			listOfPendingFragments.add(f);
 		}
+		
+		Fragment fteste = (Fragment) Fragment.createElement(SequenceDiagramElement.FRAGMENT, "Fragment_Teste");
+		fteste.setType(Fragment.OPTIONAL);
+		listOfPendingFragments.add(fteste);
+		String nome = fteste.getName();
+		System.out.println(nome);
+		
+		Fragment.deleteElement(nome);
 
 		// 3rd step: create the activity diagram describing the coarse-grained
 		// behavior of the software product line.

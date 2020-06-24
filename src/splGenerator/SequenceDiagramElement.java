@@ -1,6 +1,10 @@
 package splGenerator;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,7 +56,8 @@ public abstract class SequenceDiagramElement {
 			break;
 		}
 		return e;
-	} 
+	}
+	
 	
 	public SequenceDiagramElement(String name) {
 		this.name = name;
@@ -65,6 +70,27 @@ public abstract class SequenceDiagramElement {
 	public static SequenceDiagramElement getElementByName(String elementName) {
 		return elements.get(elementName);
 	}
+
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public static void deleteElement(String name) {
+		System.out.println("Sou lindo");
+			
+			Set<Entry<String, SequenceDiagramElement>> entrySet = elements.entrySet();
+			 
+		    // Obtaining an iterator for the entry set
+		    Iterator<Entry<String, SequenceDiagramElement>> it = entrySet.iterator();
+		    // Iterate through HashMap entries(Key-Value pairs)
+		    while(it.hasNext()){
+		    	Entry<String, SequenceDiagramElement> me = it.next();
+		    	System.out.println(me);
+		    	if (me.getKey() == name) {
+					System.out.println("Removido");
+					it.remove();
+					System.out.println("Removido2");
+				}
+		   }
+		}
 
 	public abstract Element getDOM(Document doc) ;
 
