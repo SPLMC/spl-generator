@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 import splGenerator.Activity;
 import splGenerator.ActivityDiagram;
@@ -26,12 +27,15 @@ import splar.core.fm.randomization.Random3CNFFeatureModel;
 import splar.core.fm.randomization.RandomFeatureModel2;
 import tool.RDGNode;
 
+
 public class CommandLineInterface {
 
 	private static final ActivityDiagram NULL = null;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		Scanner scan = new Scanner(System.in);
 		
 		SplGenerator generator = SplGenerator.newInstance();
 
@@ -54,13 +58,56 @@ public class CommandLineInterface {
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
 				SplGenerator.SYMMETRIC, NULL);
-
-		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		
 		//Pega o diagrama de atividades
 		ActivityDiagram evolutioned = spl.getActivityDiagram();
 		System.out.println(evolutioned.getName());
 		
+		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
+		
+		int option = 1;
+		
+		//Menu de evolução
+		while(option!=0) {
+			System.out.println("Boas vindas ao SPL generator. Deseja fazer alguma alteração nos modelos UML ou manter o estado atual dele?");
+			System.out.println("1- Fazer alteração");
+			System.out.println("2- Manter estado atual");
+			System.out.println("0- Sair");
+			
+			String input = scan.nextLine();
+			option = Integer.parseInt(input);
+			
+			System.out.println(option);
+			
+			switch(option) {
+			case 1:
+				System.out.println("Alteração feita");
+				
+				evolutioned.setName("Atividade_Suprema");
+				
+				SPL spl2 = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, evolutioned);
+				
+				ActivityDiagram evolutioned2 = spl2.getActivityDiagram();
+				System.out.println(evolutioned2.getName());
+				
+				spl2.getXmlRepresentation();
+				
+				spl = spl2;
+				continue;
+			case 2:
+				System.out.println(option);
+				System.out.println("Sem alteração");
+				spl.getXmlRepresentation();
+				continue;
+				
+			case 0:
+				break;
+			default:
+				System.out.println("Insira um valor válido");
+			}
+			root = new Transformer().transformAD(spl.getActivityDiagram());
+		}
 		evolutioned.setName("Atividade_Suprema");
 		
 		SPL spl2 = generator.generateSPL(SplGenerator.SPLOT,
