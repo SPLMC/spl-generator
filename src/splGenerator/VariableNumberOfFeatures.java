@@ -27,6 +27,7 @@ import splar.core.fm.FeatureTreeNode;
 
 public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 
+	private static final ActivityDiagram NULL = null;
 	FeatureModelParameters fmParameters = FeatureModelParameters
 			.getConfiguration(FeatureModelParameters.EXPERIMENT_EVOLUTION);
 	private int fragmentSize;
@@ -71,7 +72,7 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 			generator.setNumberOfLoopsFragments(this.numberOfLoopFragments);
 
 			SPL temp = generator.generateSPL(SplGenerator.SPLOT,
-					SplGenerator.SYMMETRIC);
+					SplGenerator.SYMMETRIC,NULL);
 
 			int nextIndex = lastFeatureIndex;
 

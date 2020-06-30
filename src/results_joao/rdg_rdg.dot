@@ -1,9 +1,9 @@
 digraph graphname {
 AD_SPL_0[shape=record, label="{{AD_SPL_0|true|AD_SPL_0_s}}"];
-SD_0[shape=record, label="{{SD_0|true|SD_0_s}}"];
 SD_1[shape=record, label="{{SD_1|R|SD_1_s}}"];
 SD_2[shape=record, label="{{SD_2|o_1|SD_2_s}}"];
-AD_SPL_0 -> SD_0;
+SD_0[shape=record, label="{{SD_0|true|SD_0_s}}"];
 AD_SPL_0 -> SD_1;
 SD_1 -> SD_2;
+AD_SPL_0 -> SD_0;
 }

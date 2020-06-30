@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import splGenerator.ActivityDiagram;
 import splGenerator.FeatureModelParameters;
 import splGenerator.SPL;
 import splGenerator.SplGenerator;
@@ -29,6 +30,8 @@ import splar.core.fm.randomization.RandomFeatureModel2;
 import tool.RDGNode;
 
 public class GhezzisWorkSimulationTest {
+
+	private static final ActivityDiagram NULL = null;
 
 	@Test
 	public void splcSimulationTest() throws CloneNotSupportedException,
@@ -53,7 +56,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC);
+				SplGenerator.SYMMETRIC,NULL);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 
@@ -96,7 +99,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC);
+				SplGenerator.SYMMETRIC,NULL);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -142,7 +145,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC);
+				SplGenerator.SYMMETRIC,NULL);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -182,7 +185,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC);
+				SplGenerator.SYMMETRIC,NULL);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -222,7 +225,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC);
+				SplGenerator.SYMMETRIC,NULL);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -278,7 +281,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC);
+				SplGenerator.SYMMETRIC,NULL);
 
 		System.out.println(spl.getCk());
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());

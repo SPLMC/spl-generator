@@ -27,6 +27,7 @@ public class SplGenerator {
 	// Constants for choosing which topology resemblance between FM and UML
 	// behavioral models will be used
 	public static final int SYMMETRIC = 0;
+	private static final ActivityDiagram NULL = null;
 	// add constants for new methods here...
 
 	private static SplGenerator instance = null;
@@ -135,7 +136,7 @@ public class SplGenerator {
 	 * @return the SPL object representing the whole software product line, and
 	 *         its artifacts.
 	 */
-	public SPL generateSPL(int fmGenerationMethod, int modelsCorrespondence) {
+	public SPL generateSPL(int fmGenerationMethod, int modelsCorrespondence, ActivityDiagram Diagrama) {
 		// 1st step: generate the feature model of the whole Software Product
 		// Line, as the generation method choosed.
 		FeatureModel fm = (FeatureModel) generateFeatureModel(fmGenerationMethod);
@@ -146,7 +147,6 @@ public class SplGenerator {
 		// parameters defined by the user.
 		// creating the sequence diagrams elements before creating the sequence
 		// diagrams
-		System.out.println("Teste");
 		ValuesGenerator.generateRandomReliabilityValues(numberOfLifelines);
 		for (int i = 0; i < numberOfLifelines; i++) {
 			SequenceDiagramElement e;
@@ -179,7 +179,13 @@ public class SplGenerator {
 
 		// 3rd step: create the activity diagram describing the coarse-grained
 		// behavior of the software product line.
-		ActivityDiagram ad = generateActivityDiagramStructure();
+		ActivityDiagram ad = new ActivityDiagram();
+		if(Diagrama == NULL) {
+			ad = generateActivityDiagramStructure();
+		}
+		else {
+			ad = Diagrama;	
+		}
 		// 4th step: assign the initial elements to the SPL object
 		SPL spl = SPL.createSPL("SPL_model_" + idxModel++);
 		spl.setFeatureModel(fm);
@@ -241,7 +247,6 @@ public class SplGenerator {
 	 */
 	private Fragment symmetricModelsCreation(FeatureTreeNode feature) {
 		Fragment fr = randomFragment();
-		System.out.println("heyhou");
 		SequenceDiagram sd = randomSequenceDiagram(
 				"SD_" + idxSequenceDiagram++, feature.getName());
 		fr.addSequenceDiagram(sd);
@@ -343,7 +348,6 @@ public class SplGenerator {
 
 		// generate the Sequence Diagram related to the Root feature
 		Feature root = fm.getRoot();
-		System.out.println("heyhou22");
 		SequenceDiagram sdRoot = randomSequenceDiagram("root", "true");
 		System.out.println(sdRoot.toString());
 		ck.associateArtifact(root, sdRoot);

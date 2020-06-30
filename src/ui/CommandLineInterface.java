@@ -10,6 +10,8 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
+import splGenerator.Activity;
+import splGenerator.ActivityDiagram;
 import splGenerator.FeatureModelParameters;
 import splGenerator.SPL;
 import splGenerator.SplGenerator;
@@ -25,6 +27,8 @@ import splar.core.fm.randomization.RandomFeatureModel2;
 import tool.RDGNode;
 
 public class CommandLineInterface {
+
+	private static final ActivityDiagram NULL = null;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -49,11 +53,30 @@ public class CommandLineInterface {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC);
+				SplGenerator.SYMMETRIC, NULL);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
+		
+		//Pega o diagrama de atividades
+		ActivityDiagram evolutioned = spl.getActivityDiagram();
+		System.out.println(evolutioned.getName());
+		
+		evolutioned.setName("Atividade_Suprema");
+		
+		SPL spl2 = generator.generateSPL(SplGenerator.SPLOT,
+				SplGenerator.SYMMETRIC, evolutioned);
+		
+		ActivityDiagram evolutioned2 = spl2.getActivityDiagram();
+		System.out.println(evolutioned2.getName());
+		
+		/*
+		List<Activity> listinha = evolutioned.getSetOfActivities();
+		Activity a = listinha.get(0);
+		System.out.println(a.getElementName());
+		*/
+		
 
-		spl.getXmlRepresentation();
+		spl2.getXmlRepresentation();
 		SPLFilePersistence.rdg2Dot(root, "rdg");
 
 		// Creating a set of SPLs objects that will be transformed
