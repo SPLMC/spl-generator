@@ -74,8 +74,6 @@ public abstract class SequenceDiagramElement {
 	
 	@SuppressWarnings("unlikely-arg-type")
 	public static void deleteElement(String name) {
-		System.out.println("Sou lindo");
-			
 			Set<Entry<String, SequenceDiagramElement>> entrySet = elements.entrySet();
 			 
 		    // Obtaining an iterator for the entry set
@@ -83,11 +81,11 @@ public abstract class SequenceDiagramElement {
 		    // Iterate through HashMap entries(Key-Value pairs)
 		    while(it.hasNext()){
 		    	Entry<String, SequenceDiagramElement> me = it.next();
-		    	System.out.println(me);
+		    	//System.out.println(me);
 		    	if (me.getKey() == name) {
-					System.out.println("Removido");
+					//System.out.println("Removido");
 					it.remove();
-					System.out.println("Removido2");
+					//System.out.println("Removido2");
 				}
 		   }
 		}

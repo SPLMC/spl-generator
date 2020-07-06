@@ -61,14 +61,14 @@ public class CommandLineInterface {
 		
 		//Pega o diagrama de atividades
 		ActivityDiagram evolutioned = spl.getActivityDiagram();
-		System.out.println(evolutioned.getName());
+		//System.out.println(evolutioned.getName());
 		
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		
 		int option = 1;
 		
 		//Menu de evolução
-		while(option!=0) {
+		loop: while(option!=0) {
 			System.out.println("Boas vindas ao SPL generator. Deseja fazer alguma alteração nos modelos UML ou manter o estado atual dele?");
 			System.out.println("1- Fazer alteração");
 			System.out.println("2- Manter estado atual");
@@ -81,40 +81,54 @@ public class CommandLineInterface {
 			
 			switch(option) {
 			case 1:
-				System.out.println("Alteração feita");
 				
-				evolutioned.setName("Atividade_Suprema");
 				
-				SPL spl2 = generator.generateSPL(SplGenerator.SPLOT,
-						SplGenerator.SYMMETRIC, evolutioned);
+				System.out.println("Escolha uma opção de alteração:");
+				System.out.println("1- Alterar nome do diagrama de atividades");
+				System.out.println("2- Alterar nome de uma atividade");
+				System.out.println("0- Cancelar");
 				
-				ActivityDiagram evolutioned2 = spl2.getActivityDiagram();
-				System.out.println(evolutioned2.getName());
+				String input2 = scan.nextLine();
+				int option2 = Integer.parseInt(input);
 				
-				spl2.getXmlRepresentation();
-				
-				spl = spl2;
-				continue;
+				switch(option2) {
+				case 1:
+					System.out.println("Alteração feita");
+					
+					evolutioned.setName("Atividade_Suprema");
+					
+					SPL spl2 = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, evolutioned);
+					
+					ActivityDiagram evolutioned2 = spl2.getActivityDiagram();
+					System.out.println(evolutioned2.getName());
+					
+					spl2.getXmlRepresentation();
+					
+					spl = spl2;
+					break;
+				case 2:
+					System.out.println("Nome da atividade alterado");
+					break;
+				case 0:
+					System.out.println("Alteração cancelada");
+					break;
+				}
+				break;
 			case 2:
 				System.out.println(option);
 				System.out.println("Sem alteração");
 				spl.getXmlRepresentation();
-				continue;
+				break;
 				
 			case 0:
-				break;
+				break loop;
 			default:
 				System.out.println("Insira um valor válido");
 			}
 			root = new Transformer().transformAD(spl.getActivityDiagram());
 		}
-		evolutioned.setName("Atividade_Suprema");
 		
-		SPL spl2 = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC, evolutioned);
-		
-		ActivityDiagram evolutioned2 = spl2.getActivityDiagram();
-		System.out.println(evolutioned2.getName());
 		
 		/*
 		List<Activity> listinha = evolutioned.getSetOfActivities();
@@ -123,7 +137,6 @@ public class CommandLineInterface {
 		*/
 		
 
-		spl2.getXmlRepresentation();
 		SPLFilePersistence.rdg2Dot(root, "rdg");
 
 		// Creating a set of SPLs objects that will be transformed

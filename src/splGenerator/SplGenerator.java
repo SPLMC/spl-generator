@@ -173,7 +173,6 @@ public class SplGenerator {
 		fteste.setType(Fragment.OPTIONAL);
 		listOfPendingFragments.add(fteste);
 		String nome = fteste.getName();
-		System.out.println(nome);
 		
 		Fragment.deleteElement(nome);
 
@@ -434,6 +433,8 @@ public class SplGenerator {
 			Lifeline target = randomLifeline();
 			Message mensagemteste = sd.createMessage(source, target, Message.SYNCHRONOUS, "T"
 					+ idxActTransition++, target.getReliability());
+			source = target;
+			/*
 			if(flag == 0) {
 				String testandomensagem = mensagemteste.getName();
 				double probmensagem = mensagemteste.getProbability();
@@ -444,10 +445,11 @@ public class SplGenerator {
 				System.out.println(nomeorigem);
 				System.out.println(nomealvo);
 				System.out.println("\n");
-				source = target;
 			}
+			*/
 		}
 		
+		/*
 		if(flag==0) {
 			String ss = scan.next();
 			source = (Lifeline) Lifeline.getElementByName(ss);
@@ -461,6 +463,8 @@ public class SplGenerator {
 			
 			source = target;
 		}
+		
+		*/
 
 		// include alt fragments into a random position
 		while (idxAltFragments < numberOfAltFragments) {
@@ -608,7 +612,7 @@ public class SplGenerator {
 		// 3rd step: ensure each activity has an empty sequence diagram
 		// associated with it
 		for (Activity a : ad.getSetOfActivities()) {
-			System.out.println(a.getElementName());
+			// System.out.println(a.getElementName());
 			// SequenceDiagram s = SequenceDiagram.createSequenceDiagram(
 			// "SD_" + idxSequenceDiagram++,
 			// "true");
