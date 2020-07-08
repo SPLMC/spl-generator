@@ -56,7 +56,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC,NULL);
+				SplGenerator.SYMMETRIC,null,null);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 
@@ -99,7 +99,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC,NULL);
+				SplGenerator.SYMMETRIC,null,null);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -145,7 +145,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC,NULL);
+				SplGenerator.SYMMETRIC,null,null);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -185,7 +185,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC,NULL);
+				SplGenerator.SYMMETRIC,null,null);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -225,7 +225,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC,NULL);
+				SplGenerator.SYMMETRIC,null,null);
 
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		spl.getXmlRepresentation();
@@ -281,7 +281,7 @@ public class GhezzisWorkSimulationTest {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC,NULL);
+				SplGenerator.SYMMETRIC,null,null);
 
 		System.out.println(spl.getCk());
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());

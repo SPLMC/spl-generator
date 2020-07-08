@@ -136,7 +136,7 @@ public class SplGenerator {
 	 * @return the SPL object representing the whole software product line, and
 	 *         its artifacts.
 	 */
-	public SPL generateSPL(int fmGenerationMethod, int modelsCorrespondence, ActivityDiagram Diagrama) {
+	public SPL generateSPL(int fmGenerationMethod, int modelsCorrespondence, ActivityDiagram Diagrama, String Elemento) {
 		// 1st step: generate the feature model of the whole Software Product
 		// Line, as the generation method choosed.
 		FeatureModel fm = (FeatureModel) generateFeatureModel(fmGenerationMethod);
@@ -169,17 +169,21 @@ public class SplGenerator {
 			listOfPendingFragments.add(f);
 		}
 		
-		Fragment fteste = (Fragment) Fragment.createElement(SequenceDiagramElement.FRAGMENT, "Fragment_Teste");
-		fteste.setType(Fragment.OPTIONAL);
-		listOfPendingFragments.add(fteste);
-		String nome = fteste.getName();
 		
-		Fragment.deleteElement(nome);
+		
+		if(Elemento == "Fragmento" ) {
+			Fragment fteste = (Fragment) Fragment.createElement(SequenceDiagramElement.FRAGMENT, "Fragment_Teste");
+			fteste.setType(Fragment.OPTIONAL);
+			listOfPendingFragments.add(fteste);	
+		}
+		
+//		String nome = fteste.getName();	
+//		Fragment.deleteElement(nome);
 
 		// 3rd step: create the activity diagram describing the coarse-grained
 		// behavior of the software product line.
 		ActivityDiagram ad = new ActivityDiagram();
-		if(Diagrama == NULL) {
+		if(Diagrama == null) {
 			ad = generateActivityDiagramStructure();
 		}
 		else {
@@ -221,6 +225,21 @@ public class SplGenerator {
 				}
 				sdRoot = randomSequenceDiagram("SD_" + idxSequenceDiagram++,
 						"true");
+				Scanner scan = new Scanner(System.in);
+				
+				if(Elemento == "Mensagem") {
+					String ss = scan.next();
+					Lifeline source = (Lifeline) Lifeline.getElementByName(ss);
+					//source = randomLifeline();
+					
+					String st = scan.next();
+					Lifeline target = (Lifeline) Lifeline.getElementByName(st);
+					
+					createTestMessage(sdRoot, source, target);
+					
+					
+					source = target;
+				}
 			}
 		}
 		spl.setSplGenerator(this);
@@ -448,9 +467,8 @@ public class SplGenerator {
 			}
 			*/
 		}
-		
 		/*
-		if(flag==0) {
+		if(Elemento == "Mensagem") {
 			String ss = scan.next();
 			source = (Lifeline) Lifeline.getElementByName(ss);
 			//source = randomLifeline();
@@ -463,8 +481,7 @@ public class SplGenerator {
 			
 			source = target;
 		}
-		
-		*/
+		 */
 
 		// include alt fragments into a random position
 		while (idxAltFragments < numberOfAltFragments) {
