@@ -1,13 +1,13 @@
 digraph graphname {
-Atividade_Suprema[shape=record, label="{{Atividade_Suprema|true|Atividade_Suprema_s}}"];
+AD_SPL_1[shape=record, label="{{AD_SPL_1|true|AD_SPL_1_s}}"];
+SD_4[shape=record, label="{{SD_4|R|SD_4_s}}"];
+SD_5[shape=record, label="{{SD_5|o_1|SD_5_s}}"];
+SD_0[shape=record, label="{{SD_0|true|SD_0_s}}"];
 SD_1[shape=record, label="{{SD_1|R|SD_1_s}}"];
 SD_2[shape=record, label="{{SD_2|o_1|SD_2_s}}"];
-SD_3[shape=record, label="{{SD_3|R|SD_3_s}}"];
-SD_4[shape=record, label="{{SD_4|o_1|SD_4_s}}"];
-SD_0[shape=record, label="{{SD_0|true|SD_0_s}}"];
-Atividade_Suprema -> SD_1;
+AD_SPL_1 -> SD_4;
+SD_4 -> SD_5;
+AD_SPL_1 -> SD_0;
+AD_SPL_1 -> SD_1;
 SD_1 -> SD_2;
-Atividade_Suprema -> SD_3;
-SD_3 -> SD_4;
-Atividade_Suprema -> SD_0;
 }

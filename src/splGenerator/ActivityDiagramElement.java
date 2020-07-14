@@ -142,7 +142,4 @@ public abstract class ActivityDiagramElement {
 	}
 	
 	
-	
-	
-	
 }

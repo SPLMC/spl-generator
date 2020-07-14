@@ -136,7 +136,7 @@ public class SplGenerator {
 	 * @return the SPL object representing the whole software product line, and
 	 *         its artifacts.
 	 */
-	public SPL generateSPL(int fmGenerationMethod, int modelsCorrespondence, ActivityDiagram Diagrama, String Elemento) {
+	public SPL generateSPL(int fmGenerationMethod, int modelsCorrespondence, ActivityDiagram Diagrama,List<ActivityDiagramElement> setOfElements, String Elemento) {
 		// 1st step: generate the feature model of the whole Software Product
 		// Line, as the generation method choosed.
 		FeatureModel fm = (FeatureModel) generateFeatureModel(fmGenerationMethod);
@@ -189,6 +189,11 @@ public class SplGenerator {
 		else {
 			ad = Diagrama;	
 		}
+		
+		if(setOfElements != null) {
+			ad.setSetOfActivities(setOfElements);
+		}
+		
 		// 4th step: assign the initial elements to the SPL object
 		SPL spl = SPL.createSPL("SPL_model_" + idxModel++);
 		spl.setFeatureModel(fm);

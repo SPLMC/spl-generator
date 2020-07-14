@@ -72,7 +72,7 @@ public class VariableNumberOfFeatures extends VariableBehavioralParameters {
 			generator.setNumberOfLoopsFragments(this.numberOfLoopFragments);
 
 			SPL temp = generator.generateSPL(SplGenerator.SPLOT,
-					SplGenerator.SYMMETRIC,null,null);
+					SplGenerator.SYMMETRIC,null,null,null);
 
 			int nextIndex = lastFeatureIndex;
 

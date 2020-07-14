@@ -13,6 +13,7 @@ import java.util.Scanner;
 
 import splGenerator.Activity;
 import splGenerator.ActivityDiagram;
+import splGenerator.ActivityDiagramElement;
 import splGenerator.FeatureModelParameters;
 import splGenerator.SPL;
 import splGenerator.SplGenerator;
@@ -57,11 +58,13 @@ public class CommandLineInterface {
 
 		// SPL GENERATION
 		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
-				SplGenerator.SYMMETRIC, null, null);
+				SplGenerator.SYMMETRIC, null,null, null);
 		
 		//Pega o diagrama de atividades
 		ActivityDiagram evolutioned = spl.getActivityDiagram();
 		//System.out.println(evolutioned.getName());
+		
+		List<ActivityDiagramElement> setOfElements = evolutioned.getSetOfElements();
 		
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		
@@ -103,20 +106,28 @@ public class CommandLineInterface {
 					
 					evolutioned.setName("Diagrama_de_atividades");
 					
-					SPL spl2 = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, evolutioned,null);
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, evolutioned,null,null);
 					
-					ActivityDiagram evolutioned2 = spl2.getActivityDiagram();
+					ActivityDiagram evolutioned2 = spl.getActivityDiagram();
 					System.out.println(evolutioned2.getName());
 					
-					spl2.getXmlRepresentation();
-					
-					spl = spl2;
+					spl.getXmlRepresentation();
 					
 					System.out.println("Alteração feita");
 					break;
 				case 2:
-					System.out.println("Nome da atividade alterado");
+					Activity atividade_alterada = evolutioned.getActivityByName("Activity_0");
+					
+					atividade_alterada.setElementName("Atividade_Suprema");
+					
+					System.out.println(setOfElements.get(1));
+					setOfElements.set(1, atividade_alterada);
+					
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, null,setOfElements, null);
+					
+					System.out.println("Atividade alterada");
 					break;
 				case 3:
 					System.out.println("Atividade adicionada");
@@ -128,12 +139,12 @@ public class CommandLineInterface {
 					System.out.println("Nome do fragmento alterado");
 					break;
 				case 6:
-					SPL spl3 = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,"fragmento");
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, null,null,"fragmento");
 					
-					spl3.getXmlRepresentation();
+					spl.getXmlRepresentation();
 					
-					spl = spl3;
+					spl = spl;
 					
 					System.out.println("Fragmento adicionado");
 					break;
@@ -145,12 +156,10 @@ public class CommandLineInterface {
 					break;
 				case 9:
 					
-					SPL spl4 = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,"mensagem");
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, null,null,"mensagem");
 					
-					spl4.getXmlRepresentation();
-					
-					spl = spl4;
+					spl.getXmlRepresentation();
 					
 					
 					System.out.println("Mensagem adicionada");
@@ -174,7 +183,6 @@ public class CommandLineInterface {
 			default:
 				System.out.println("Insira um valor válido");
 			}
-			root = new Transformer().transformAD(spl.getActivityDiagram());
 		}
 		
 		
@@ -184,6 +192,7 @@ public class CommandLineInterface {
 		System.out.println(a.getElementName());
 		*/
 		
+		root = new Transformer().transformAD(spl.getActivityDiagram());
 
 		SPLFilePersistence.rdg2Dot(root, "rdg");
 

@@ -158,6 +158,13 @@ public class ActivityDiagram {
 		return l;
 	}
 
+	public List<ActivityDiagramElement> getSetOfElements(){
+		return setOfElements;
+	}
+	
+	public void setSetOfActivities(List<ActivityDiagramElement> activities) {
+		this.setOfElements = activities;
+	}
 
 
 	public void setStartNode(StartNode sn) {
