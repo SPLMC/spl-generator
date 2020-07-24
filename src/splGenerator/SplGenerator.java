@@ -176,9 +176,11 @@ public class SplGenerator {
 			fteste.setType(Fragment.OPTIONAL);
 			listOfPendingFragments.add(fteste);	
 		}
-		
-//		String nome = fteste.getName();	
-//		Fragment.deleteElement(nome);
+		else if(Elemento == "delfrag") {
+			Fragment frag = listOfPendingFragments.get(1);
+			String nome = frag.getName();
+			Fragment.deleteElement(nome);
+		}
 
 		// 3rd step: create the activity diagram describing the coarse-grained
 		// behavior of the software product line.
@@ -230,22 +232,27 @@ public class SplGenerator {
 				}
 				sdRoot = randomSequenceDiagram("SD_" + idxSequenceDiagram++,
 						"true");
-				Scanner scan = new Scanner(System.in);
-				
-				if(Elemento == "Mensagem") {
-					String ss = scan.next();
-					Lifeline source = (Lifeline) Lifeline.getElementByName(ss);
-					//source = randomLifeline();
-					
-					String st = scan.next();
-					Lifeline target = (Lifeline) Lifeline.getElementByName(st);
-					
-					createTestMessage(sdRoot, source, target);
-					
-					
-					source = target;
-				}
 			}
+		}
+		Scanner scan = new Scanner(System.in);
+		
+		if(Elemento == "Mensagem") {
+			String ss = scan.next();
+			Lifeline source = (Lifeline) Lifeline.getElementByName(ss);
+			//source = randomLifeline();
+			
+			String st = scan.next();
+			Lifeline target = (Lifeline) Lifeline.getElementByName(st);
+			
+			createTestMessage(sdRoot, source, target);
+			
+			
+			source = target;
+		}
+		else if(Elemento == "delmsg") {
+			SequenceDiagramElement msg = sdRoot.getMessageByName("Mensagem_teste");
+			String nome = msg.getName();
+			Fragment.deleteElement(nome);
 		}
 		spl.setSplGenerator(this);
 		return spl;
@@ -515,8 +522,8 @@ public class SplGenerator {
 	private void createTestMessage(SequenceDiagram sd, Lifeline source, Lifeline target) {
 		
 		//Lifeline target = randomLifeline();
-		Message mensagemteste = sd.createMessage(source, target, Message.SYNCHRONOUS, "T"
-				+ idxActTransition++, target.getReliability());
+		Message mensagemteste = sd.createMessage(source, target, Message.SYNCHRONOUS, "Mensagem_teste",
+				target.getReliability());
 		
 		System.out.println("MENSAGEM_CRIADA");
 		String testandomensagem = mensagemteste.getName();
@@ -529,6 +536,7 @@ public class SplGenerator {
 		System.out.println(nomealvo);
 		System.out.println("FIM DA MSG CRIADA");
 		System.out.println("\n");
+		idxActTransition++;
 		
 		source = target;
 	}

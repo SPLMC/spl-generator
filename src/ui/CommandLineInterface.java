@@ -130,9 +130,24 @@ public class CommandLineInterface {
 					System.out.println("Atividade alterada");
 					break;
 				case 3:
+					Activity atividade_nova = new Activity("Atividade_nova");
+					
+					setOfElements.add(atividade_nova);
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, null,setOfElements, null);
+					
+					spl.getXmlRepresentation();
+					
 					System.out.println("Atividade adicionada");
 					break;
 				case 4:
+					System.out.println(setOfElements.get(1));
+					setOfElements.remove(1);
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, null,setOfElements, null);
+					
+					spl.getXmlRepresentation();
+					
 					System.out.println("Atividade deletada");
 					break;
 				case 5:
@@ -144,11 +159,12 @@ public class CommandLineInterface {
 					
 					spl.getXmlRepresentation();
 					
-					spl = spl;
-					
 					System.out.println("Fragmento adicionado");
 					break;
 				case 7:
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, null,null,"delfrag");
+					spl.getXmlRepresentation();
 					System.out.println("Fragmento deletado");
 					break;
 				case 8:
@@ -157,7 +173,7 @@ public class CommandLineInterface {
 				case 9:
 					
 					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,null,"mensagem");
+							SplGenerator.SYMMETRIC, null,null,"Mensagem");
 					
 					spl.getXmlRepresentation();
 					
@@ -165,6 +181,12 @@ public class CommandLineInterface {
 					System.out.println("Mensagem adicionada");
 					break;
 				case 10:
+					
+					spl = generator.generateSPL(SplGenerator.SPLOT,
+							SplGenerator.SYMMETRIC, null,null,"delmsg");
+					
+					spl.getXmlRepresentation();
+					
 					System.out.println("Mensagem deletada");
 					break;
 				case 0:
