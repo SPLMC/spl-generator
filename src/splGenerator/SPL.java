@@ -50,7 +50,7 @@ public class SPL implements Cloneable {
 	 */
 	// private String modelsPath =
 	// "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/";
-	private String modelsPath = "/home/joao/Documentos/spl-generator/src/splGenerator/";
+	private String modelsPath = "/home/igorbispo/Documents/spl-generator/src/splGenerator/";
 
 	String name;
 	FeatureModel fm;
@@ -87,6 +87,9 @@ public class SPL implements Cloneable {
 
 	public String getXmlRepresentation() {
 		StringWriter answer = new StringWriter();
+		System.out.println(new String(modelsPath + name
+				+ "_behavioral_model.xml").replaceAll("\\s+", "_"));
+		
 		File output = new java.io.File(new String(modelsPath + name
 				+ "_behavioral_model.xml").replaceAll("\\s+", "_"));
 

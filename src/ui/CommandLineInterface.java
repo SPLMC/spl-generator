@@ -1,6 +1,7 @@
 package ui;
 
 import java.io.File;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,13 +33,17 @@ import tool.RDGNode;
 public class CommandLineInterface {
 
 	private static final ActivityDiagram NULL = null;
+	private static SPL spl;
+	private static SplGenerator generator;
+	private static List<ActivityDiagramElement> setOfElements;
+	
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
 		Scanner scan = new Scanner(System.in);
 		
-		SplGenerator generator = SplGenerator.newInstance();
+		generator = SplGenerator.newInstance();
 
 		// PROBLEM'S SPACE PARAMETERS
 		FeatureModelParameters fmParameters = FeatureModelParameters
@@ -57,18 +62,22 @@ public class CommandLineInterface {
 		generator.setNumberOfLoopsFragments(0);
 
 		// SPL GENERATION
-		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
+		spl = generator.generateSPL(SplGenerator.SPLOT,
 				SplGenerator.SYMMETRIC, null,null, null);
 		
 		//Pega o diagrama de atividades
 		ActivityDiagram evolutioned = spl.getActivityDiagram();
 		//System.out.println(evolutioned.getName());
 		
-		List<ActivityDiagramElement> setOfElements = evolutioned.getSetOfElements();
+		setOfElements = evolutioned.getSetOfElements();
 		
 		RDGNode root = new Transformer().transformAD(spl.getActivityDiagram());
 		
 		int option = 1;
+		
+		boolean show_menu = exec_args(args);
+		
+		if (!show_menu) return;
 		
 		//Menu de evolução
 		loop: while(option!=0) {
@@ -236,5 +245,90 @@ public class CommandLineInterface {
 		}
 		SPLFilePersistence.persistSPLs(answer);
 	}
+	
+	public static void exit_error(String reason) {
+		System.err.println("Ocorreu um erro no parsing dos argumentos");
+		System.err.println("Motivo: " + reason);
+		
+		System.exit(1);
+	}
+	
+	public static SPL change_name_ad(String new_name) {
+		ActivityDiagram evolutioned = spl.getActivityDiagram();
+
+		evolutioned.setName(new_name);
+		
+		SPL new_spl = generator.generateSPL(SplGenerator.SPLOT,
+				SplGenerator.SYMMETRIC, evolutioned,null,null);
+		
+		ActivityDiagram evolutioned2 = new_spl.getActivityDiagram();
+		System.out.println(evolutioned2.getName());
+		
+		new_spl.getXmlRepresentation();
+		
+		System.out.println("Alteração feita");
+		
+		return new_spl;
+	}
+	
+	public static SPL change_name_act(String old_name, String new_name) {
+		ActivityDiagram evolutioned = spl.getActivityDiagram();
+
+		Activity atividade_alterada = evolutioned.getActivityByName(old_name);
+		
+		atividade_alterada.setElementName(new_name);
+		
+		System.out.println(setOfElements.get(1));
+		
+		// TODO Fix this
+		setOfElements.set(1, atividade_alterada);
+		
+		SPL new_spl = generator.generateSPL(SplGenerator.SPLOT,
+				SplGenerator.SYMMETRIC, null,setOfElements, null);
+		
+		System.out.println("Atividade alterada");
+		
+		return new_spl;
+	}
+	
+	public static boolean exec_args(String[] args) {
+		boolean winteractions = false;
+		
+		for (int i = 0;i < args.length;) {
+			if (args[i].equals("--winteractions")) {
+				winteractions = true;
+			
+			// User wants to change names...
+			} else if (args[i].equals("--chname")) {
+				winteractions = false;
+				if (i + 2 >= args.length) exit_error("Sintaxe --chname inválida");
+				
+				// ... from activity diagram
+				if (args[i+1].equals("ad")) {
+					String new_name = args[i+2];
+					change_name_ad(new_name);
+					i += 3;
+					
+				// ... from activities
+				} else if (args[i+1].equals("act")) {
+					
+					if (i + 3 >= args.length) exit_error("Sintaxe --chname inválida");
+					
+					String old_name = args[i+2];
+					String new_name = args[i+3];
+					
+					change_name_act(old_name, new_name);
+					i += 4;
+				}
+				
+			}
+			
+			i += 1;
+		}
+		
+		return winteractions;
+	}
+
+	
 
 }

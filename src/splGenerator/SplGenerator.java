@@ -42,7 +42,7 @@ public class SplGenerator {
 	 * general attributes of the SPL generator. Here we set the folders and
 	 * files names used by the generator.
 	 */
-	private String modelsPath = "/home/joao/Documentos/spl-generator/src/splGenerator/";
+	private String modelsPath = "/home/igorbispo/Documents/spl-generator/src/splGenerator/";
 	private String fmFilePrefix = "fm_";
 	private String umlFilePrefix = "uml_";
 

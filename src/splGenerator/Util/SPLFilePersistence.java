@@ -23,7 +23,7 @@ import tool.RDGNode;
 
 public class SPLFilePersistence {
 
-	private static String modelsPath = "/home/joao/Documentos/spl-generator/src/results_joao/";
+	private static String modelsPath = "/home/igorbispo/Documents/spl-generator/src/results_igor/";
 	private static String cnfFilePrefix = "cnf_";
 	private static String rdgFilePrefix = "rdg_";
 	private static String fdtmcFilePrefix = "fdtmc_";

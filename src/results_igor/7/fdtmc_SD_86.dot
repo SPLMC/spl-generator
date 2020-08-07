@@ -1,0 +1,38 @@
+digraph graphname {
+SD_86_s0 [label="SD_86_s0",color=red,shape=doublecircle ];
+SD_86_s1 [label="SD_86_s1",color=blue,shape=doublecircle ];
+SD_86_s2 [label="SD_86_s2",color=green,shape=doublecircle ];
+SD_86_s3 [label="SD_86_s3" ];
+SD_86_s4 [label="SD_86_s4" ];
+SD_86_s5 [label="SD_86_s5" ];
+SD_86_s6 [label="SD_86_s6" ];
+SD_86_s7 [label="SD_86_s7" ];
+SD_86_s8 [label="SD_86_s8" ];
+SD_86_s9 [label="SD_86_s9" ];
+SD_86_s10 [label="SD_86_s10" ];
+SD_86_s11 [label="SD_86_s11" ];
+SD_86_s12 [label="SD_86_s12" ];
+SD_86_s0 -> SD_86_s0 [label=" / 1.0", style=dotted];
+SD_86_s1 -> SD_86_s12 [label=" / 1.0"];
+SD_86_s2 -> SD_86_s2 [label=" / 1.0"];
+SD_86_s3 -> SD_86_s2 [label="T41 / 0.9946"];
+SD_86_s3 -> SD_86_s0 [label="T41 / 0.00539999999999996", style=dotted];
+SD_86_s4 -> SD_86_s3 [label="T40 / 0.9959"];
+SD_86_s4 -> SD_86_s0 [label="T40 / 0.0040999999999999925", style=dotted];
+SD_86_s5 -> SD_86_s4 [label="T39 / 0.9965"];
+SD_86_s5 -> SD_86_s0 [label="T39 / 0.0034999999999999476", style=dotted];
+SD_86_s6 -> SD_86_s5 [label="T38 / 0.9952"];
+SD_86_s6 -> SD_86_s0 [label="T38 / 0.0048000000000000265", style=dotted];
+SD_86_s7 -> SD_86_s6 [label="T37 / 0.9944"];
+SD_86_s7 -> SD_86_s0 [label="T37 / 0.005600000000000049", style=dotted];
+SD_86_s8 -> SD_86_s7 [label="T36 / 0.9952"];
+SD_86_s8 -> SD_86_s0 [label="T36 / 0.0048000000000000265", style=dotted];
+SD_86_s9 -> SD_86_s8 [label="T35 / 0.9965"];
+SD_86_s9 -> SD_86_s0 [label="T35 / 0.0034999999999999476", style=dotted];
+SD_86_s10 -> SD_86_s9 [label="T34 / 0.9988"];
+SD_86_s10 -> SD_86_s0 [label="T34 / 0.0011999999999999789", style=dotted];
+SD_86_s11 -> SD_86_s10 [label="T33 / 0.9988"];
+SD_86_s11 -> SD_86_s0 [label="T33 / 0.0011999999999999789", style=dotted];
+SD_86_s12 -> SD_86_s11 [label="T32 / 0.9952"];
+SD_86_s12 -> SD_86_s0 [label="T32 / 0.0048000000000000265", style=dotted];
+}
