@@ -104,91 +104,54 @@ public class CommandLineInterface {
 				switch(option2) {
 				case 1:
 					
-					evolutioned.setName("Diagrama_de_atividades");
-					
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, evolutioned,null,null);
-					
-					ActivityDiagram evolutioned2 = spl.getActivityDiagram();
-					System.out.println(evolutioned2.getName());
-					
-					spl.getXmlRepresentation();
-					
-					System.out.println("Alteração feita");
+					muda_nome(1, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 2:
-					Activity atividade_alterada = evolutioned.getActivityByName("Activity_0");
 					
-					atividade_alterada.setElementName("Atividade_Suprema");
-					
-					System.out.println(setOfElements.get(1));
-					setOfElements.set(1, atividade_alterada);
-					
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,setOfElements, null);
-					
-					System.out.println("Atividade alterada");
+					muda_nome(2, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 3:
-					Activity atividade_nova = new Activity("Atividade_nova");
 					
-					setOfElements.add(atividade_nova);
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,setOfElements, null);
-					
-					spl.getXmlRepresentation();
-					
-					System.out.println("Atividade adicionada");
+					adiciona(1, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 4:
-					System.out.println(setOfElements.get(1));
-					setOfElements.remove(1);
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,setOfElements, null);
 					
-					spl.getXmlRepresentation();
-					
-					System.out.println("Atividade deletada");
+					deleta(1, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 5:
-					System.out.println("Nome do fragmento alterado");
+					
+					muda_nome(3, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 6:
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,null,"fragmento");
 					
-					spl.getXmlRepresentation();
-					
-					System.out.println("Fragmento adicionado");
+					adiciona(2, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 7:
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,null,"delfrag");
-					spl.getXmlRepresentation();
-					System.out.println("Fragmento deletado");
+					
+					deleta(2, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 8:
-					System.out.println("Nome da mensagem alterado");
+					
+					muda_nome(1, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 9:
 					
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,null,"Mensagem");
-					
-					spl.getXmlRepresentation();
-					
-					
-					System.out.println("Mensagem adicionada");
+					adiciona(3, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 10:
 					
-					spl = generator.generateSPL(SplGenerator.SPLOT,
-							SplGenerator.SYMMETRIC, null,null,"delmsg");
-					
-					spl.getXmlRepresentation();
-					
-					System.out.println("Mensagem deletada");
+					deleta(3, generator, spl, evolutioned,setOfElements);
 					break;
+					
 				case 0:
 					System.out.println("Alteração cancelada");
 					break;
@@ -236,5 +199,117 @@ public class CommandLineInterface {
 		}
 		SPLFilePersistence.persistSPLs(answer);
 	}
-
+	
+	public static void muda_nome(int elemento, SplGenerator generator, SPL spl, ActivityDiagram evolutioned,
+								 List<ActivityDiagramElement> setOfElements) {
+		switch (elemento) {
+			case 1:
+				evolutioned.setName("Diagrama_de_atividades");
+				
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, evolutioned,null,null);
+				
+				ActivityDiagram evolutioned2 = spl.getActivityDiagram();
+				System.out.println(evolutioned2.getName());
+				
+				spl.getXmlRepresentation();
+				
+				System.out.println("Alteração feita");
+				break;
+			case 2:
+				Activity atividade_alterada = evolutioned.getActivityByName("Activity_0");
+				
+				atividade_alterada.setElementName("Atividade_Suprema");
+				
+				System.out.println(setOfElements.get(1));
+				setOfElements.set(1, atividade_alterada);
+				
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,setOfElements, null);
+				
+				System.out.println("Atividade alterada");
+				break;
+			case 3:
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,null,"nome_frag");
+				
+				spl.getXmlRepresentation();
+				System.out.println("Nome do fragmento alterado");
+				break;
+			case 4:
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,null,"nome_mensagem");
+				
+				spl.getXmlRepresentation();
+				System.out.println("Nome da mensagem alterado");
+				break;
+				
+		}
+	}
+	
+	public static void adiciona(int elemento, SplGenerator generator, SPL spl, ActivityDiagram evolutioned,
+						 List<ActivityDiagramElement> setOfElements) {
+		switch (elemento) {
+			case 1:
+				Activity atividade_nova = new Activity("Atividade_nova");
+				
+				setOfElements.add(atividade_nova);
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,setOfElements, null);
+				
+				spl.getXmlRepresentation();
+				
+				System.out.println("Atividade adicionada");
+				break;
+			case 2:
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,null,"fragmento");
+				
+				spl.getXmlRepresentation();
+				
+				System.out.println("Fragmento adicionado");
+				break;
+			case 3:
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,null,"Mensagem");
+				
+				spl.getXmlRepresentation();
+				System.out.println("Mensagem adicionada");
+				break;
+			
+		}
+			
+	}
+	
+	public static void deleta(int elemento, SplGenerator generator, SPL spl, ActivityDiagram evolutioned,
+					   List<ActivityDiagramElement> setOfElements) {
+		switch (elemento) {
+			case 1:
+				System.out.println(setOfElements.get(1));
+				setOfElements.remove(1);
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,setOfElements, null);
+				
+				spl.getXmlRepresentation();
+				
+				System.out.println("Atividade deletada");
+				break;
+			case 2:
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,null,"delfrag");
+				spl.getXmlRepresentation();
+				System.out.println("Fragmento deletado");
+				break;
+			case 3:
+				spl = generator.generateSPL(SplGenerator.SPLOT,
+						SplGenerator.SYMMETRIC, null,null,"delmsg");
+				
+				spl.getXmlRepresentation();
+				
+				System.out.println("Mensagem deletada");
+				break;
+		
+	}
+		
+	}
 }
