@@ -258,17 +258,17 @@ public class CommandLineInterface {
 
 		evolutioned.setName(new_name);
 		
-		SPL new_spl = generator.generateSPL(SplGenerator.SPLOT,
+		spl = generator.generateSPL(SplGenerator.SPLOT,
 				SplGenerator.SYMMETRIC, evolutioned,null,null);
 		
-		ActivityDiagram evolutioned2 = new_spl.getActivityDiagram();
+		ActivityDiagram evolutioned2 = spl.getActivityDiagram();
 		System.out.println(evolutioned2.getName());
 		
-		new_spl.getXmlRepresentation();
+		spl.getXmlRepresentation();
 		
 		System.out.println("Alteração feita");
 		
-		return new_spl;
+		return spl;
 	}
 	
 	public static SPL change_name_act(String old_name, String new_name) {
@@ -283,12 +283,26 @@ public class CommandLineInterface {
 		// TODO Fix this
 		setOfElements.set(1, atividade_alterada);
 		
-		SPL new_spl = generator.generateSPL(SplGenerator.SPLOT,
+		SPL spl = generator.generateSPL(SplGenerator.SPLOT,
 				SplGenerator.SYMMETRIC, null,setOfElements, null);
 		
 		System.out.println("Atividade alterada");
 		
-		return new_spl;
+		return spl;
+	}
+	
+	public static SPL add_activity(String name) {
+		Activity atividade_nova = new Activity(name);
+		
+		setOfElements.add(atividade_nova);
+		spl = generator.generateSPL(SplGenerator.SPLOT,
+				SplGenerator.SYMMETRIC, null,setOfElements, null);
+		
+		spl.getXmlRepresentation();
+		
+		System.out.println("Atividade adicionada");
+		
+		return spl;
 	}
 	
 	public static boolean exec_args(String[] args) {
@@ -301,7 +315,7 @@ public class CommandLineInterface {
 			// User wants to change names...
 			} else if (args[i].equals("--chname")) {
 				winteractions = false;
-				if (i + 2 >= args.length) exit_error("Sintaxe --chname inválida");
+				if (i + 2 >= args.length) exit_error("Sintaxe --chname inválida.");
 				
 				// ... from activity diagram
 				if (args[i+1].equals("ad")) {
@@ -312,13 +326,29 @@ public class CommandLineInterface {
 				// ... from activities
 				} else if (args[i+1].equals("act")) {
 					
-					if (i + 3 >= args.length) exit_error("Sintaxe --chname inválida");
+					if (i + 3 >= args.length) exit_error("Sintaxe --chname inválida.");
 					
 					String old_name = args[i+2];
 					String new_name = args[i+3];
 					
 					change_name_act(old_name, new_name);
 					i += 4;
+				}
+				
+			// User wants to add...			
+			} else if (args[i].equals("--add")) {
+				winteractions = false;
+				
+				if (i + 2 >= args.length) exit_error("Sintaxe --add inválida.");
+				
+				//... a new activity
+				if (args[i+1].equals("act")) {
+					String act_name = args[i+2];
+					add_activity(act_name);
+					i += 3;
+				} else if (args[i+1].equals("frag")) {
+					//TODO Implementar
+					i += 3;
 				}
 				
 			}
