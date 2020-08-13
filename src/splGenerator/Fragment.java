@@ -174,4 +174,5 @@ public class Fragment extends SequenceDiagramElement{
 	public boolean addSequenceDiagram(SequenceDiagram sd) {
 		return sequenceDiagrams.add(sd);
 	}
+
 }

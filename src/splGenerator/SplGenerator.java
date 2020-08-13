@@ -35,8 +35,6 @@ public class SplGenerator {
 	private ReanaFeatureModel reanaFm;
 	private splar.core.fm.FeatureModel splarFm;
 	private ConfigurationKnowledge ck;
-	private int flag = 0;
-
 	/**
 	 * GENERATORS GENERAL PARAMETERS The following attributes represent the
 	 * general attributes of the SPL generator. Here we set the folders and
@@ -181,6 +179,9 @@ public class SplGenerator {
 			String nome = frag.getName();
 			Fragment.deleteElement(nome);
 		}
+		else if(Elemento == "nome_frag") {
+			listOfPendingFragments.get(1).setName("Frag_teste");
+		}
 
 		// 3rd step: create the activity diagram describing the coarse-grained
 		// behavior of the software product line.
@@ -254,6 +255,10 @@ public class SplGenerator {
 			String nome = msg.getName();
 			Fragment.deleteElement(nome);
 		}
+		else if(Elemento == "nome_mensagem") {
+			sdRoot.getMessageByName("T72").setName("Mensagem_teste");
+		}
+		
 		spl.setSplGenerator(this);
 		return spl;
 	}
@@ -513,8 +518,6 @@ public class SplGenerator {
 			sd.getElements().add(position, f);
 			idxLoopFragments++;
 		}
-		
-		flag = 1;
 		return sd;
 	}
 

@@ -109,4 +109,9 @@ public abstract class SequenceDiagramElement {
 		return answer;
 	} 
 	
+	public void setName(String string) {
+		this.name = string;
+		
+	}
+	
 }
