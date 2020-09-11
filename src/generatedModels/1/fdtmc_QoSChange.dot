@@ -1,0 +1,23 @@
+digraph graphname {
+QoSChange_s0 [label="QoSChange_s0",color=red,shape=doublecircle ];
+QoSChange_s1 [label="QoSChange_s1",color=blue,shape=doublecircle ];
+QoSChange_s2 [label="QoSChange_s2",color=green,shape=doublecircle ];
+QoSChange_s3 [label="QoSChange_s3" ];
+QoSChange_s4 [label="QoSChange_s4" ];
+QoSChange_s5 [label="QoSChange_s5" ];
+QoSChange_s6 [label="QoSChange_s6" ];
+QoSChange_s7 [label="QoSChange_s7" ];
+QoSChange_s0 -> QoSChange_s0 [label=" / 1.0", style=dotted];
+QoSChange_s1 -> QoSChange_s7 [label=" / 1.0"];
+QoSChange_s2 -> QoSChange_s2 [label=" / 1.0"];
+QoSChange_s3 -> QoSChange_s2 [label="replyNotify / 0.999"];
+QoSChange_s3 -> QoSChange_s0 [label="replyNotify / 0.0010000000000000009", style=dotted];
+QoSChange_s4 -> QoSChange_s3 [label="notifyChange / 0.999"];
+QoSChange_s4 -> QoSChange_s0 [label="notifyChange / 0.0010000000000000009", style=dotted];
+QoSChange_s5 -> QoSChange_s4 [label="returnQoSRequired / 0.999"];
+QoSChange_s5 -> QoSChange_s0 [label="returnQoSRequired / 0.0010000000000000009", style=dotted];
+QoSChange_s6 -> QoSChange_s5 [label="getQoSRequired / 0.999"];
+QoSChange_s6 -> QoSChange_s0 [label="getQoSRequired / 0.0010000000000000009", style=dotted];
+QoSChange_s7 -> QoSChange_s6 [label=" / 0.999"];
+QoSChange_s7 -> QoSChange_s0 [label=" / 0.0010000000000000009", style=dotted];
+}

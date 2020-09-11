@@ -22,7 +22,7 @@ import tool.RDGNode;
 public class RDGCreationFromMagicDrawTest {
 
 	private RDGNode root; 
-	private static String behavioralModel = "/home/andrelanna/eclipse-workspace/spl-generator/src/seedModels/BSN/UML_BSN.xml";
+	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/BSN/UML_BSN.xml";
 	private String id;
 	private String presenceCondition;
 	private static RDGBuilder builder;

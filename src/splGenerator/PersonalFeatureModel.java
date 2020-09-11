@@ -75,23 +75,27 @@ public class PersonalFeatureModel extends splar.core.fm.FeatureModel {
 
 	@Override
 	protected FeatureTreeNode createNodes() throws FeatureModelException {
-		fmNodes = new ArrayList<FeatureTreeNode>();
+//		fmNodes = new ArrayList<FeatureTreeNode>();
 		int countCreatedFeatures = 0;
+		
+		/* Cria raiz */		
 
 //		root = getFeatureObject(nodes.get(0));
+//		fmNodes.add(getFeatureObject(nodes.get(0)));
 		root = fmNodes.get(0);
+		
 		numberOfFeaturesToCreate--;
 		root.attachData(new Integer(numberOfFeaturesToCreate));
 		countCreatedFeatures++;
 		
 		FeatureTreeNode parentFeature = root;
 		Node parentNode = nodes.get(0);
-		nodes.remove(0);
+		//nodes.remove(0);
 
-		LinkedList<Node> nodesToEvaluate = new LinkedList<Node>();
-		nodesToEvaluate.add(parentNode);
+		LinkedList<Node> nodesToEvaluate = new LinkedList<Node>(nodes);
+		//nodesToEvaluate.add(parentNode);
 		
-		while (numberOfFeaturesToCreate > 0) {
+		while (nodesToEvaluate.size() > 0) {
 			Node n = nodesToEvaluate.removeFirst();
 			ArrayList<Node> children = getElementChildren(n);
 			for (Node c : children) {
@@ -112,7 +116,8 @@ public class PersonalFeatureModel extends splar.core.fm.FeatureModel {
 		FeatureTreeNode answer = null; 
 		for (FeatureTreeNode f : fmNodes) {
 			if (f.getName().equalsIgnoreCase(featureName)) {
-				answer = f; 
+				answer = f;
+				break;
 			}
 		}
 		return answer;

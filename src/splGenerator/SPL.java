@@ -50,7 +50,7 @@ public class SPL implements Cloneable {
 	 */
 	// private String modelsPath =
 	// "/home/andlanna/workspace2/reana/src/splGenerator/generatedModels/";
-	private String modelsPath = "/home/andlanna/workspace/spl-generator/src/generatedModels/";
+	private String modelsPath = "/home/igorbispo/Downloads/spl-generator/src/generatedModels/";
 
 	String name;
 	FeatureModel fm;
