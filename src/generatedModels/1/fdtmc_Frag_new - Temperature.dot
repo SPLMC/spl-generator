@@ -1,0 +1,11 @@
+digraph graphname {
+Frag_new - Temperature_s0 [label="Frag_new - Temperature_s0",color=red,shape=doublecircle ];
+Frag_new - Temperature_s1 [label="Frag_new - Temperature_s1",color=blue,shape=doublecircle ];
+Frag_new - Temperature_s2 [label="Frag_new - Temperature_s2",color=green,shape=doublecircle ];
+Frag_new - Temperature_s3 [label="Frag_new - Temperature_s3" ];
+Frag_new - Temperature_s0 -> Frag_new - Temperature_s0 [label=" / 1.0", style=dotted];
+Frag_new - Temperature_s1 -> Frag_new - Temperature_s3 [label=" / 1.0"];
+Frag_new - Temperature_s2 -> Frag_new - Temperature_s2 [label=" / 1.0"];
+Frag_new - Temperature_s3 -> Frag_new - Temperature_s2 [label="Nova Msg Igor3 / 0.7"];
+Frag_new - Temperature_s3 -> Frag_new - Temperature_s0 [label="Nova Msg Igor3 / 0.30000000000000004", style=dotted];
+}

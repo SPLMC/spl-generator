@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -82,7 +84,7 @@ public class TestEvolutions{
 		root = builder.getRDGNode();
 		
 		SplGenerator generator = SplGenerator.newInstance();
-		
+				
 		// SPL GENERATION
 		SPL spl = SPL.createSplFromRDG(root);
 		
@@ -94,12 +96,19 @@ public class TestEvolutions{
 		spl.setFeatureModel(pfm);
 		
 		ActivityDiagram ad = spl.getActivityDiagram();
-		
+				
 		// Adicionando uma mensagem em Capture
 		assertEquals("Nova Msg Igor não foi adicionada", 0, addMessage(ad, "Capture", "n0", "Lifeline_0", "Mock lifeline", Message.SYNCHRONOUS, "Nova Msg Igor", 0.999));
 				
 		// Adicionando uma mensagem em Situation
 		assertEquals("Nova Msg Igor2 não foi adicionada", 0, addMessage(ad, "Situation", "n10", "Mock lifeline", "Lifeline_0", Message.ASYNCHRONOUS, "Nova Msg Igor2", 0.9));
+		
+		// Adicionando um fragmento em Capture
+		assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "Capture", "Frag_new", "Temperature", "ACC"));
+		
+		// Adicionando uma mensagem no fragmento recém adicionado (Frag_new)
+		assertEquals("Nova Msg Igor3 não foi adicionada", 0, addMessage(ad, "Capture", "Frag_new", "Mock lifeline", "Lifeline_0", Message.ASYNCHRONOUS, "Nova Msg Igor3", 0.7));
+	
 		
 		// Creating a set of SPLs objects that will be transformed
 		LinkedList<SPL> splsList = new LinkedList<SPL>();
@@ -125,7 +134,7 @@ public class TestEvolutions{
 		}
 		
 		return null;
-	}
+	}	
 	
 	// Add message at fragment "fragName" at "ad" ActivityDiagram
 	int addMessage(ActivityDiagram ad, String actName, String fragName, String srcName,
@@ -150,6 +159,30 @@ public class TestEvolutions{
 		//Fragment frag = (Fragment) SequenceDiagramElement.getElementByName(fragName);
 		LinkedList<SequenceDiagram> seq_diag = f.getSequenceDiagrams();
 		seq_diag.get(0).createMessage(src, dst, type, msgName, prob);
+		
+		return 0;
+		
+	}
+	
+	// Add fragment named "fragName" at "ad" ActivityDiagram
+	int addFragment(ActivityDiagram ad, String actName, String fragName, String rowName, String guardName) {
+		Activity act = ad.getActivityByName(actName);
+	
+		if (act == null) return -1;
+		
+		SequenceDiagram seq = act.getSequenceDiagrams().getFirst();
+				
+		Fragment frag_new = (Fragment) Fragment.createElement(SequenceDiagramElement.FRAGMENT, fragName);
+		frag_new.setType(Fragment.OPTIONAL);
+				
+		if (frag_new.addSequenceDiagram(rowName, guardName) == null) return -1;
+		
+		SequenceDiagram frag_new_seq = frag_new.getSequenceDiagrams().get(0);
+		
+		frag_new_seq.createLifeline("Mock lifeline");
+		frag_new_seq.createLifeline("Lifeline_0");
+		
+		seq.addFragment(frag_new);
 		
 		return 0;
 		
