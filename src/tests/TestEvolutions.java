@@ -96,18 +96,43 @@ public class TestEvolutions{
 		spl.setFeatureModel(pfm);
 		
 		ActivityDiagram ad = spl.getActivityDiagram();
-				
-		// Adicionando uma mensagem em Capture
-		assertEquals("Nova Msg Igor não foi adicionada", 0, addMessage(ad, "Capture", "n0", "Lifeline_0", "Mock lifeline", Message.SYNCHRONOUS, "Nova Msg Igor", 0.999));
-				
-		// Adicionando uma mensagem em Situation
-		assertEquals("Nova Msg Igor2 não foi adicionada", 0, addMessage(ad, "Situation", "n10", "Mock lifeline", "Lifeline_0", Message.ASYNCHRONOUS, "Nova Msg Igor2", 0.9));
 		
-		// Adicionando um fragmento em Capture
-		assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "Capture", "Frag_new", "Temperature", "ACC"));
+		/******** Modificando Presence Condition ********/
+		changePresenceCondition(ad, "Situation", "n4", "Fall && Oxygenation");
+				
+
+		/******** Adicionando 20 Mensagens Aleatórias *********/
 		
-		// Adicionando uma mensagem no fragmento recém adicionado (Frag_new)
-		assertEquals("Nova Msg Igor3 não foi adicionada", 0, addMessage(ad, "Capture", "Frag_new", "Mock lifeline", "Lifeline_0", Message.ASYNCHRONOUS, "Nova Msg Igor3", 0.7));
+		/*
+		String[] activities = {"Capture", "Situation"};
+		String[] lifelines = {"Lifeline_0", "Mock lifeline"};
+		
+		Random r = new Random();
+		
+		for (int i = 0; i < 20; i++) {
+			int actNumber = r.nextInt(activities.length);
+			String fragName = getRandomFragment(ad.getActivityByName(activities[actNumber])).getName();
+			
+			int msgNumber = r.nextInt(lifelines.length);
+			assertEquals("Nao pode adicionar mensagem", 0, addMessage(ad, activities[actNumber], fragName,
+					lifelines[msgNumber], lifelines[(msgNumber + 1) % 2], Message.SYNCHRONOUS, "Msg n." + Integer.toString(i), 0.99));
+		}
+		*/
+		
+		/******** Adicionando um fragmento opcional com 20 mensagens ********/
+		//assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "Capture", "Novo Fragmento", "Temperature", "ACC", 20));
+		
+		/******** Adicionando uma mensagem em Capture *********/
+		//assertEquals("Nova Msg Igor não foi adicionada", 0, addMessage(ad, "Capture", "n0", "Lifeline_0", "Mock lifeline", Message.SYNCHRONOUS, "Nova Msg Igor", 0.999));
+		
+		/******** Adicionando uma mensagem em Situation ********/
+		//assertEquals("Nova Msg Igor2 não foi adicionada", 0, addMessage(ad, "Situation", "n10", "Mock lifeline", "Lifeline_0", Message.ASYNCHRONOUS, "Nova Msg Igor2", 0.9));
+		
+		/******** Adicionando um fragmento em Capture ********/
+		//assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "Capture", "Frag_new", "Temperature", "ACC", 0));
+		
+		/******** Adicionando uma mensagem no fragmento recém adicionado (Frag_new) ********/
+		//assertEquals("Nova Msg Igor3 não foi adicionada", 0, addMessage(ad, "Capture", "Frag_new", "Mock lifeline", "Lifeline_0", Message.ASYNCHRONOUS, "Nova Msg Igor3", 0.7));
 	
 		
 		// Creating a set of SPLs objects that will be transformed
@@ -116,6 +141,22 @@ public class TestEvolutions{
 		
 		SPLFilePersistence.persistSPLs(splsList);
 	
+	}
+	
+	Fragment getRandomFragment(Activity act) {
+		HashSet<Fragment> frags = act.getSequenceDiagrams().getFirst().getFragments();
+		
+		Random r = new Random();
+		
+		int fragIdx = r.nextInt(frags.size());
+		int i = 0;
+		
+		for (Fragment f_: frags) {
+			if (i == fragIdx) return f_;
+			i += 1;
+		}
+		
+		return null;	
 	}
 	
 	Fragment getFragment(HashSet<Fragment> f, String fragname) {
@@ -165,7 +206,7 @@ public class TestEvolutions{
 	}
 	
 	// Add fragment named "fragName" at "ad" ActivityDiagram
-	int addFragment(ActivityDiagram ad, String actName, String fragName, String rowName, String guardName) {
+	int addFragment(ActivityDiagram ad, String actName, String fragName, String rowName, String guardName, int msgAmount) {
 		Activity act = ad.getActivityByName(actName);
 	
 		if (act == null) return -1;
@@ -184,8 +225,41 @@ public class TestEvolutions{
 		
 		seq.addFragment(frag_new);
 		
+		if (msgAmount != 0) {
+			String[] lifelines = {"Lifeline_0", "Mock lifeline"};
+			
+			Random r = new Random();
+			
+			for (int i = 0; i < 20; i++) {
+				int msgNumber = r.nextInt(lifelines.length);
+				
+				assertEquals("Nao pode adicionar mensagem", 0, addMessage(ad, actName, fragName,
+						lifelines[msgNumber], lifelines[(msgNumber + 1) % 2], Message.SYNCHRONOUS, "Msg n." + Integer.toString(i), 0.99));
+			}
+					
+		}
+		
 		return 0;
 		
+	}
+	
+	int changePresenceCondition(ActivityDiagram ad, String actName, String fragName, String newPresenceCondition) {
+		Activity act = ad.getActivityByName(actName);
+		
+		if (act == null) return -1;
+		
+		SequenceDiagram seq = act.getSequenceDiagrams().getFirst();
+		
+		HashSet<Fragment> frag = seq.getFragments();
+		
+		Fragment f = getFragment(frag, fragName);
+		
+		if (f == null) return -1;
+		
+		SequenceDiagram sd = f.getSequenceDiagrams().getFirst();
+		sd.setGuard(newPresenceCondition);
+		
+		return 0;
 	}
 	
 }
