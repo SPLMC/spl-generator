@@ -52,6 +52,8 @@ public class CommandLineInterface {
 
 	
 	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/BSN/UML_BSN.xml";
+//	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/generatedModels/input.xml";
+
 	private static String featureModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/BSN/fm_BSN.xml";
 	
 	
@@ -107,12 +109,14 @@ public class CommandLineInterface {
 		Scanner scan = new Scanner(System.in);
 		
 		//Menu de evolução
-		loop: while(option!=0) {
+		while(option!=0) {
 			System.out.println("\nBoas vindas ao SPL generator. Qual evolução deseja fazer?");
 
 			System.out.println("1 - Adicionar mensagem.");
 			System.out.println("2 - Adicionar fragmento.");
 			System.out.println("3 - Mudar presence condition.");
+			System.out.println("4 - Remover fragmento.");
+			
 			System.out.println("0 - Sair.");
 
 			System.out.println("Escolha uma opção de alteração:");
@@ -167,10 +171,24 @@ public class CommandLineInterface {
 				
 				if (0 != ch_presence_condition(ad, actName, fragName, newPresenceCondition)) {
 					System.out.println("Ocorreu um erro ao modificar presence condition.");
+					return;
 				}
 				
 				System.out.println("Presence condition alterada com sucesso.");
 				
+				break;
+			case 4:
+				get_input_rem_frag(scan);
+				
+				actName = arguments.get(0);
+				fragName = arguments.get(1);
+				
+				if (0 != remove_fragment(ad, actName, fragName)) {
+					System.out.println("Ocorreu um erro ao remover o fragmento.");
+					return;
+				}
+				
+				System.out.println("Fragmento removido com sucesso.");
 				break;
 				
 			case 0:
@@ -289,6 +307,25 @@ public class CommandLineInterface {
 				}
 			}			
 		}
+		
+		return 0;
+	}
+	
+	// Remove a fragment named "fragName" at "ad" ActivityDiagram
+	public static int remove_fragment(ActivityDiagram ad, String actName, String fragName) {
+		Activity act = ad.getActivityByName(actName);
+		
+		if (act == null) return -1;
+		
+		SequenceDiagram seq = act.getSequenceDiagrams().getFirst();
+		
+		HashSet<Fragment> frag = seq.getFragments();
+		
+		Fragment f = getFragment(frag, fragName);
+		
+		if (f == null) return -1;
+		
+		frag.remove(f);
 		
 		return 0;
 	}
@@ -490,6 +527,21 @@ public class CommandLineInterface {
 		arguments.add(act_name);
 		arguments.add(frag_name);
 		arguments.add(new_presence_condition);
+	}
+	
+	public static void get_input_rem_frag(Scanner scan) {
+		arguments.clear();
+		
+		System.out.println("Insira o nome da atividade da qual deseja remover o fragmento.");
+		
+		String act_name = scan.nextLine();
+		
+		System.out.println("Insira o nome do fragmento que será removido.");
+	
+		String frag_name = scan.nextLine();
+		
+		arguments.add(act_name);
+		arguments.add(frag_name);
 	}
 
 }

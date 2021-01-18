@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,6 +43,7 @@ import tool.RDGNode;
 public class TestEvolutions{
 
 	private RDGNode root; 
+//	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/evo_fragmento/3.xml";
 	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/BSN/UML_BSN.xml";
 	private static String featureModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/BSN/fm_BSN.xml";
 	private String id;
@@ -98,7 +101,7 @@ public class TestEvolutions{
 		ActivityDiagram ad = spl.getActivityDiagram();
 		
 		/******** Modificando Presence Condition ********/
-		changePresenceCondition(ad, "Situation", "n4", "Fall && Oxygenation");
+		//changePresenceCondition(ad, "Situation", "n4", "Fall && Oxygenation");
 				
 
 		/******** Adicionando 20 Mensagens Aleatórias *********/
@@ -119,8 +122,38 @@ public class TestEvolutions{
 		}
 		*/
 		
-		/******** Adicionando um fragmento opcional com 20 mensagens ********/
-		//assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "Capture", "Novo Fragmento", "Temperature", "ACC", 20));
+		/******** Adicionando 20 Mensagens *********/
+		/*
+		
+		String[] activities = {"Capture"};
+		String[] lifelines = {"Lifeline_0", "Mock lifeline"};
+		
+		Random r = new Random();
+		
+		for (int i = 0; i < 100; i++) {
+			String fragName = "n0";
+			
+			int msgNumber = r.nextInt(lifelines.length);
+			assertEquals("Nao pode adicionar mensagem", 0, addMessage(ad, "Capture", fragName,
+					lifelines[msgNumber], lifelines[(msgNumber + 1) % 2], Message.SYNCHRONOUS, "Msg n2." + Integer.toString(i), 0.99));
+		}
+		*/
+		
+		
+		/******** Adicionando um fragmento opcional com 10 mensagens ********/
+		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/evo_fragmento/";
+		for (int i = 1;i < 21; i++) {
+			assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "Reconfiguration",
+					"NovoFrag"+Integer.toString(i), "AD0", "true", 10));
+			
+			String xmlContent = spl.getXmlRepresentation();
+			String file_name = Integer.toString(i) + ".xml";
+			FileWriter fw = new FileWriter(new File(path + file_name));
+			
+			fw.write(xmlContent);
+			fw.close();
+		}
+
 		
 		/******** Adicionando uma mensagem em Capture *********/
 		//assertEquals("Nova Msg Igor não foi adicionada", 0, addMessage(ad, "Capture", "n0", "Lifeline_0", "Mock lifeline", Message.SYNCHRONOUS, "Nova Msg Igor", 0.999));
@@ -135,11 +168,9 @@ public class TestEvolutions{
 		//assertEquals("Nova Msg Igor3 não foi adicionada", 0, addMessage(ad, "Capture", "Frag_new", "Mock lifeline", "Lifeline_0", Message.ASYNCHRONOUS, "Nova Msg Igor3", 0.7));
 	
 		
-		// Creating a set of SPLs objects that will be transformed
-		LinkedList<SPL> splsList = new LinkedList<SPL>();
-		splsList.add(spl);
+		// Persisting models
 		
-		SPLFilePersistence.persistSPLs(splsList);
+
 	
 	}
 	
@@ -230,7 +261,7 @@ public class TestEvolutions{
 			
 			Random r = new Random();
 			
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < msgAmount; i++) {
 				int msgNumber = r.nextInt(lifelines.length);
 				
 				assertEquals("Nao pode adicionar mensagem", 0, addMessage(ad, actName, fragName,

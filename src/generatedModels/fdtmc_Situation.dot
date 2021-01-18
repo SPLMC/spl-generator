@@ -1,0 +1,29 @@
+digraph graphname {
+Situation_s0 [label="Situation_s0",color=red,shape=doublecircle ];
+Situation_s1 [label="Situation_s1",color=blue,shape=doublecircle ];
+Situation_s2 [label="Situation_s2",color=green,shape=doublecircle ];
+Situation_s3 [label="Situation_s3" ];
+Situation_s4 [label="Situation_s4" ];
+Situation_s5 [label="Situation_s5" ];
+Situation_s6 [label="Situation_s6" ];
+Situation_s7 [label="Situation_s7" ];
+Situation_s8 [label="Situation_s8" ];
+Situation_s9 [label="Situation_s9" ];
+Situation_s0 -> Situation_s0 [label=" / 1.0", style=dotted];
+Situation_s1 -> Situation_s9 [label=" / 1.0"];
+Situation_s2 -> Situation_s2 [label=" / 1.0"];
+Situation_s3 -> Situation_s2 [label=" / 1.0"];
+Situation_s3 -> Situation_s0 [label=" / 0.0", style=dotted];
+Situation_s4 -> Situation_s3 [label=" / 1.0"];
+Situation_s4 -> Situation_s0 [label=" / 0.0", style=dotted];
+Situation_s5 -> Situation_s4 [label=" / n16"];
+Situation_s5 -> Situation_s0 [label=" / 1-n16", style=dotted];
+Situation_s6 -> Situation_s5 [label=" / n13"];
+Situation_s6 -> Situation_s0 [label=" / 1-n13", style=dotted];
+Situation_s7 -> Situation_s6 [label=" / n10"];
+Situation_s7 -> Situation_s0 [label=" / 1-n10", style=dotted];
+Situation_s8 -> Situation_s7 [label=" / n7"];
+Situation_s8 -> Situation_s0 [label=" / 1-n7", style=dotted];
+Situation_s9 -> Situation_s8 [label=" / n4"];
+Situation_s9 -> Situation_s0 [label=" / 1-n4", style=dotted];
+}
