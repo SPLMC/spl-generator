@@ -7,7 +7,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +35,12 @@ import splGenerator.SplGenerator;
 import splGenerator.VariableBehavioralParameters;
 import splGenerator.Util.SPLFilePersistence;
 import splGenerator.parsing.RDGBuilder;
+import splar.core.constraints.BooleanVariableInterface;
+import splar.core.constraints.CNFFormula;
+import splar.core.constraints.CNFLiteral;
 import splar.core.fm.FeatureModel;
+import splar.core.fm.FeatureTreeNode;
+import splar.core.fm.RootNode;
 import splar.core.fm.personalization.PersonalFeatureModel;
 import tool.CyclicRdgException;
 import tool.RDGNode;
@@ -44,8 +51,8 @@ public class TestEvolutions{
 
 	private RDGNode root; 
 //	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/evo_fragmento/3.xml";
-	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/BSN/UML_BSN.xml";
-	private static String featureModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/BSN/fm_BSN.xml";
+	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/Lift/UML_LiftSystem.xml";
+	private static String featureModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/Lift/fm_LiftSystem.xml";
 	private String id;
 	private String presenceCondition;
 	private static RDGBuilder builder;
@@ -96,10 +103,11 @@ public class TestEvolutions{
 
 		PersonalFeatureModel pfm = new PersonalFeatureModel();
 		pfm.loadFMfromFeatureIDEXML(featureModel);
+		
+		CNFFormula nodes = pfm.FT2CNF();
 		spl.setFeatureModel(pfm);
-		
 		ActivityDiagram ad = spl.getActivityDiagram();
-		
+				
 		/******** Modificando Presence Condition ********/
 		//changePresenceCondition(ad, "Situation", "n4", "Fall && Oxygenation");
 				
@@ -122,29 +130,68 @@ public class TestEvolutions{
 		}
 		*/
 		
-		/******** Adicionando 20 Mensagens *********/
+		/******** Adicionando 10 Mensagens *********/
 		/*
-		
-		String[] activities = {"Capture"};
 		String[] lifelines = {"Lifeline_0", "Mock lifeline"};
 		
 		Random r = new Random();
 		
-		for (int i = 0; i < 100; i++) {
+		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/lift_evo/evo_msg/";
+				
+		for (int i = 1; i < 10 * 21; i++) {
 			String fragName = "n0";
 			
 			int msgNumber = r.nextInt(lifelines.length);
-			assertEquals("Nao pode adicionar mensagem", 0, addMessage(ad, "Capture", fragName,
-					lifelines[msgNumber], lifelines[(msgNumber + 1) % 2], Message.SYNCHRONOUS, "Msg n2." + Integer.toString(i), 0.99));
-		}
-		*/
-		
+			assertEquals("Nao pode adicionar mensagem", 0, addMessage(ad, "sequenceDiagram1", fragName,
+					lifelines[msgNumber], lifelines[(msgNumber + 1) % 2], Message.SYNCHRONOUS, "Msg n." + Integer.toString(i), 0.99));
+			
+			
+			if (i % 10 == 0) {
+			
+				String xmlContent = spl.getXmlRepresentation();
+				String file_name = Integer.toString(i / 10) + ".xml";
+				FileWriter fw = new FileWriter(new File(path + file_name));
+				
+				fw.write(xmlContent);
+				fw.close();
+			}
+		}*/
 		
 		/******** Adicionando um fragmento opcional com 10 mensagens ********/
-		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/evo_fragmento/";
+		
+		/*
+		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/lift_evo/evo_frag/";
+		int n_sd_0 = 2;
+		int n_f_0 = 0; 
 		for (int i = 1;i < 21; i++) {
-			assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "Reconfiguration",
-					"NovoFrag"+Integer.toString(i), "AD0", "true", 10));
+			assertEquals("Frag_new não foi adicionado", 0, addFragment(ad, "sequenceDiagram1",
+					"Fragment_"+Integer.toString(n_f_0), "SD_"+Integer.toString(n_sd_0), "true", 10));
+			
+			String xmlContent = spl.getXmlRepresentation();
+			String file_name = Integer.toString(i) + ".xml";
+			FileWriter fw = new FileWriter(new File(path + file_name));
+			
+			fw.write(xmlContent);
+			fw.close();
+			
+			n_sd_0 += 3;
+			n_f_0 += 2;
+		}
+	*/
+	
+		/******* Modificando presence condition "fortalecer" *********/
+		/*
+		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/lift_evo/evo_pc/fortalecer/";
+		ArrayList<String> features = get_all_features_name(spl);
+		
+		String old_pc = features.get(0);
+		
+		Random r = new Random();
+		
+		for (int i = 1;i < 21; i++) {
+			
+			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "sequenceDiagram1", "n0", old_pc));
+			old_pc += " && " + features.get(r.nextInt(features.size()));
 			
 			String xmlContent = spl.getXmlRepresentation();
 			String file_name = Integer.toString(i) + ".xml";
@@ -153,7 +200,29 @@ public class TestEvolutions{
 			fw.write(xmlContent);
 			fw.close();
 		}
-
+		*/
+		
+		/******** Modificando presence condition "enfraquecer" *********/
+		
+		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/lift_evo/evo_pc/enfraquecer/";
+		ArrayList<String> features = get_all_features_name(spl);
+		
+		String old_pc = features.get(0);
+		
+		Random r = new Random();
+		
+		for (int i = 1;i < 21; i++) {
+			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "sequenceDiagram1", "n0", old_pc));
+			old_pc += " || " + features.get(r.nextInt(features.size()));
+			
+			String xmlContent = spl.getXmlRepresentation();
+			String file_name = Integer.toString(i) + ".xml";
+			FileWriter fw = new FileWriter(new File(path + file_name));
+			
+			fw.write(xmlContent);
+			fw.close();
+		}		
+		
 		
 		/******** Adicionando uma mensagem em Capture *********/
 		//assertEquals("Nova Msg Igor não foi adicionada", 0, addMessage(ad, "Capture", "n0", "Lifeline_0", "Mock lifeline", Message.SYNCHRONOUS, "Nova Msg Igor", 0.999));
@@ -217,6 +286,7 @@ public class TestEvolutions{
 		
 		SequenceDiagram seq = act.getSequenceDiagrams().getFirst();
 		
+		/*
 		HashSet<Fragment> frag = seq.getFragments();
 		
 		Fragment f = getFragment(frag, fragName);
@@ -226,11 +296,20 @@ public class TestEvolutions{
 		Lifeline src = getLifeline(f.getTransitiveLifeline(), srcName);
 		Lifeline dst = getLifeline(f.getTransitiveLifeline(), dstName);
 		
+		*/
+		Lifeline src = getLifeline(seq.getTransitiveLifeline(), srcName);
+		Lifeline dst = getLifeline(seq.getTransitiveLifeline(), dstName);		
+		
 		if (src == null || dst == null) return -1;
 		
 		//Fragment frag = (Fragment) SequenceDiagramElement.getElementByName(fragName);
+		
+		/*
 		LinkedList<SequenceDiagram> seq_diag = f.getSequenceDiagrams();
 		seq_diag.get(0).createMessage(src, dst, type, msgName, prob);
+		*/
+		
+		seq.createMessage(src, dst, type, msgName, prob);
 		
 		return 0;
 		
@@ -293,6 +372,21 @@ public class TestEvolutions{
 		return 0;
 	}
 	
+	ArrayList<String> get_all_features_name(SPL spl) {
+		ArrayList<String> features = new ArrayList<String>();
+		CNFFormula formula = spl.getFeatureModel().FT2CNF();
+		
+		for (BooleanVariableInterface f: formula.getVariables()) {
+			features.add(f.getID());
+		}
+		
+		return features;
+	}
+
+	
+	
 }
+
+
 
 

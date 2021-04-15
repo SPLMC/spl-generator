@@ -1,0 +1,38 @@
+digraph graphname {
+SD_32_s0 [label="SD_32_s0",color=red,shape=doublecircle ];
+SD_32_s1 [label="SD_32_s1",color=blue,shape=doublecircle ];
+SD_32_s2 [label="SD_32_s2",color=green,shape=doublecircle ];
+SD_32_s3 [label="SD_32_s3" ];
+SD_32_s4 [label="SD_32_s4" ];
+SD_32_s5 [label="SD_32_s5" ];
+SD_32_s6 [label="SD_32_s6" ];
+SD_32_s7 [label="SD_32_s7" ];
+SD_32_s8 [label="SD_32_s8" ];
+SD_32_s9 [label="SD_32_s9" ];
+SD_32_s10 [label="SD_32_s10" ];
+SD_32_s11 [label="SD_32_s11" ];
+SD_32_s12 [label="SD_32_s12" ];
+SD_32_s0 -> SD_32_s0 [label=" / 1.0", style=dotted];
+SD_32_s1 -> SD_32_s12 [label=" / 1.0"];
+SD_32_s2 -> SD_32_s2 [label=" / 1.0"];
+SD_32_s3 -> SD_32_s2 [label="T31 / 0.9994"];
+SD_32_s3 -> SD_32_s0 [label="T31 / 6.000000000000449E-4", style=dotted];
+SD_32_s4 -> SD_32_s3 [label="T30 / 0.9966"];
+SD_32_s4 -> SD_32_s0 [label="T30 / 0.0033999999999999586", style=dotted];
+SD_32_s5 -> SD_32_s4 [label="T29 / 0.9915"];
+SD_32_s5 -> SD_32_s0 [label="T29 / 0.008499999999999952", style=dotted];
+SD_32_s6 -> SD_32_s5 [label="T28 / 0.9915"];
+SD_32_s6 -> SD_32_s0 [label="T28 / 0.008499999999999952", style=dotted];
+SD_32_s7 -> SD_32_s6 [label="T27 / 0.9997"];
+SD_32_s7 -> SD_32_s0 [label="T27 / 2.9999999999996696E-4", style=dotted];
+SD_32_s8 -> SD_32_s7 [label="T26 / 0.9915"];
+SD_32_s8 -> SD_32_s0 [label="T26 / 0.008499999999999952", style=dotted];
+SD_32_s9 -> SD_32_s8 [label="T25 / 0.9997"];
+SD_32_s9 -> SD_32_s0 [label="T25 / 2.9999999999996696E-4", style=dotted];
+SD_32_s10 -> SD_32_s9 [label="T24 / 0.9961"];
+SD_32_s10 -> SD_32_s0 [label="T24 / 0.0039000000000000146", style=dotted];
+SD_32_s11 -> SD_32_s10 [label="T23 / 0.9994"];
+SD_32_s11 -> SD_32_s0 [label="T23 / 6.000000000000449E-4", style=dotted];
+SD_32_s12 -> SD_32_s11 [label="T22 / 0.9915"];
+SD_32_s12 -> SD_32_s0 [label="T22 / 0.008499999999999952", style=dotted];
+}

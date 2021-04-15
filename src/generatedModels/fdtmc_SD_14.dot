@@ -1,0 +1,38 @@
+digraph graphname {
+SD_14_s0 [label="SD_14_s0",color=red,shape=doublecircle ];
+SD_14_s1 [label="SD_14_s1",color=blue,shape=doublecircle ];
+SD_14_s2 [label="SD_14_s2",color=green,shape=doublecircle ];
+SD_14_s3 [label="SD_14_s3" ];
+SD_14_s4 [label="SD_14_s4" ];
+SD_14_s5 [label="SD_14_s5" ];
+SD_14_s6 [label="SD_14_s6" ];
+SD_14_s7 [label="SD_14_s7" ];
+SD_14_s8 [label="SD_14_s8" ];
+SD_14_s9 [label="SD_14_s9" ];
+SD_14_s10 [label="SD_14_s10" ];
+SD_14_s11 [label="SD_14_s11" ];
+SD_14_s12 [label="SD_14_s12" ];
+SD_14_s0 -> SD_14_s0 [label=" / 1.0", style=dotted];
+SD_14_s1 -> SD_14_s12 [label=" / 1.0"];
+SD_14_s2 -> SD_14_s2 [label=" / 1.0"];
+SD_14_s3 -> SD_14_s2 [label="T31 / 0.9986"];
+SD_14_s3 -> SD_14_s0 [label="T31 / 0.0013999999999999568", style=dotted];
+SD_14_s4 -> SD_14_s3 [label="T30 / 0.99"];
+SD_14_s4 -> SD_14_s0 [label="T30 / 0.010000000000000009", style=dotted];
+SD_14_s5 -> SD_14_s4 [label="T29 / 0.9936"];
+SD_14_s5 -> SD_14_s0 [label="T29 / 0.006399999999999961", style=dotted];
+SD_14_s6 -> SD_14_s5 [label="T28 / 0.99"];
+SD_14_s6 -> SD_14_s0 [label="T28 / 0.010000000000000009", style=dotted];
+SD_14_s7 -> SD_14_s6 [label="T27 / 0.9989"];
+SD_14_s7 -> SD_14_s0 [label="T27 / 0.0010999999999999899", style=dotted];
+SD_14_s8 -> SD_14_s7 [label="T26 / 0.9986"];
+SD_14_s8 -> SD_14_s0 [label="T26 / 0.0013999999999999568", style=dotted];
+SD_14_s9 -> SD_14_s8 [label="T25 / 0.9986"];
+SD_14_s9 -> SD_14_s0 [label="T25 / 0.0013999999999999568", style=dotted];
+SD_14_s10 -> SD_14_s9 [label="T24 / 0.99"];
+SD_14_s10 -> SD_14_s0 [label="T24 / 0.010000000000000009", style=dotted];
+SD_14_s11 -> SD_14_s10 [label="T23 / 0.9936"];
+SD_14_s11 -> SD_14_s0 [label="T23 / 0.006399999999999961", style=dotted];
+SD_14_s12 -> SD_14_s11 [label="T22 / 0.9989"];
+SD_14_s12 -> SD_14_s0 [label="T22 / 0.0010999999999999899", style=dotted];
+}

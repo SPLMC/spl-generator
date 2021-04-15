@@ -49,7 +49,8 @@ public class Fragment extends SequenceDiagramElement{
 
 
 	public SequenceDiagram addSequenceDiagram(String rowName, String guard) {
-		String elementName = this.getName() + " - " + rowName; 
+		//String elementName = this.getName() + " - " + rowName;
+		String elementName = rowName;
 		SequenceDiagram rowSD = SequenceDiagram.createSequenceDiagram(
 				elementName, guard); 
 		boolean answer;

@@ -612,17 +612,14 @@ public class Transformer {
 	 */
 	private List<fdtmc.Transition> pruneErrorTransitions(FDTMC fdtmc,
 			List<fdtmc.Transition> outgoingTransitions) {
-		/*
+		
 		for (fdtmc.Transition t : outgoingTransitions) {
 			if (t.getTarget() == fdtmc.getErrorState()
 					|| (t.getSource() == fdtmc.getSuccessState() && t
 							.getTarget() == fdtmc.getSuccessState())) {
 				outgoingTransitions.remove(t);
 			}
-		}*/
-		
-		outgoingTransitions.removeIf(t -> t.getTarget() == fdtmc.getErrorState() ||
-									(t.getSource() == fdtmc.getSuccessState() && t.getTarget() == fdtmc.getSuccessState()));
+		}
 		
 		return outgoingTransitions;
 	}
