@@ -185,13 +185,21 @@ public class TestEvolutions{
 		ArrayList<String> features = get_all_features_name(spl);
 		
 		String old_pc = features.get(0);
+		int feature_added_idx = 0;
+
 		
 		Random r = new Random();
 		
 		for (int i = 1;i < 21; i++) {
 			
 			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "sequenceDiagram1", "n0", old_pc));
-			old_pc += " && " + features.get(r.nextInt(features.size()));
+			features.remove(feature_added_idx);
+			
+			if (features.size() == 0) break;
+			
+			feature_added_idx = r.nextInt(features.size());
+			
+			old_pc += " && " + features.get(r.nextInt(feature_added_idx);
 			
 			String xmlContent = spl.getXmlRepresentation();
 			String file_name = Integer.toString(i) + ".xml";
@@ -208,12 +216,19 @@ public class TestEvolutions{
 		ArrayList<String> features = get_all_features_name(spl);
 		
 		String old_pc = features.get(0);
+		int feature_added_idx = 0;
 		
 		Random r = new Random();
 		
 		for (int i = 1;i < 21; i++) {
 			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "sequenceDiagram1", "n0", old_pc));
-			old_pc += " || " + features.get(r.nextInt(features.size()));
+			features.remove(feature_added_idx);
+			
+			if (features.size() == 0) break;
+			
+			feature_added_idx = r.nextInt(features.size());
+			
+			old_pc += " || " + features.get(feature_added_idx);
 			
 			String xmlContent = spl.getXmlRepresentation();
 			String file_name = Integer.toString(i) + ".xml";
