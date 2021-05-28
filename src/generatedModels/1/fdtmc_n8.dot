@@ -1,0 +1,14 @@
+digraph graphname {
+n8_s0 [label="n8_s0",color=red,shape=doublecircle ];
+n8_s1 [label="n8_s1",color=blue,shape=doublecircle ];
+n8_s2 [label="n8_s2",color=green,shape=doublecircle ];
+n8_s3 [label="n8_s3" ];
+n8_s4 [label="n8_s4" ];
+n8_s0 -> n8_s0 [label=" / 1.0", style=dotted];
+n8_s1 -> n8_s4 [label=" / 1.0"];
+n8_s2 -> n8_s2 [label=" / 1.0"];
+n8_s3 -> n8_s2 [label="persistReply / 0.999"];
+n8_s3 -> n8_s0 [label="persistReply / 0.0010000000000000009", style=dotted];
+n8_s4 -> n8_s3 [label="persist / 0.999"];
+n8_s4 -> n8_s0 [label="persist / 0.0010000000000000009", style=dotted];
+}

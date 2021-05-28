@@ -51,8 +51,8 @@ public class TestEvolutions{
 
 	private RDGNode root; 
 //	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/evo_fragmento/3.xml";
-	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/Lift/UML_LiftSystem.xml";
-	private static String featureModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/Lift/fm_LiftSystem.xml";
+	private static String behavioralModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/CloudComputing/UML_CloudComputing.xml";
+	private static String featureModel = "/home/igorbispo/Downloads/spl-generator/src/seedModels/CloudComputing/fm_CloudComputing.xml";
 	private String id;
 	private String presenceCondition;
 	private static RDGBuilder builder;
@@ -104,31 +104,9 @@ public class TestEvolutions{
 		PersonalFeatureModel pfm = new PersonalFeatureModel();
 		pfm.loadFMfromFeatureIDEXML(featureModel);
 		
-		CNFFormula nodes = pfm.FT2CNF();
+		//CNFFormula nodes = pfm.FT2CNF();
 		spl.setFeatureModel(pfm);
 		ActivityDiagram ad = spl.getActivityDiagram();
-				
-		/******** Modificando Presence Condition ********/
-		//changePresenceCondition(ad, "Situation", "n4", "Fall && Oxygenation");
-				
-
-		/******** Adicionando 20 Mensagens Aleatórias *********/
-		
-		/*
-		String[] activities = {"Capture", "Situation"};
-		String[] lifelines = {"Lifeline_0", "Mock lifeline"};
-		
-		Random r = new Random();
-		
-		for (int i = 0; i < 20; i++) {
-			int actNumber = r.nextInt(activities.length);
-			String fragName = getRandomFragment(ad.getActivityByName(activities[actNumber])).getName();
-			
-			int msgNumber = r.nextInt(lifelines.length);
-			assertEquals("Nao pode adicionar mensagem", 0, addMessage(ad, activities[actNumber], fragName,
-					lifelines[msgNumber], lifelines[(msgNumber + 1) % 2], Message.SYNCHRONOUS, "Msg n." + Integer.toString(i), 0.99));
-		}
-		*/
 		
 		/******** Adicionando 10 Mensagens *********/
 		/*
@@ -180,26 +158,27 @@ public class TestEvolutions{
 	*/
 	
 		/******* Modificando presence condition "fortalecer" *********/
-		/*
-		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/lift_evo/evo_pc/fortalecer/";
-		ArrayList<String> features = get_all_features_name(spl);
 		
+		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/new_evo//cloud_evo/fortalecer/";
+		ArrayList<String> features = new ArrayList<String>(Arrays.asList("VirtualMachine", "PriceModel", "OnDemand", "Reserved", "Spot", "InstanceType", "HardwareConfiguration", "ComputeUnit", "BusSize", "b32",
+				"b64", "RamMemory", "Network", "FamilyType", "Compute", "General", "Accelerator", "GPU", "IntelPhi", "FPGA", "Memory", "Storage", "InstanceDisk", "VMI", "VirtualizationTechnique", "HVM", "PVM",
+				"OperatingSystem", "Platform", "Linux", "Windows", "Architecture", "x32", "x64", "SoftwarePackage", "Region", "Africa", "Asia", "Australia", "NorthAmerica", "Europe", "SouthAmerica", "Disk", "DiskType",
+				"Ephemeral", "Persistent", "ObjectStore", "DiskTechnology", "SSD", "Standard", "Zone", "Group"));		
 		String old_pc = features.get(0);
 		int feature_added_idx = 0;
 
-		
 		Random r = new Random();
 		
 		for (int i = 1;i < 21; i++) {
 			
-			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "sequenceDiagram1", "n0", old_pc));
+			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "executingAnApplicationInTheArchitecture", "n0", old_pc));
 			features.remove(feature_added_idx);
 			
 			if (features.size() == 0) break;
 			
 			feature_added_idx = r.nextInt(features.size());
 			
-			old_pc += " && " + features.get(r.nextInt(feature_added_idx);
+			old_pc += " && " + features.get(feature_added_idx);
 			
 			String xmlContent = spl.getXmlRepresentation();
 			String file_name = Integer.toString(i) + ".xml";
@@ -208,12 +187,16 @@ public class TestEvolutions{
 			fw.write(xmlContent);
 			fw.close();
 		}
-		*/
 		
+		
+	
 		/******** Modificando presence condition "enfraquecer" *********/
-		
-		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/lift_evo/evo_pc/enfraquecer/";
-		ArrayList<String> features = get_all_features_name(spl);
+		/*
+		String path = "/home/igorbispo/Downloads/spl-generator/bin/generatedModels/new_evo/cloud_evo/enfraquecer/";
+		ArrayList<String> features = new ArrayList<String>(Arrays.asList("VirtualMachine", "PriceModel", "OnDemand", "Reserved", "Spot", "InstanceType", "HardwareConfiguration", "ComputeUnit", "BusSize", "b32",
+				"b64", "RamMemory", "Network", "FamilyType", "Compute", "General", "Accelerator", "GPU", "IntelPhi", "FPGA", "Memory", "Storage", "InstanceDisk", "VMI", "VirtualizationTechnique", "HVM", "PVM",
+				"OperatingSystem", "Platform", "Linux", "Windows", "Architecture", "x32", "x64", "SoftwarePackage", "Region", "Africa", "Asia", "Australia", "NorthAmerica", "Europe", "SouthAmerica", "Disk", "DiskType",
+				"Ephemeral", "Persistent", "ObjectStore", "DiskTechnology", "SSD", "Standard", "Zone", "Group"));
 		
 		String old_pc = features.get(0);
 		int feature_added_idx = 0;
@@ -221,7 +204,7 @@ public class TestEvolutions{
 		Random r = new Random();
 		
 		for (int i = 1;i < 21; i++) {
-			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "sequenceDiagram1", "n0", old_pc));
+			assertEquals("Presence condition não foi alterada", 0, changePresenceCondition(ad, "executingAnApplicationInTheArchitecture", "n0", old_pc));
 			features.remove(feature_added_idx);
 			
 			if (features.size() == 0) break;
@@ -236,7 +219,8 @@ public class TestEvolutions{
 			
 			fw.write(xmlContent);
 			fw.close();
-		}		
+		}	
+		*/	
 		
 		
 		/******** Adicionando uma mensagem em Capture *********/

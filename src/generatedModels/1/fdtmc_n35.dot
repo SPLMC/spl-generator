@@ -1,0 +1,38 @@
+digraph graphname {
+n35_s0 [label="n35_s0",color=red,shape=doublecircle ];
+n35_s1 [label="n35_s1",color=blue,shape=doublecircle ];
+n35_s2 [label="n35_s2",color=green,shape=doublecircle ];
+n35_s3 [label="n35_s3" ];
+n35_s4 [label="n35_s4" ];
+n35_s5 [label="n35_s5" ];
+n35_s6 [label="n35_s6" ];
+n35_s7 [label="n35_s7" ];
+n35_s8 [label="n35_s8" ];
+n35_s9 [label="n35_s9" ];
+n35_s10 [label="n35_s10" ];
+n35_s11 [label="n35_s11" ];
+n35_s12 [label="n35_s12" ];
+n35_s0 -> n35_s0 [label=" / 1.0", style=dotted];
+n35_s1 -> n35_s12 [label=" / 1.0"];
+n35_s2 -> n35_s2 [label=" / 1.0"];
+n35_s3 -> n35_s2 [label="replySendSituation / 0.999"];
+n35_s3 -> n35_s0 [label="replySendSituation / 0.0010000000000000009", style=dotted];
+n35_s4 -> n35_s3 [label="replySendSituation(Temperature) / 0.999"];
+n35_s4 -> n35_s0 [label="replySendSituation(Temperature) / 0.0010000000000000009", style=dotted];
+n35_s5 -> n35_s4 [label=" / 0.999"];
+n35_s5 -> n35_s0 [label=" / 0.0010000000000000009", style=dotted];
+n35_s6 -> n35_s5 [label="persistReply / 0.999"];
+n35_s6 -> n35_s0 [label="persistReply / 0.0010000000000000009", style=dotted];
+n35_s7 -> n35_s6 [label=" / n9"];
+n35_s7 -> n35_s0 [label=" / 1-n9", style=dotted];
+n35_s8 -> n35_s7 [label=" / n8"];
+n35_s8 -> n35_s0 [label=" / 1-n8", style=dotted];
+n35_s9 -> n35_s8 [label="persist / 0.999"];
+n35_s9 -> n35_s0 [label="persist / 0.0010000000000000009", style=dotted];
+n35_s10 -> n35_s9 [label=" / 0.999"];
+n35_s10 -> n35_s0 [label=" / 0.0010000000000000009", style=dotted];
+n35_s11 -> n35_s10 [label="replyRegister / 0.999"];
+n35_s11 -> n35_s0 [label="replyRegister / 0.0010000000000000009", style=dotted];
+n35_s12 -> n35_s11 [label="register / 0.999"];
+n35_s12 -> n35_s0 [label="register / 0.0010000000000000009", style=dotted];
+}

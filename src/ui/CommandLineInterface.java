@@ -1,12 +1,14 @@
 package ui;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -34,6 +36,8 @@ import splGenerator.Util.SPLFilePersistence;
 import splGenerator.parsing.RDGBuilder;
 import splGenerator.transformation.Transformer;
 import splar.apps.generator.FMGeneratorEngine;
+import splar.core.constraints.BooleanVariableInterface;
+import splar.core.constraints.CNFFormula;
 import splar.core.fm.FeatureModel;
 import splar.core.fm.FeatureModelException;
 import splar.core.fm.XMLFeatureModel;
@@ -65,12 +69,14 @@ public class CommandLineInterface {
 	private static String rowName;
 	private static String guardName;
 	private static String newPresenceCondition;
-
+	private static String bmName;
+	private static String fmName;
+	
 	private static int type;
 	private static int msgAmount;
 	private static double prob;
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) throws IOException {		
 		builder = new RDGBuilder(behavioralModel);
 		
 		//Test if builder is instantiated accordingly
@@ -116,6 +122,11 @@ public class CommandLineInterface {
 			System.out.println("2 - Adicionar fragmento.");
 			System.out.println("3 - Mudar presence condition.");
 			System.out.println("4 - Remover fragmento.");
+			System.out.println("-----------------------");
+			System.out.println("5 - Cenário 1: adicionar 10 mensagens aleatórias, 20 evoluções.");
+			System.out.println("6 - Cenário 2: adicionar 1 fragmento opcional com 10 msgs., 20 evoluções.");
+			System.out.println("7 - Cenário 3: fortalecer condição de guarda.");
+			System.out.println("8 - Cenário 3: enfraquecer condição de guarda.");
 			
 			System.out.println("0 - Sair.");
 
@@ -191,6 +202,70 @@ public class CommandLineInterface {
 				System.out.println("Fragmento removido com sucesso.");
 				break;
 				
+			case 5:
+				get_input_spl(scan);
+				
+				bmName = arguments.get(0);
+				fmName = arguments.get(1);
+				actName = arguments.get(2);
+						
+				if (0 != add_10_msg(actName, bmName, fmName)) {
+					System.out.println("Ocorreu um erro ao evoluir.");
+					return;
+				}
+				
+				System.out.println("Evolução feita com sucesso.");
+				
+				break;
+				
+			case 6:
+				get_input_spl(scan);
+				
+				bmName = arguments.get(0);
+				fmName = arguments.get(1);
+				actName = arguments.get(2);
+						
+				if (0 != add_opt_frag(actName, bmName, fmName)) {
+					System.out.println("Ocorreu um erro ao evoluir.");
+					return;
+				}
+				
+				System.out.println("Evolução feita com sucesso.");
+				
+				break;
+				
+			case 7:
+				get_input_spl(scan);
+				
+				bmName = arguments.get(0);
+				fmName = arguments.get(1);
+				actName = arguments.get(2);
+						
+				if (0 != ch_pc(actName, bmName, fmName, true)) {
+					System.out.println("Ocorreu um erro ao evoluir.");
+					return;
+				}
+				
+				System.out.println("Evolução feita com sucesso.");
+				
+				break;
+				
+			case 8:
+				get_input_spl(scan);
+				
+				bmName = arguments.get(0);
+				fmName = arguments.get(1);
+				actName = arguments.get(2);
+						
+				if (0 != ch_pc(actName, bmName, fmName, false)) {
+					System.out.println("Ocorreu um erro ao evoluir.");
+					return;
+				}
+				
+				System.out.println("Evolução feita com sucesso.");
+				
+				break;
+				
 			case 0:
 				System.out.println("Saindo.");
 				break;
@@ -246,13 +321,13 @@ public class CommandLineInterface {
 	// Add message at fragment "fragName" at "ad" ActivityDiagram
 	public static int add_message(ActivityDiagram ad, String actName, String fragName, String srcName,
 			String dstName, int type, String msgName,  double prob) {
-
 		Activity act = ad.getActivityByName(actName);
 		
 		if (act == null) return -1;
 		
 		SequenceDiagram seq = act.getSequenceDiagrams().getFirst();
 		
+		/*
 		HashSet<Fragment> frag = seq.getFragments();
 		
 		Fragment f = getFragment(frag, fragName);
@@ -262,11 +337,20 @@ public class CommandLineInterface {
 		Lifeline src = getLifeline(f.getTransitiveLifeline(), srcName);
 		Lifeline dst = getLifeline(f.getTransitiveLifeline(), dstName);
 		
+		*/
+		Lifeline src = getLifeline(seq.getTransitiveLifeline(), srcName);
+		Lifeline dst = getLifeline(seq.getTransitiveLifeline(), dstName);		
+		
 		if (src == null || dst == null) return -1;
 		
 		//Fragment frag = (Fragment) SequenceDiagramElement.getElementByName(fragName);
+		
+		/*
 		LinkedList<SequenceDiagram> seq_diag = f.getSequenceDiagrams();
 		seq_diag.get(0).createMessage(src, dst, type, msgName, prob);
+		*/
+		
+		seq.createMessage(src, dst, type, msgName, prob);
 		
 		return 0;
 
@@ -348,7 +432,162 @@ public class CommandLineInterface {
 		
 		return 0;
 	}
+
+	//-------------------- Evolution Scenarios
 	
+	static ArrayList<String> get_all_features_name(SPL spl) {
+		ArrayList<String> features = new ArrayList<String>();
+		CNFFormula formula = spl.getFeatureModel().FT2CNF();
+		
+		for (BooleanVariableInterface f: formula.getVariables()) {
+			features.add(f.getID());
+		}
+		
+		return features;
+	}
+
+	
+	public static SPL reload_spl(String model_path, String fm_path) {
+		builder = new RDGBuilder(model_path);
+
+		//Test if builder is instantiated accordingly
+		assertNotNull(builder);
+		
+		root = builder.getRDGNode();
+		
+		SplGenerator generator = SplGenerator.newInstance();
+				
+		// SPL GENERATION
+		SPL spl = SPL.createSplFromRDG(root);
+		
+		spl.getXmlRepresentation();
+		SPLFilePersistence.rdg2Dot(root, "rdg");
+
+		PersonalFeatureModel pfm = new PersonalFeatureModel();
+		pfm.loadFMfromFeatureIDEXML(fm_path);
+		
+		return spl;
+	}
+	
+	public static int add_10_msg(String actName, String model_path, String fm_path) throws IOException {
+		SPL spl = reload_spl(model_path, fm_path);
+		
+		ActivityDiagram ad = spl.getActivityDiagram();
+		
+		String[] lifelines = {"Lifeline_0", "Mock lifeline"};
+		
+		Random r = new Random();
+				
+		String path = "./evo_10_msg/";
+		File f = new File(path);
+		f.mkdir();
+				
+		for (int i = 1; i < 10 * 21; i++) {
+			String fragName = "n0";
+			
+			int msgNumber = r.nextInt(lifelines.length);
+			
+			if (add_message(ad, actName, fragName, lifelines[msgNumber], lifelines[(msgNumber + 1) % 2],
+					Message.SYNCHRONOUS, "Msg n." + Integer.toString(i), 0.99) != 0) {
+				return -1;
+			}
+						
+			
+			if (i % 10 == 0) {
+				String xmlContent = spl.getXmlRepresentation();
+				String file_name = Integer.toString(i / 10) + ".xml";
+				FileWriter fw = new FileWriter(new File(path + file_name));
+				
+				fw.write(xmlContent);
+				fw.close();
+			}
+		}
+		
+		return 0;
+	}
+	
+	public static int add_opt_frag(String actName, String model_path, String fm_path) throws IOException {
+		SPL spl = reload_spl(model_path, fm_path);
+		
+		ActivityDiagram ad = spl.getActivityDiagram();
+		
+		String[] lifelines = {"Lifeline_0", "Mock lifeline"};
+		
+		String path = "./evo_add_frag/";
+		File f = new File(path);
+		f.mkdir();
+		
+		int n_sd_0 = 2;
+		int n_f_0 = 0; 
+		for (int i = 1;i < 21; i++) {
+			if (add_fragment(ad, actName, "Fragment_"+Integer.toString(n_f_0), "SD_"+Integer.toString(n_sd_0), "true", 10) != 0) {
+				return -1;
+			}
+			
+			String xmlContent = spl.getXmlRepresentation();
+			String file_name = Integer.toString(i) + ".xml";
+			FileWriter fw = new FileWriter(new File(path + file_name));
+			
+			fw.write(xmlContent);
+			fw.close();
+			
+			n_sd_0 += 3;
+			n_f_0 += 2;
+		}
+		
+		return 0;
+	}
+	
+	public static int ch_pc(String actName, String model_path, String fm_path, boolean fortify) throws IOException {
+		SPL spl = reload_spl(model_path, fm_path);
+		ActivityDiagram ad = spl.getActivityDiagram();
+
+		ArrayList<String> features = get_all_features_name(spl);
+				
+		String old_pc = features.get(0);
+		int feature_added_idx = 0;
+
+		String path = "./evo_ch_pc/";
+		File f = new File(path);
+		f.mkdir();
+		
+		if (fortify) {
+			path = "./evo_ch_pc/fortify/";
+			f = new File(path);
+			f.mkdir();
+		} else {
+			path = "./evo_ch_pc/weaken/";
+			f = new File(path);
+			f.mkdir();			
+		}
+		
+		Random r = new Random();
+		
+		for (int i = 1;i < 21; i++) {
+			
+			assertEquals("Presence condition não foi alterada", 0, ch_presence_condition(ad, actName, "n0", old_pc));
+			features.remove(feature_added_idx);
+			
+			if (features.size() == 0) break;
+			
+			feature_added_idx = r.nextInt(features.size());
+			
+			if (fortify) {
+				old_pc += " && " + features.get(feature_added_idx);
+			} else {
+				old_pc += " || " + features.get(feature_added_idx);
+			}
+			
+			String xmlContent = spl.getXmlRepresentation();
+			String file_name = Integer.toString(i) + ".xml";
+			FileWriter fw = new FileWriter(new File(path + file_name));
+			
+			fw.write(xmlContent);
+			fw.close();
+		}
+	return 0;
+	}
+		
 	//********** Interface operations
 	
 	public static void exit_error(String reason) {
@@ -358,13 +597,77 @@ public class CommandLineInterface {
 		System.exit(1);
 	}
 	
-	
-	public static boolean exec_args(ActivityDiagram ad, String[] args) {
+	public static boolean exec_args(ActivityDiagram ad, String[] args) throws IOException {
 		boolean winteractions = false;
 		
 		for (int i = 0;i < args.length;) {
 			if (args[i].equals("--winteractions")) {
 				winteractions = true;
+				
+			// User wants to do a complex scenario 
+			} else if (args[i].equals("--sce")) {
+				winteractions = false;
+				
+				if (i + 1 >= args.length) exit_error("Sintaxe --sce inválida.");
+				
+				// ... add 10 messages
+				if (args[i+1].equals("add_msg")) {
+					if (i + 4 >= args.length) exit_error("Sintaxe --sce add_msg inválida.");
+					
+					actName = args[i+2];
+					bmName = args[i+3];
+					fmName = args[i+4];
+					
+					if (0 != add_10_msg(actName, bmName, fmName)) {
+						System.out.println("Erro na evolução de adição de 10 mensagens.");
+						System.exit(1);
+					}
+				}
+				
+				// ... add fragment w/ 10 messages
+				if (args[i+1].equals("add_frag")) {
+					if (i + 4 >= args.length) exit_error("Sintaxe --sce add_frag inválida.");
+					
+					actName = args[i+2];
+					bmName = args[i+3];
+					fmName = args[i+4];
+					
+					if (0 != add_opt_frag(actName, bmName, fmName)) {
+						System.out.println("Erro na evolução de adição de fragmento c/ 10 mensagens.");
+						System.exit(1);
+					}
+				}
+				
+				// ... ch pc fortify
+				if (args[i+1].equals("ch_pc_fortify")) {
+					if (i + 4 >= args.length) exit_error("Sintaxe --sce ch_pc_fortify inválida.");
+					
+					actName = args[i+2];
+					bmName = args[i+3];
+					fmName = args[i+4];
+					
+					if (0 != ch_pc(actName, bmName, fmName, true)) {
+						System.out.println("Erro na evolução de fortalecimento da condição de guarda");
+						System.exit(1);
+					}
+				}
+				
+
+				// ... ch pc weaken
+				if (args[i+1].equals("ch_pc_weaken")) {
+					if (i + 4 >= args.length) exit_error("Sintaxe --sce ch_pc_weaken inválida.");
+					
+					actName = args[i+2];
+					bmName = args[i+3];
+					fmName = args[i+4];
+					
+					if (0 != ch_pc(actName, bmName, fmName, false)) {
+						System.out.println("Erro na evolução de enfraquecimento da condição de guarda");
+						System.exit(1);
+					}
+				}	
+				
+			break;
 			
 			// User wants to change...
 			} else if (args[i].equals("--ch")) {
@@ -542,6 +845,27 @@ public class CommandLineInterface {
 		
 		arguments.add(act_name);
 		arguments.add(frag_name);
+	}
+	
+	public static void get_input_spl(Scanner scan) {
+		arguments.clear();
+		
+		System.out.println("Insira o caminho do modelo comportamental.");
+		
+		String bm_name = scan.nextLine();
+		
+		System.out.println("Insira o caminho do modelo de features.");
+		
+		String fm_name = scan.nextLine();
+
+		System.out.println("Insira o nome da atividade.");
+		
+		String act_name = scan.nextLine();
+		
+		arguments.add(bm_name);
+		arguments.add(fm_name);
+		arguments.add(act_name);
+
 	}
 
 }

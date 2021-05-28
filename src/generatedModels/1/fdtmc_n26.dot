@@ -1,0 +1,38 @@
+digraph graphname {
+n26_s0 [label="n26_s0",color=red,shape=doublecircle ];
+n26_s1 [label="n26_s1",color=blue,shape=doublecircle ];
+n26_s2 [label="n26_s2",color=green,shape=doublecircle ];
+n26_s3 [label="n26_s3" ];
+n26_s4 [label="n26_s4" ];
+n26_s5 [label="n26_s5" ];
+n26_s6 [label="n26_s6" ];
+n26_s7 [label="n26_s7" ];
+n26_s8 [label="n26_s8" ];
+n26_s9 [label="n26_s9" ];
+n26_s10 [label="n26_s10" ];
+n26_s11 [label="n26_s11" ];
+n26_s12 [label="n26_s12" ];
+n26_s0 -> n26_s0 [label=" / 1.0", style=dotted];
+n26_s1 -> n26_s12 [label=" / 1.0"];
+n26_s2 -> n26_s2 [label=" / 1.0"];
+n26_s3 -> n26_s2 [label="replySendSituation / 0.999"];
+n26_s3 -> n26_s0 [label="replySendSituation / 0.0010000000000000009", style=dotted];
+n26_s4 -> n26_s3 [label="replySendSituation(Oxygenation) / 0.999"];
+n26_s4 -> n26_s0 [label="replySendSituation(Oxygenation) / 0.0010000000000000009", style=dotted];
+n26_s5 -> n26_s4 [label=" / 0.999"];
+n26_s5 -> n26_s0 [label=" / 0.0010000000000000009", style=dotted];
+n26_s6 -> n26_s5 [label="persistReply / 0.999"];
+n26_s6 -> n26_s0 [label="persistReply / 0.0010000000000000009", style=dotted];
+n26_s7 -> n26_s6 [label=" / n9"];
+n26_s7 -> n26_s0 [label=" / 1-n9", style=dotted];
+n26_s8 -> n26_s7 [label=" / n8"];
+n26_s8 -> n26_s0 [label=" / 1-n8", style=dotted];
+n26_s9 -> n26_s8 [label="persist / 0.999"];
+n26_s9 -> n26_s0 [label="persist / 0.0010000000000000009", style=dotted];
+n26_s10 -> n26_s9 [label=" / 0.999"];
+n26_s10 -> n26_s0 [label=" / 0.0010000000000000009", style=dotted];
+n26_s11 -> n26_s10 [label="replyRegister / 0.999"];
+n26_s11 -> n26_s0 [label="replyRegister / 0.0010000000000000009", style=dotted];
+n26_s12 -> n26_s11 [label="register / 0.999"];
+n26_s12 -> n26_s0 [label="register / 0.0010000000000000009", style=dotted];
+}

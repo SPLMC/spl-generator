@@ -1,0 +1,38 @@
+digraph graphname {
+n32_s0 [label="n32_s0",color=red,shape=doublecircle ];
+n32_s1 [label="n32_s1",color=blue,shape=doublecircle ];
+n32_s2 [label="n32_s2",color=green,shape=doublecircle ];
+n32_s3 [label="n32_s3" ];
+n32_s4 [label="n32_s4" ];
+n32_s5 [label="n32_s5" ];
+n32_s6 [label="n32_s6" ];
+n32_s7 [label="n32_s7" ];
+n32_s8 [label="n32_s8" ];
+n32_s9 [label="n32_s9" ];
+n32_s10 [label="n32_s10" ];
+n32_s11 [label="n32_s11" ];
+n32_s12 [label="n32_s12" ];
+n32_s0 -> n32_s0 [label=" / 1.0", style=dotted];
+n32_s1 -> n32_s12 [label=" / 1.0"];
+n32_s2 -> n32_s2 [label=" / 1.0"];
+n32_s3 -> n32_s2 [label="replySendSituation / 0.999"];
+n32_s3 -> n32_s0 [label="replySendSituation / 0.0010000000000000009", style=dotted];
+n32_s4 -> n32_s3 [label="replySendSituation(PulseRate) / 0.999"];
+n32_s4 -> n32_s0 [label="replySendSituation(PulseRate) / 0.0010000000000000009", style=dotted];
+n32_s5 -> n32_s4 [label=" / 0.999"];
+n32_s5 -> n32_s0 [label=" / 0.0010000000000000009", style=dotted];
+n32_s6 -> n32_s5 [label="persistReply / 0.999"];
+n32_s6 -> n32_s0 [label="persistReply / 0.0010000000000000009", style=dotted];
+n32_s7 -> n32_s6 [label=" / n9"];
+n32_s7 -> n32_s0 [label=" / 1-n9", style=dotted];
+n32_s8 -> n32_s7 [label=" / n8"];
+n32_s8 -> n32_s0 [label=" / 1-n8", style=dotted];
+n32_s9 -> n32_s8 [label="persist / 0.999"];
+n32_s9 -> n32_s0 [label="persist / 0.0010000000000000009", style=dotted];
+n32_s10 -> n32_s9 [label=" / 0.999"];
+n32_s10 -> n32_s0 [label=" / 0.0010000000000000009", style=dotted];
+n32_s11 -> n32_s10 [label="replyRegister / 0.999"];
+n32_s11 -> n32_s0 [label="replyRegister / 0.0010000000000000009", style=dotted];
+n32_s12 -> n32_s11 [label="register / 0.999"];
+n32_s12 -> n32_s0 [label="register / 0.0010000000000000009", style=dotted];
+}
